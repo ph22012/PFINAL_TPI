@@ -1,0 +1,6 @@
+#ignorar el venv
+/venv
+
+#ignorar __pycache__
+
+__pycache__/
