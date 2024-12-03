@@ -31,5 +31,5 @@ class Customer(models.Model):
     lastname = models.CharField(max_length=256)
     user = models.CharField(max_length=256)
     password = models.CharField(max_length=256)
-    idConfiguration = models.ForeignKey(Configuration, on_delete=models.CASCADE)
+    idConfiguration = models.ForeignKey(Configuration, on_delete=models.CASCADE, null=True, blank=True)
     #id_points = models.ForeignKey(Reward_Points, on_delete=models.CASCADE)
