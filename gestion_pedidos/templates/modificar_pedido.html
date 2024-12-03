@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Pedido</title>
+</head>
+<body>
+    <h1>Modificar Pedido #{{ pedido.id }}</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="estado">Estado:</label>
+        <select name="estado" id="estado">
+            <option value="Pendiente" {% if pedido.order_status == "Pendiente" %}selected{% endif %}>Pendiente</option>
+            <option value="Enviado" {% if pedido.order_status == "Enviado" %}selected{% endif %}>Enviado</option>
+            <option value="Entregado" {% if pedido.order_status == "Entregado" %}selected{% endif %}>Entregado</option>
+            <option value="Cancelado" {% if pedido.order_status == "Cancelado" %}selected{% endif %}>Cancelado</option>
+        </select>
+
+        <label for="repartidor">Repartidor:</label>
+        <select name="repartidor" id="repartidor">
+            {% for repartidor in repartidores %}
+            <option value="{{ repartidor.id }}" {% if repartidor.id == pedido.employee_id %}selected{% endif %}>
+                {{ repartidor.name }}
+            </option>
+            {% endfor %}
+        </select>
+        <br>
+        <button type="submit">Guardar Cambios</button>
+    </form>
+</body>
+</html>

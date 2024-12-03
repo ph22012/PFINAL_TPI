@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Pedido</title>
+</head>
+<body>
+    <h1>Crear Pedido</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="cliente">Cliente:</label>
+        <select name="cliente" id="cliente" required>
+            <option value="">Seleccione un cliente</option>
+            {% for cliente in clientes %}
+            <option value="{{ cliente.id }}">{{ cliente.firstname }} {{ cliente.lastname }}</option>
+            {% endfor %}
+        </select>
+
+        <h2>Productos:</h2>
+        <div id="productos-container">
+            <div>
+                <label>Producto:</label>
+                <input type="text" name="productos" required>
+                <label>Cantidad:</label>
+                <input type="number" name="cantidades" min="1" required>
+            </div>
+        </div>
+        <button type="button" onclick="agregarProducto()">Agregar otro producto</button>
+        <br>
+        <button type="submit">Crear Pedido</button>
+    </form>
+
+    <script>
+        function agregarProducto() {
+            const container = document.getElementById("productos-container");
+            const nuevoProducto = document.createElement("div");
+            nuevoProducto.innerHTML = `
+                <label>Producto:</label>
+                <input type="text" name="productos" required>
+                <label>Cantidad:</label>
+                <input type="number" name="cantidades" min="1" required>
+            `;
+            container.appendChild(nuevoProducto);
+        }
+    </script>
+</body>
+</html>
+
