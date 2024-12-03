@@ -13,7 +13,7 @@ class Configuration(models.Model):
 
 
 class Role(models.Model):
-    id_role = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=256)
 
 class Employee(models.Model):
