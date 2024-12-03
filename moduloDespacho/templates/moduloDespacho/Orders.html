@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        table th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+        table tr:hover {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Órdenes</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID Order</th>
+                <th>ID Cart</th>
+                <th>ID Address</th>
+                <th>ID Coupon</th>
+                <th>ID Employee</th>
+                <th>ID Status</th>
+                <th>Order Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id_order }}</td>
+                <td>{{ order.id_cart }}</td>
+                <td>{{ order.id_address }}</td>
+                <td>{{ order.id_cupon }}</td>
+                <td>{{ order.id_employee }}</td>
+                <td>{{ order.id_status }}</td>
+                <td>{{ order.order_date }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7">No hay órdenes disponibles.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
