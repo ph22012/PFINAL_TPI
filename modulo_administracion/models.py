@@ -17,7 +17,7 @@ class Role(models.Model):
     name = models.CharField(max_length=256)
 
 class Employee(models.Model):
-    id_employee = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     firstname = models.CharField(max_length=256)
     lastname = models.CharField(max_length=256)
     username = models.CharField(max_length=256)
@@ -26,7 +26,7 @@ class Employee(models.Model):
     id_role = models.ForeignKey(Role, on_delete=models.CASCADE)
 
 class Customer(models.Model):
-    id_customer = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     firstname = models.CharField(max_length=256)
     lastname = models.CharField(max_length=256)
     user = models.CharField(max_length=256)
