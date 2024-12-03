@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Clientes</title>
+</head>
+<body>
+    <h1>Lista de Clientes</h1>
+    <a href="{% url 'create_customer' %}">Crear Nuevo Cliente</a>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Usuario</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+            <tr>
+                <td>{{ customer.id }}</td>
+                <td>{{ customer.firstname }} {{ customer.lastname }}</td>
+                <td>{{ customer.user }}</td>
+                <td>
+                    <a href="{% url 'edit_customer' customer.id %}">Editar</a>
+                    <!-- Botón de eliminar con un formulario -->
+                    <form action="{% url 'delete_customer' customer.id %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar a este cliente?')">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'customers' %}">Volver</a>
+</body>
+</html>

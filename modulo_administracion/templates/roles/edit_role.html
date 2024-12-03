@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Rol</title>
+</head>
+<body>
+    <h1>Editar Rol</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="name">Nombre del Rol:</label>
+        <input type="text" name="name" id="name" value="{{ role.name }}" required><br>
+        
+        <label for="description">Descripción:</label>
+        <textarea name="description" id="description" required>{{ role.description }}</textarea><br>
+        
+        <button type="submit">Actualizar</button>
+    </form>
+    <a href="{% url 'list_roles' %}">Volver</a>
+</body>
+</html>

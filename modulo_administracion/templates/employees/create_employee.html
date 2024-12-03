@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Empleado</title>
+</head>
+<body>
+    <h1>Crear Empleado</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="firstname">Nombre:</label>
+        <input type="text" name="firstname" id="firstname" required><br>
+        
+        <label for="lastname">Apellido:</label>
+        <input type="text" name="lastname" id="lastname" required><br>
+        
+        <label for="position">Cargo:</label>
+        <input type="text" name="position" id="position" required><br>
+        
+        <button type="submit">Crear</button>
+    </form>
+    <a href="{% url 'list_employees' %}">Volver</a>
+</body>
+</html>
