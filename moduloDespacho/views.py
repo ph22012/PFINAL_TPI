@@ -11,3 +11,9 @@ def mostrar_ordenes(request):
 def fechaHoy ():
     today = date.today()
     return today
+
+
+def order_list(request):
+    orders = Order.objects.all()
+    return render(request, 'moduloDespacho/Orders.html', {'orders': orders})
+
