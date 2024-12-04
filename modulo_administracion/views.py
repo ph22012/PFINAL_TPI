@@ -52,7 +52,7 @@ def delete_role(request, id): #borra un rol existente
 
 ###################### CRUD EMPLOYEES #######################
 def employees(request):
-    return render(request, 'employees/empleados.html')
+    return render(request, 'employees/employees.html')
 
 def list_employees(request): #lista todos los empleados
     employees = Employee.objects.all()
