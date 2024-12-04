@@ -5,6 +5,7 @@ class Order_status(models.Model):
     id_status = models.IntegerField(primary_key=True)
     status = models.TextField()
     
+    #Se indica que ya existe la tabla en la base de datos
     class Meta:
         db_table = 'order_status'
         managed = False
