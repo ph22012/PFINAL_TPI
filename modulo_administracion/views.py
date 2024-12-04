@@ -2,15 +2,18 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Configuration, Role, Employee, Customer
+from django.http import HttpResponse
 
 # configuration.
 
 
 def GeneralView(request):
-    return render(request, 'administracion/inicio.html')
+    return HttpResponse("Hello, world. You're at the index.")
 
 def configuration(request):
-    return render(request, 'administracion/configuracion.html')
+    configuration = Configuration.objects.all()
+    print(f'configuration: {configuration}')
+    return render(request, 'configurations/viewConfiguration.html', {'configuration': configuration})
 
 
 ###################### CRUD ROLES #######################
