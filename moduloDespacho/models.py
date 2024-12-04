@@ -4,11 +4,16 @@ from django.db import models
 class Order_status(models.Model):
     id_status = models.IntegerField(primary_key=True)
     status = models.TextField()
+    
+    class Meta:
+        db_table = 'order_status'
+        managed = False
+    
     def __str__(self):
         return self.status
 
 class Order(models.Model):
-    id_order=models.IntegerField(primary_key=True)
+    id_order=models.AutoField(primary_key=True)
     id_cart=models.IntegerField() #esta es FK pero no se ha creado el modelo
     id_address=models.IntegerField() #esta es FK pero no se ha creado el modelo
     id_cupon=models.IntegerField() #esta es FK pero no se ha creado el modelo
