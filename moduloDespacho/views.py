@@ -9,8 +9,8 @@ def fechaHoy ():
 
 
 def order_list(request):
-    pendingOrders = Order.objects.filter(id_status__id_status=1)
-    onProcessOrders = Order.objects.filter(id_status__id_status=2)
+    pendingOrders = Order.objects.filter(id_status__id_status=1).order_by('order_date')
+    onProcessOrders = Order.objects.filter(id_status__id_status=2).order_by('last_update')
     return render(request, 'moduloDespacho/Orders.html',
     {'pendingOrders': pendingOrders, 'onProcessOrders': onProcessOrders})
 

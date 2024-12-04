@@ -20,7 +20,8 @@ class Order(models.Model):
     id_cupon=models.IntegerField() #esta es FK pero no se ha creado el modelo
     id_employee=models.IntegerField() #esta es FK pero no se ha creado el modelo
     id_status=models.ForeignKey(Order_status,to_field='id_status', on_delete=models.CASCADE) #esta es FK pero no se ha creado el modelo
-    order_date=models.DateTimeField() 
+    order_date=models.DateTimeField()
+    last_update = models.DateTimeField(auto_now=True) 
 
     def __str__(self):
         return str(self.id_order)
