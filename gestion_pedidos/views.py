@@ -133,3 +133,7 @@ def get_registered_address(request):
         'distrito_id': customer_address.Distrito.id,
         'address_detail': customer_address.address
     })
+
+def dashboard(request):
+    orders = Order.objects.all().order_by('-order_date')
+    return render(request, 'dashboard.html', {'orders': orders})
