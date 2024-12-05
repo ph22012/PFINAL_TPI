@@ -22,7 +22,10 @@ urlpatterns = [
     # Customers CRUD
     path('customers/', views.customers, name='customers'),
     path('customers/list/', views.list_customers, name='list_customers'),
+    path('customers/list_customers_partial/', views.list_customers_partial, name='list_customers_partial'),
     path('customers/create/', views.create_customer, name='create_customer'),
+    path('customers/create_customer_partial/', views.create_customer_partial, name='create_customer_partial'),
     path('customers/edit/<int:id>/', views.edit_customer, name='edit_customer'),
+    path('customers/edit_customer_partial/<int:id>/', views.edit_customer_partial, name='edit_customer_partial'),
     path('customers/delete/<int:id>/', views.delete_customer, name='delete_customer'),
 ]

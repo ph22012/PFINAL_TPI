@@ -31,4 +31,7 @@ class Customer(models.Model):
     lastname = models.CharField(max_length=256)
     user = models.CharField(max_length=256)
     password = models.CharField(max_length=256)
+    
+    def __str__(self):
+        return f"{self.firstname} {self.lastname}"
 
