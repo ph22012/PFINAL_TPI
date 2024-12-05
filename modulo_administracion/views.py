@@ -1,19 +1,89 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.views.generic import UpdateView, TemplateView
+from django.urls import reverse_lazy
+from django import forms
 from django.contrib import messages
-from .models import Configuration, Role, Employee, Customer
+from .models import Configuration, Role, Employee, Customer, Cupon
 from django.http import HttpResponse
-
-# configuration.
-
+from django.contrib.auth.decorators import login_required
 
 def GeneralView(request):
     return HttpResponse("Hello, world. You're at the index.")
 
-def configuration(request):
-    configuration = Configuration.objects.all()
-    print(f'configuration: {configuration}')
-    return render(request, 'configurations/viewConfiguration.html', {'configuration': configuration})
+# configuration.
+def configuration_home(request):
+    return render(request, 'configurations/configuracion_home.html')
+
+    
+class ConfigurationForm(forms.ModelForm):
+    class Meta:
+        model = Configuration
+        fields = ['name', 'pathLogo', 'path_slogan', 'color_pallette', 'address', 'isPointActive']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del negocio'}),
+            'pathLogo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ruta del logo'}),
+            'path_slogan': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ruta del eslogan'}),
+            'color_pallette': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Paleta de colores'}),
+            'address': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Dirección'}),
+            'isPointActive': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+
+
+class ConfigurationUpdateView(UpdateView):
+    model = Configuration
+    form_class = ConfigurationForm
+    template_name = 'configurations/configuration_form.html'
+    success_url = reverse_lazy('admin_home')
+
+    def form_valid(self, form):
+        instance = form.save(commit=False)
+        if not instance.isPointActive:
+            messages.info(self.request, "El programa de puntos ha sido desactivado. Los puntos actuales no se perderán.")
+        else:
+            messages.success(self.request, "El programa de puntos ha sido activado con éxito.")
+        instance.save()
+        return super().form_valid(form)
+
+
+
+##cupones
+
+def gestionar_cupones(request):
+    cupones = Cupon.objects.all().order_by('-fecha_vencimiento')
+
+    if request.method == 'POST':
+        codigo = request.POST.get('codigo')
+        descripcion = request.POST.get('descripcion')
+        tipo_descuento = request.POST.get('tipo_descuento')
+        valor_descuento = request.POST.get('valor_descuento')
+        fecha_inicio = request.POST.get('fecha_inicio')
+        fecha_vencimiento = request.POST.get('fecha_vencimiento')
+        uso_maximo = request.POST.get('uso_maximo')
+
+        cupon = Cupon.objects.create(
+            codigo=codigo,
+            descripcion=descripcion,
+            tipo_descuento=tipo_descuento,
+            valor_descuento=valor_descuento,
+            fecha_inicio=fecha_inicio,
+            fecha_vencimiento=fecha_vencimiento,
+            uso_maximo=uso_maximo
+        )
+        messages.success(request, f'Cupón {cupon.codigo} creado exitosamente')
+        return redirect('gestionar_cupones')
+
+    return render(request, 'configurations/gestionar_cupones.html', {
+        'cupones': cupones
+    })
+
+
+def desactivar_cupon(request, cupon_id):
+    cupon = get_object_or_404(Cupon, id=cupon_id)
+    cupon.activo = False
+    cupon.save()
+    messages.success(request, f'Cupón {cupon.codigo} desactivado')
+    return redirect('gestionar_cupones')
 
 
 ###################### CRUD ROLES #######################
