@@ -6,6 +6,13 @@
 </head>
 <body>
     <h1>Crear Pedido</h1>
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <form method="post">
         {% csrf_token %}
 
@@ -24,14 +31,23 @@
         <input type="text" id="address" name="address" placeholder="Escriba la dirección">
         <label for="departamento">Departamento:</label>
         <select id="departamento" name="departamento_id">
+            <option value="">Seleccione un departamento</option>
             {% for departamento in departamentos %}
-            <option value="{{ departamento.id }}">{{ departamento.name }}</option>
+                <option value="{{ departamento.id }}">{{ departamento.name }}</option>
             {% endfor %}
         </select>
+
         <label for="municipio">Municipio:</label>
-        <select id="municipio" name="municipio_id"></select>
+        <select id="municipio" name="municipio_id">
+            <option value="">Seleccione un municipio</option>
+            <!-- Opciones dinámicas llenadas por JavaScript -->
+        </select>
+
         <label for="distrito">Distrito:</label>
-        <select id="distrito" name="distrito_id"></select>
+        <select id="distrito" name="distrito_id">
+            <option value="">Seleccione un distrito</option>
+            <!-- Opciones dinámicas llenadas por JavaScript -->
+        </select>
 
         <!-- Buscar productos -->
         <label for="product_search">Buscar Producto:</label>
@@ -102,30 +118,45 @@
 
         // Actualizar municipios según el departamento seleccionado
         $('#departamento').on('change', function () {
-            const departamentoId = $(this).val();
+            const departamentoId = $(this).val(); // Obtener el ID del departamento seleccionado
             if (departamentoId) {
+                // Realizar la solicitud AJAX para obtener municipios
                 $.getJSON(`buscar-municipios/${departamentoId}/`, function (data) {
                     const municipioSelect = $('#municipio');
-                    municipioSelect.empty();
+                    municipioSelect.empty(); // Vaciar las opciones actuales
+                    municipioSelect.append('<option value="">Seleccione un municipio</option>'); // Opción vacía
                     data.municipios.forEach(municipio => {
                         municipioSelect.append(`<option value="${municipio.id}">${municipio.name}</option>`);
                     });
-                    municipioSelect.trigger('change'); // Actualiza los distritos automáticamente
+                    municipioSelect.trigger('change'); // Actualizar el evento de cambio del municipio
+                }).fail(function () {
+                    alert('Error al cargar los municipios. Verifica tu conexión.');
                 });
+            } else {
+                // Si no hay un departamento seleccionado, limpia los municipios y distritos
+                $('#municipio').empty().append('<option value="">Seleccione un municipio</option>');
+                $('#distrito').empty().append('<option value="">Seleccione un distrito</option>');
             }
         });
 
         // Actualizar distritos según el municipio seleccionado
         $('#municipio').on('change', function () {
-            const municipioId = $(this).val();
+            const municipioId = $(this).val(); // Obtener el ID del municipio seleccionado
             if (municipioId) {
+                // Realizar la solicitud AJAX para obtener distritos
                 $.getJSON(`buscar-distritos/${municipioId}/`, function (data) {
                     const distritoSelect = $('#distrito');
-                    distritoSelect.empty();
+                    distritoSelect.empty(); // Vaciar las opciones actuales
+                    distritoSelect.append('<option value="">Seleccione un distrito</option>'); // Opción vacía
                     data.distritos.forEach(distrito => {
                         distritoSelect.append(`<option value="${distrito.id}">${distrito.name}</option>`);
                     });
+                }).fail(function () {
+                    alert('Error al cargar los distritos. Verifica tu conexión.');
                 });
+            } else {
+                // Si no hay un municipio seleccionado, limpia los distritos
+                $('#distrito').empty().append('<option value="">Seleccione un distrito</option>');
             }
         });
 
