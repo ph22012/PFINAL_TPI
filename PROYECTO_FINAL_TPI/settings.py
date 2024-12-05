@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'gestion_pedidos'
+    'moduloDespacho',
 ]
 
 MIDDLEWARE = [
@@ -68,7 +70,15 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'PROYECTO_FINAL_TPI.wsgi.application'
+#WSGI_APPLICATION = 'PROYECTO_FINAL_TPI.wsgi.application'
+ASGI_APPLICATION = 'PROYECTO_FINAL_TPI.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    }
+}
+
 
 
 # Database
@@ -117,6 +127,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

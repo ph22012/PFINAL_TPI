@@ -4,3 +4,8 @@
 #ignorar __pycache__
 
 __pycache__/
+
+#ignorar base de datos por ser binario
+
+db.sqlite3
+db.sqlite3-journal
