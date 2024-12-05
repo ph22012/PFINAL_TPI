@@ -1,18 +1,25 @@
 from django.contrib import admin
-from .models import *
 
-admin.site.register(Category)
-admin.site.register(Product)
-admin.site.register(Detail)
-admin.site.register(Customer)
-admin.site.register(CustomerAddresses)
-admin.site.register(Cupon)
-admin.site.register(ShoppingCart)
+# Register your models here.
+from django.contrib import admin
+from .models import (
+    Order, OrderStatus, Employee, ShoppingCart, Customer, Product, CustomerAddress,
+    Departamento, Distrito, Coupon, Detail, Municipio, Rol, Category, Configuration, RewardPoints
+)
+
 admin.site.register(Order)
 admin.site.register(OrderStatus)
 admin.site.register(Employee)
-admin.site.register(Rol)
+admin.site.register(ShoppingCart)
+admin.site.register(Product)
+admin.site.register(Customer)
+admin.site.register(Departamento)
 admin.site.register(Municipio)
 admin.site.register(Distrito)
-admin.site.register(Departamento)
+admin.site.register(CustomerAddress)
+admin.site.register(Coupon)
+admin.site.register(Detail)
+admin.site.register(Rol)
+admin.site.register(Category)
 admin.site.register(Configuration)
+admin.site.register(RewardPoints)

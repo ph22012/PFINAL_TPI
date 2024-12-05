@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crear Pedido</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Crear Pedido</h1>
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Buscar cliente -->
+        <label for="customer_search">Buscar Cliente:</label>
+        <input type="text" id="customer_search" placeholder="Buscar cliente por nombre">
+        <ul id="customer_results"></ul>
+        <input type="hidden" name="customer_id" id="customer_id">
+
+        <label for="selected_customer">Cliente Seleccionado:</label>
+        <input type="text" id="selected_customer" readonly>
+
+        <!-- Dirección -->
+        <label for="address">Dirección:</label>
+        <input type="checkbox" id="use_registered_address" name="use_registered_address"> Usar dirección registrada
+        <input type="text" id="address" name="address" placeholder="Escriba la dirección">
+        <label for="departamento">Departamento:</label>
+        <select id="departamento" name="departamento_id">
+            {% for departamento in departamentos %}
+            <option value="{{ departamento.id }}">{{ departamento.name }}</option>
+            {% endfor %}
+        </select>
+        <label for="municipio">Municipio:</label>
+        <select id="municipio" name="municipio_id"></select>
+        <label for="distrito">Distrito:</label>
+        <select id="distrito" name="distrito_id"></select>
+
+        <!-- Buscar productos -->
+        <label for="product_search">Buscar Producto:</label>
+        <input type="text" id="product_search" placeholder="Buscar producto por nombre">
+        <ul id="product_results"></ul>
+        <input type="hidden" id="product_id">
+        <label for="product_name">Producto:</label>
+        <input type="text" id="product_name" readonly>
+        <label for="product_price">Precio:</label>
+        <input type="text" id="product_price" readonly>
+        <label for="product_quantity">Cantidad:</label>
+        <input type="number" id="product_quantity" min="1" value="1">
+        <button type="button" id="add_product">Agregar Producto</button>
+
+        <!-- Tabla de detalles -->
+        <h2>Detalles del Pedido</h2>
+        <table id="order_details">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <!-- Código de cupón -->
+        <label for="coupon_code">Código de Cupón:</label>
+        <input type="text" id="coupon_code" name="coupon_code">
+        <button type="button" id="apply_coupon">Aplicar Cupón</button>
+
+        <!-- Total -->
+        <h3>Total: $<span id="total">0.00</span></h3>
+
+        <button type="submit">Guardar Pedido</button>
+    </form>
+
+    <script>
+        $(document).ready(function () {
+        // Variables
+        let total = 0;
+
+        // Buscar clientes por nombre
+        $('#customer_search').on('input', function () {
+            const query = $(this).val();
+            if (query) {
+                $.getJSON('buscar-clientes/', { query }, function (data) {
+                    const results = $('#customer_results');
+                    results.empty();
+                    data.customers.forEach(customer => {
+                        results.append(`<li data-id="${customer.id}" data-name="${customer.firstname} ${customer.lastname}">${customer.firstname} ${customer.lastname}</li>`);
+                    });
+                });
+            }
+        });
+
+        // Seleccionar cliente
+        $('#customer_results').on('click', 'li', function () {
+            const customerId = $(this).data('id');
+            const customerName = $(this).data('name');
+            $('#customer_id').val(customerId);  // Almacena el ID en el campo oculto
+            $('#selected_customer').val(customerName);  // Muestra el nombre del cliente seleccionado
+            $('#customer_results').empty();  // Limpia los resultados de búsqueda
+        });
+
+
+        // Actualizar municipios según el departamento seleccionado
+        $('#departamento').on('change', function () {
+            const departamentoId = $(this).val();
+            if (departamentoId) {
+                $.getJSON(`buscar-municipios/${departamentoId}/`, function (data) {
+                    const municipioSelect = $('#municipio');
+                    municipioSelect.empty();
+                    data.municipios.forEach(municipio => {
+                        municipioSelect.append(`<option value="${municipio.id}">${municipio.name}</option>`);
+                    });
+                    municipioSelect.trigger('change'); // Actualiza los distritos automáticamente
+                });
+            }
+        });
+
+        // Actualizar distritos según el municipio seleccionado
+        $('#municipio').on('change', function () {
+            const municipioId = $(this).val();
+            if (municipioId) {
+                $.getJSON(`buscar-distritos/${municipioId}/`, function (data) {
+                    const distritoSelect = $('#distrito');
+                    distritoSelect.empty();
+                    data.distritos.forEach(distrito => {
+                        distritoSelect.append(`<option value="${distrito.id}">${distrito.name}</option>`);
+                    });
+                });
+            }
+        });
+
+        // Buscar productos por nombre
+        $('#product_search').on('input', function () {
+            const query = $(this).val();
+            if (query) {
+                $.getJSON('buscar-productos/', { query }, function (data) {
+                    const results = $('#product_results');
+                    results.empty();
+                    data.products.forEach(product => {
+                        results.append(`<li data-id="${product.id}" data-name="${product.name}" data-price="${product.price}" data-stock="${product.count}">${product.name} - $${product.price} (Stock: ${product.count})</li>`);
+                    });
+                });
+            }
+        });
+
+        //Aignar dirección automaticamente
+        $('#use_registered_address').on('change', function () {
+            if (this.checked) {
+                const customerId = $('#customer_id').val();
+
+                if (!customerId) {
+                    alert('Por favor, selecciona un cliente primero.');
+                    $(this).prop('checked', false); // Desmarca el checkbox
+                    return;
+                }
+
+                // Hacer una solicitud AJAX para obtener la dirección registrada
+                $.getJSON('/pedidos/get-registered-address/', { customer_id: customerId }, function (data) {
+                    if (data.error) {
+                        alert(data.error);
+                        $('#use_registered_address').prop('checked', false); // Desmarca el checkbox
+                    } else {
+                        // Rellenar los campos de dirección
+                        $('#departamento').val(data.departamento_id).trigger('change');
+                        $('#municipio').val(data.municipio_id);
+                        $('#distrito').val(data.distrito_id);
+                        $('#address').val(data.address_detail);
+                    }
+                });
+            } else {
+                // Limpiar los campos si se desmarca el checkbox
+                $('#departamento').val('');
+                $('#municipio').val('');
+                $('#distrito').val('');
+                $('#address').val('');
+            }
+        });
+
+
+        // Seleccionar producto
+        $('#product_results').on('click', 'li', function () {
+            const id = $(this).data('id');
+            const name = $(this).data('name');
+            const price = $(this).data('price');
+            const stock = $(this).data('stock');
+
+            $('#product_id').val(id);
+            $('#product_name').val(name);
+            $('#product_price').val(price);
+            $('#product_quantity').attr('max', stock); // Limita la cantidad al stock disponible
+            $('#product_results').empty();
+        });
+
+        // Agregar producto a la tabla de detalles
+        $('#add_product').on('click', function () {
+            const name = $('#product_name').val();
+            const price = parseFloat($('#product_price').val());
+            const quantity = parseInt($('#product_quantity').val());
+            const stock = parseInt($('#product_quantity').attr('max'));
+
+            if (quantity > stock) {
+                alert('No hay suficiente stock disponible.');
+                return;
+            }
+
+            if (name && price && quantity) {
+                const subtotal = price * quantity;
+                total += subtotal;
+
+                $('#order_details tbody').append(`
+                    <tr>
+                        <td>${name}</td>
+                        <td>$${price.toFixed(2)}</td>
+                        <td>${quantity}</td>
+                        <td class="subtotal">$${subtotal.toFixed(2)}</td>
+                        <td><button type="button" class="remove-product">Eliminar</button></td>
+                    </tr>
+                `);
+
+                $('#total').text(total.toFixed(2));
+                clearProductFields();
+            } else {
+                alert('Por favor, selecciona un producto válido.');
+            }
+        });
+
+        // Eliminar producto de la tabla de detalles
+        $('#order_details').on('click', '.remove-product', function () {
+            const row = $(this).closest('tr');
+            const subtotal = parseFloat(row.find('.subtotal').text().replace('$', ''));
+            total -= subtotal;
+            row.remove();
+            $('#total').text(total.toFixed(2));
+        });
+
+        // Aplicar cupón
+        $('#apply_coupon').on('click', function () {
+            const couponCode = $('#coupon_code').val();
+            if (!couponCode) {
+                alert('Por favor, ingresa un código de cupón.');
+                return;
+            }
+
+            $.getJSON(`validar-cupon/?code=${couponCode}`, function (data) {
+                if (data.valid) {
+                    const discount = data.discount;
+                    const discountedTotal = total - (total * discount / 100);
+                    $('#total').text(discountedTotal.toFixed(2));
+                    alert(`Cupón aplicado: ${discount}% de descuento.`);
+                } else {
+                    alert(data.message || 'Cupón inválido.');
+                }
+            });
+        });
+
+        // Limpiar campos de producto
+        function clearProductFields() {
+            $('#product_id').val('');
+            $('#product_name').val('');
+            $('#product_price').val('');
+            $('#product_quantity').val(1);
+        }
+    });
+    </script>
+</body>
+</html>
+
+
+

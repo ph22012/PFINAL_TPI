@@ -1,61 +1,135 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
-from django.db.models import Count
-from .models import Order, Employee, Customer
+from django.contrib import messages
+from .models import (
+    Order, OrderStatus, Employee, ShoppingCart, Customer, Product, CustomerAddress,
+    Departamento, Distrito, Coupon, Detail
+)
 
-def gestion_pedidos(request):
-    # Obtener todos los pedidos con sus relaciones necesarias
-    pedidos = Order.objects.select_related("employee", "customer").all()
+# Vista principal para mostrar pedidos recientes
+def order_list(request):
+    orders = Order.objects.all().order_by('-order_date')[:10]  # Obtener los pedidos más recientes
+    return render(request, 'gestion_pedido/order_list.html', {'orders': orders})
 
-    context = {
-        "pedidos": pedidos,
-    }
-    return render(request, "gestion_pedidos.html", context)
+# Vista para crear un nuevo pedido
+def order_create(request):
+    if request.method == 'POST':
+        # Validar datos del formulario
+        customer_id = request.POST.get('customer_id')
+        departamento_id = request.POST.get('departamento_id')
+        distrito_id = request.POST.get('distrito_id')
+        address_detail = request.POST.get('address', '')
 
-def crear_pedido(request):
-    if request.method == "POST":
-        cliente_id = request.POST.get("cliente")
-        productos = request.POST.getlist("productos")  # Lista de productos seleccionados
-        cantidades = request.POST.getlist("cantidades")  # Cantidades correspondientes
+        # Verificar que todos los datos necesarios estén presentes
+        if not customer_id:
+            messages.error(request, 'Por favor selecciona un cliente.')
+            return redirect('order_create')
+        if not departamento_id or not distrito_id:
+            messages.error(request, 'Por favor selecciona un departamento y un distrito.')
+            return redirect('order_create')
 
-        # Asignar repartidor automáticamente (ejemplo: el de menos pedidos activos)
-        repartidor = Employee.objects.filter(role__name="Repartidor").annotate(
-            pedidos_activos=Count("order")
-        ).order_by("pedidos_activos").first()
+        # Obtener o crear objetos relacionados
+        customer = get_object_or_404(Customer, id=customer_id)
+        distrito = get_object_or_404(Distrito, id=distrito_id)
 
-        # Crear el pedido
-        pedido = Order.objects.create(
-            customer_id=cliente_id,
-            employee=repartidor,
-            order_status="Pendiente",
+        # Crear o usar una dirección registrada
+        if 'use_registered_address' in request.POST:
+            customer_address = CustomerAddress.objects.filter(customer=customer).first()
+            if not customer_address:
+                messages.error(request, 'El cliente no tiene una dirección registrada.')
+                return redirect('order_create')
+        else:
+            # Crear una nueva dirección si no se usa la registrada
+            customer_address, _ = CustomerAddress.objects.get_or_create(
+                customer=customer,
+                Distrito=distrito,
+                defaults={'address': address_detail}
+            )
+
+        # Crear carrito si no existe
+        shopping_cart, _ = ShoppingCart.objects.get_or_create(customer=customer)
+
+        # Verificar cupón (si aplica)
+        coupon_code = request.POST.get('coupon_code', None)
+        coupon = None
+        if coupon_code:
+            coupon = Coupon.objects.filter(coupon_code=coupon_code).first()
+
+        # Crear pedido
+        order_status = get_object_or_404(OrderStatus, status='Pendiente')
+        available_employee = Employee.objects.filter(is_active=True).first()
+
+        order = Order.objects.create(
+            shoppingcart=shopping_cart,
+            address=customer_address,  # Ahora es una instancia de CustomerAddress
+            coupon=coupon,
+            status=order_status,
+            employee=available_employee,
         )
 
-        # Redirigir a la vista de gestión de pedidos
-        return redirect(gestion_pedidos)
+        messages.success(request, f'Pedido #{order.id} creado exitosamente.')
+        return redirect('order_create')
 
-    clientes = Customer.objects.all()
-    return render(request, "crear_pedido.html", {"clientes": clientes})
+    # Obtener datos iniciales
+    customers = Customer.objects.all()
+    products = Product.objects.all()
+    departamentos = Departamento.objects.all()
+    return render(request, 'gestion_pedido/create_order.html', {
+        'customers': customers,
+        'products': products,
+        'departamentos': departamentos,
+    })
 
-def modificar_pedido(request, pedido_id):
-    pedido = get_object_or_404(Order, id=pedido_id)
 
-    if request.method == "POST":
-        # Actualizar detalles del pedido según lo recibido en el formulario
-        pedido.order_status = request.POST.get("estado", pedido.order_status)
-        pedido.employee_id = request.POST.get("repartidor", pedido.employee_id)
-        pedido.save()
+# Buscar municipios según departamento
+def buscar_municipios(request, departamento_id):
+    municipios = Distrito.objects.filter(municipio__departamento_id=departamento_id).values('id', 'name')
+    return JsonResponse({'municipios': list(municipios)})
 
-        return redirect(gestion_pedidos)
+# Buscar distritos según municipio
+def buscar_distritos(request, municipio_id):
+    distritos = Distrito.objects.filter(municipio_id=municipio_id).values('id', 'name')
+    return JsonResponse({'distritos': list(distritos)})
 
-    repartidores = Employee.objects.filter(rol__name="Repartidor")
-    return render(request, "modificar_pedido.html", {"pedido": pedido, "repartidores": repartidores})
+# Buscar productos por nombre
+def search_products(request):
+    query = request.GET.get('query', '')
+    products = Product.objects.filter(name__icontains=query)
+    return JsonResponse({'products': list(products.values('id', 'name', 'price', 'count'))})
 
-def cancelar_pedido(request, pedido_id):
-    pedido = get_object_or_404(Order, id=pedido_id)
+# Buscar clientes por nombre
+def search_customers(request):
+    query = request.GET.get('query', '')
+    customers = Customer.objects.filter(firstname__icontains=query)
+    return JsonResponse({'customers': list(customers.values('id', 'firstname', 'lastname'))})
 
-    if pedido.order_status != "Entregado":
-        pedido.order_status = "Cancelado"
-        pedido.save()
-        return JsonResponse({"success": True})
+# Validar cupón
+def validar_cupon(request):
+    code = request.GET.get('code', '')
+    try:
+        coupon = Coupon.objects.get(coupon_code=code)
+        return JsonResponse({'valid': True, 'discount': coupon.coupon_discount})
+    except Coupon.DoesNotExist:
+        return JsonResponse({'valid': False, 'message': 'Cupón inválido o expirado.'})
 
-    return JsonResponse({"error": "No se puede cancelar un pedido entregado."}, status=400)
+def get_registered_address(request):
+    customer_id = request.GET.get('customer_id')
+
+    # Verificar que se envió un cliente
+    if not customer_id:
+        return JsonResponse({'error': 'No se proporcionó un cliente.'}, status=400)
+
+    # Buscar la dirección del cliente
+    customer = get_object_or_404(Customer, id=customer_id)
+    customer_address = customer.customeraddress_set.first()
+
+    if not customer_address:
+        return JsonResponse({'error': 'El cliente no tiene una dirección registrada.'}, status=400)
+
+    # Devolver la dirección en formato JSON
+    return JsonResponse({
+        'departamento_id': customer_address.Distrito.municipio.departamento.id,
+        'municipio_id': customer_address.Distrito.municipio.id,
+        'distrito_id': customer_address.Distrito.id,
+        'address_detail': customer_address.address
+    })
