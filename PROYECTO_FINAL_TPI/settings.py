@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     
     
     #apps locales
-    'modulo_menu',
+    'modulo_men',
 ]
 
 MIDDLEWARE = [
