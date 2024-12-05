@@ -3,12 +3,11 @@ from django.contrib import admin
 # Register your models here.
 from django.contrib import admin
 from .models import (
-    Order, OrderStatus, Employee, ShoppingCart, Customer, Product, CustomerAddress,
+    Employee, ShoppingCart, Customer, Product, CustomerAddress,
     Departamento, Distrito, Coupon, Detail, Municipio, Rol, Category, Configuration, RewardPoints
 )
 
-admin.site.register(Order)
-admin.site.register(OrderStatus)
+
 admin.site.register(Employee)
 admin.site.register(ShoppingCart)
 admin.site.register(Product)

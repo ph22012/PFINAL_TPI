@@ -2,13 +2,14 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib import messages
 from .models import (
-    Order, OrderStatus, Employee, ShoppingCart, Customer, Product, CustomerAddress,
+    Employee, ShoppingCart, Customer, Product, CustomerAddress,
     Departamento, Distrito, Coupon, Detail, Rol
 )
+from moduloDespacho.models import Order_status, Order
 
 # Vista principal para mostrar pedidos recientes
 def order_list(request):
-    orders = Order.objects.all().order_by('-order_date')[:10]  # Obtener los pedidos más recientes
+    orders = Order.objects.all().order_by('order_date')[:10]  # Obtener los pedidos más recientes
     return render(request, 'gestion_pedido/order_list.html', {'orders': orders})
 
 # Vista para crear un nuevo pedido
@@ -56,7 +57,7 @@ def order_create(request):
             coupon = Coupon.objects.filter(coupon_code=coupon_code).first()
 
         # Crear pedido
-        order_status = get_object_or_404(OrderStatus, status='Espera')
+        order_status = get_object_or_404(Order_status, id_status=1)
         # Filtrar empleados activos con el rol de repartidor
         repartidor_role = get_object_or_404(Rol, name='Repartidor')  # Asegúrate de que este rol existe
         available_employee = Employee.objects.filter(is_active=True, id_rol=repartidor_role).first()
@@ -186,5 +187,5 @@ def order_edit(request, order_id):
         'repartidores': repartidores,
     })
 def dashboard(request):
-    orders = Order.objects.all().order_by('-order_date')
+    orders = Order.objects.all().order_by('order_date')
     return render(request, 'dashboard.html', {'orders': orders})

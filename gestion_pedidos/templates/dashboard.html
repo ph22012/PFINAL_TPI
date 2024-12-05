@@ -1,3 +1,4 @@
+{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,32 +12,38 @@
         <div class=" row text-center my-5"><h1>Dashboard</h1></div>
         <div class="row">
             <div class="col-10">
-                <table class="table table-bordered ">
+                <table class="table table-bordered " id="pedidos">
                     <thead class="table-dark">
                         <th>N° pedido</th>
                         <th>Estado</th>
                         <th>Hora de creacion</th>
                         <th>Dirección</th>
                         <th>Ultima actualización</th>
+                        <th colspan="2">Acciones</th>
                     </thead>
                     <tbody>
                         {% for order in orders %}
-                        <tr>
-                            <td>{{ order.id }}</td>
-                            <td>{{ order.status.status }}</td>
+                        <tr id="orden-{{order.id_order}}">
+                            <td>{{ order.id_order }}</td>
+                            <td>{{ order.id_status.status }}</td>
                             <td>{{ order.order_date }}</td>
-                            <td>{{ order.address.address }}</td>
-                            <td>Hay que editar</td>
+                            <td>{{order.id_address}}</td>
+                            <td>{{order.last_update}}</td>
+                            <td><button type="button" class="btn btn-primary btn-sm" id="ver">Ver pedido</button></td>
+                            <td><button type="button" class="btn btn-warning btn-sm" id="editar">Editar pedido</button></td>
                         {%endfor%}
                     </tbody>
                 </table>
             </div>
             <div class="col-2">
-                <button type="button" class="btn btn-primary w-100">Crear pedido</button>
+                <a href="{% url 'order_create' %}">
+                    <button type="button" class="btn btn-primary w-100">Crear pedido</button>
+                </a>
             </div>
         </div>
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

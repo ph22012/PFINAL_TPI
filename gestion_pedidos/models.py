@@ -66,8 +66,6 @@ class Coupon(models.Model):
     exp_date = models.DateTimeField()
 
 # Modelo de pedidos
-class OrderStatus(models.Model):
-    status = models.CharField(max_length=256)
 
 # Roles de empleados
 class Rol(models.Model):
@@ -81,10 +79,14 @@ class Employee(models.Model):
     password = models.CharField(max_length=256)
     is_active = models.BooleanField(default=True)
 
+#Se desactivan momentaneamente las tablas relacionadas con pedidos
+"""class OrderStatus(models.Model):
+    status = models.CharField(max_length=256)
+
 class Order(models.Model):
     shoppingcart = models.ForeignKey(ShoppingCart, on_delete=models.CASCADE)
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, null=True, blank=True)
     address = models.ForeignKey(CustomerAddress, on_delete=models.CASCADE)
     coupon = models.ForeignKey(Coupon, on_delete=models.SET_NULL, null=True, blank=True)
     status = models.ForeignKey(OrderStatus, on_delete=models.SET_NULL, null=True, blank=True)
-    order_date = models.DateTimeField(auto_now_add=True)
+    order_date = models.DateTimeField(auto_now_add=True)"""

@@ -25,6 +25,7 @@ def nuevaOrden(sender, instance,created, **kwargs):
                          "status": instance.id_status.status,
                      },
                      "order_date": instance.order_date.strftime('%Y-%m-%d %H:%M:%S'),
+                     "last_update": instance.last_update.strftime('%Y-%m-%d %H:%M:%S'),
                  }
                  
              }
@@ -66,4 +67,27 @@ def updateOrderStatus(sender, instance,**kwargs):
         )
         except Order.DoesNotExist:
             print("No existe la orden")
-    
+
+@receiver(post_save, sender=Order)
+def updateOrder(sender, instance,created, **kwargs):
+    if not created:
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            "orders", #Nombre del grupo
+            {
+                "type": "updateOrder",
+                "order": {
+                    "id_order": instance.id_order,
+                    "id_cart": instance.id_cart,
+                    "id_address": instance.id_address,
+                    "id_cupon": instance.id_cupon,
+                    "id_employee": instance.id_employee,
+                    "id_status":{
+                        "id_status": instance.id_status.id_status,
+                        "status": instance.id_status.status,
+                    },
+                    "order_date": instance.order_date.strftime('%Y-%m-%d %H:%M:%S'),
+                    "last_update": instance.last_update.strftime('%Y-%m-%d %H:%M:%S'),
+                }
+                
+            })
