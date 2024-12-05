@@ -185,3 +185,6 @@ def order_edit(request, order_id):
         'distritos': distritos,
         'repartidores': repartidores,
     })
+def dashboard(request):
+    orders = Order.objects.all().order_by('-order_date')
+    return render(request, 'dashboard.html', {'orders': orders})
