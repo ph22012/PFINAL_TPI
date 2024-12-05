@@ -4,5 +4,7 @@
 /.venv
 
 #ignorar __pycache__
+#incluir base db
+db.sqlite3
 
 __pycache__/
