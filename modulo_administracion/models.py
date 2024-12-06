@@ -11,6 +11,20 @@ class Configuration(models.Model):
     isPointActive = models.BooleanField(default=False)#programa de lealtad
     configurationPast = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
 
+class Cupon(models.Model):
+    id = models.AutoField(primary_key=True, auto_created=True)
+    codigo = models.CharField(max_length=20, unique=True)
+    descripcion = models.TextField(blank=True)
+    tipo_descuento = models.CharField(max_length=20, choices=[
+        ('PORCENTAJE', 'Descuento Porcentual'),
+        ('MONTO_FIJO', 'Descuento Monto Fijo')
+    ])
+    valor_descuento = models.DecimalField(max_digits=10, decimal_places=2)
+    fecha_inicio = models.DateTimeField()
+    fecha_vencimiento = models.DateTimeField()
+    activo = models.BooleanField(default=True)
+    uso_maximo = models.IntegerField(default=1)
+
 
 class Role(models.Model):
     id = models.AutoField(primary_key=True, auto_created=True)

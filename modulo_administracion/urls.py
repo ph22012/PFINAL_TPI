@@ -3,7 +3,12 @@ from . import views
 
 urlpatterns = [
     path('', views.GeneralView, name='GeneralView'),
-    path('configuracion/', views.configuration, name='configuration'),
+    path('configuracion/', views.configuration_home, name='configuration_home'),
+     path('configuration/<int:pk>/', views.ConfigurationUpdateView.as_view(), name='configuration_update'),
+
+   #cupones 
+    path('gestionar-cupones/', views.gestionar_cupones, name='gestionar_cupones'),
+    path('desactivar-cupon/<int:cupon_id>/', views.desactivar_cupon, name='desactivar_cupon'),
     
     # Roles CRUD
     path('roles/', views.roles, name='roles'),
