@@ -6,6 +6,45 @@
     <title>Menu Del Dia</title>
 </head>
 <body>
-    
+    <header>
+        <h1>Menú Diario Rotativo</h1>
+    </header>
+    <main>
+        <section class="menu-diario">
+            <h2>Menú para <span id="dia-semana"></span></h2>
+            <ul id="menu-lista">
+                <!-- Los elementos del menú se generarán dinámicamente -->
+            </ul>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Menú Diario Rotativo</p>
+    </footer>
+    <script>
+        // Menús para cada día de la semana
+        const menus = {
+            lunes: ["Pollo a la plancha con arroz", "Ensalada mixta", "Fruta de temporada"],
+            martes: ["Spaghetti bolognese", "Pan de ajo", "Tiramisú"],
+            miércoles: ["Sopa de lentejas", "Filete de pescado", "Gelatina de sabores"],
+            jueves: ["Carne asada con puré de papa", "Verduras al vapor", "Flan"],
+            viernes: ["Tacos de pollo", "Guacamole", "Pastel de chocolate"],
+            sábado: ["Hamburguesa casera", "Papas fritas", "Batido de frutas"],
+            domingo: ["Paella", "Ensalada verde", "Helado artesanal"]
+        };
+
+        // Obtener el día de la semana actual
+        const dias = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+        const hoy = new Date();
+        const diaSemana = dias[hoy.getDay()];
+
+        // Actualizar el contenido del menú
+        document.getElementById("dia-semana").textContent = diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1);
+        const menuLista = document.getElementById("menu-lista");
+        menus[diaSemana].forEach(plato => {
+            const li = document.createElement("li");
+            li.textContent = plato;
+            menuLista.appendChild(li);
+        });
+    </script>
 </body>
 </html>
