@@ -10,16 +10,23 @@ from channels.layers import get_channel_layer
 def nuevaOrden(sender, instance,created, **kwargs):
      if created:
          channel_layer = get_channel_layer()
+         try:
+             instance.id_cupon != None
+             cupon = instance.id_cupon.id
+         except:
+             cupon = None
+             print("No existe cupon")
+             
          async_to_sync(channel_layer.group_send)(
              "orders", #Nombre del grupo
              {
                  "type": "nuevaOrden",
                  "order": {
                      "id_order": instance.id_order,
-                     "id_cart": instance.id_cart,
-                     "id_address": instance.id_address,
-                     "id_cupon": instance.id_cupon,
-                     "id_employee": instance.id_employee,
+                     "id_cart": instance.id_cart.id,
+                     "id_address": instance.id_address.id,
+                     "id_cupon": cupon,
+                     "id_employee": instance.id_employee.id,
                      "id_status":{
                          "id_status": instance.id_status.id_status,
                          "status": instance.id_status.status,
@@ -45,16 +52,22 @@ def updateOrderStatus(sender, instance,**kwargs):
                 print(original_Status)
                 print(new_Status)
                 channel_layer =  get_channel_layer()
+                try:
+                    instance.id_cupon != None
+                    cupon = instance.id_cupon.id
+                except:
+                    cupon = None
+                    print("No existe cupon")
                 async_to_sync(channel_layer.group_send)(
                     "orders", #Nombre del grupo
                     {
                         "type": "updateOrderStatus", #tipo de mensaje para diferenciar
                         "order": {
                             "id_order": instance.id_order,
-                            "id_cart": instance.id_cart,
-                            "id_address": instance.id_address,
-                            "id_cupon": instance.id_cupon,
-                            "id_employee": instance.id_employee,
+                            "id_cart": instance.id_cart.id,
+                            "id_address": instance.id_address.id,
+                            "id_cupon": cupon,
+                            "id_employee": instance.id_employee.id,
                             "id_status":{
                                 "id_status": instance.id_status.id_status,
                                 "status": instance.id_status.status,
@@ -72,16 +85,22 @@ def updateOrderStatus(sender, instance,**kwargs):
 def updateOrder(sender, instance,created, **kwargs):
     if not created:
         channel_layer = get_channel_layer()
+        try:
+            instance.id_cupon != None
+            cupon = instance.id_cupon.id
+        except:
+            cupon = None
+            print("No existe cupon")
         async_to_sync(channel_layer.group_send)(
             "orders", #Nombre del grupo
             {
                 "type": "updateOrder",
                 "order": {
                     "id_order": instance.id_order,
-                    "id_cart": instance.id_cart,
-                    "id_address": instance.id_address,
-                    "id_cupon": instance.id_cupon,
-                    "id_employee": instance.id_employee,
+                    "id_cart": instance.id_cart.id,
+                    "id_address": instance.id_address.id,
+                    "id_cupon": cupon,
+                    "id_employee": instance.id_employee.id,
                     "id_status":{
                         "id_status": instance.id_status.id_status,
                         "status": instance.id_status.status,

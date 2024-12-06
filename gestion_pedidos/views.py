@@ -36,7 +36,7 @@ def order_create(request):
 
         # Obtener o crear objetos relacionados
         customer = get_object_or_404(Customer, id=customer_id)
-        distrito = get_object_or_404(Distrito, id=distrito_id)
+        distrito = get_object_or_404(Distrito, id_distrito=distrito_id)
 
         # Crear o usar una dirección registrada
         if 'use_registered_address' in request.POST:
@@ -104,14 +104,15 @@ def order_create(request):
             return redirect('order_create')  # Redirige a la página de creación con un mensaje de error
 
         order = Order.objects.create(
-            shoppingcart=shopping_cart,
-            address=customer_address,  # Ahora es una instancia de CustomerAddress
-            coupon=coupon,
-            status=order_status,
-            employee=available_employee,
+            id_cart=shopping_cart,
+            id_address=customer_address,  # Ahora es una instancia de CustomerAddress
+            id_cupon=coupon,            
+            id_employee=available_employee,
+            id_status=order_status,
+            order_date=now(),
         )
 
-        messages.success(request, f'Pedido #{order.id} creado exitosamente.')
+        messages.success(request, f'Pedido #{order.id_order} creado exitosamente.')
         return redirect('order_create')
 
     # Obtener datos iniciales
