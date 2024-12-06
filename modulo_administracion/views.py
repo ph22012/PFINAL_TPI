@@ -3,8 +3,10 @@ from django.views.generic import UpdateView, TemplateView
 from django.urls import reverse_lazy
 from django import forms
 from django.contrib import messages
-from .models import Configuration, Role, Employee, Customer
+from .models import Configuration, Cupon, Role, Employee, Customer
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+
 
 # configuration.
 
