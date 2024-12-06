@@ -1,0 +1,64 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Productos</title>
+    <!-- Referencia al archivo CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles1.css' %}">
+</head>
+<body>
+    <div class="container">
+        <!-- Barra de navegación -->
+        <header>
+            <nav>
+                <span>Regresar</span>
+                <a href="{% url 'logout' %}" class="logout">Cerrar Sesión</a>
+            </nav>
+        </header>
+
+        <!-- Título y tabla de productos -->
+        <main>
+            <h1>Catálogo De Productos</h1>
+
+            <!-- Tabla Desplazable -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Producto</th>
+                            <th>Categoría</th>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th>Cantidad Dispo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Aquí agregarías los datos dinámicos, como los productos -->
+                        {% for producto in productos %}
+                        <tr>
+                            <td>{{ producto.id }}</td>
+                            <td>{{ producto.categoria }}</td>
+                            <td>{{ producto.nombre }}</td>
+                            <td>{{ producto.precio }}</td>
+                            <td>{{ producto.cantidad_dispo }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="actions">
+                <button class="btn btn-success">Agregar Productos</button>
+                <button class="btn btn-danger">Eliminar Productos</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Referencia al archivo JS -->
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
