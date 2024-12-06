@@ -19,7 +19,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
     count = models.IntegerField()
-    daily_menu_date = models.DateField(null=True, blank=True)
+    dailyMenuDate = models.DateField(null=True, blank=True)
     
     class Meta:
         db_table = "product"

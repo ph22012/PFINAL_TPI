@@ -1,4 +1,5 @@
 from django.db import models
+from modulo_catalogo.models import Product
 
 # Modelo de Configuración del negocio
 class Configuration(models.Model):
@@ -72,7 +73,7 @@ class ShoppingCart(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
 
 class Detail(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product,to_field='id_product',db_column='id_product', on_delete=models.CASCADE)
     shoppingcart = models.ForeignKey(ShoppingCart, on_delete=models.CASCADE)
     amount = models.IntegerField()
     sub_total = models.DecimalField(max_digits=10, decimal_places=2)

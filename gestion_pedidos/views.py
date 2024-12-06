@@ -78,7 +78,7 @@ def order_create(request):
 
         # Crear detalles para cada producto
         for product in products:
-            product_instance = get_object_or_404(Product, id=product['id'])
+            product_instance = get_object_or_404(Product, id_product=product['id'])
             quantity = int(product['quantity'])
             subtotal = float(product['subtotal'])
 
@@ -144,7 +144,7 @@ def buscar_distritos(request, municipio_id):
 def search_products(request):
     query = request.GET.get('query', '')
     products = Product.objects.filter(name__icontains=query)
-    return JsonResponse({'products': list(products.values('id', 'name', 'price', 'count'))})
+    return JsonResponse({'products': list(products.values('id_product', 'name', 'price', 'count'))})
 
 # Buscar clientes por nombre
 def search_customers(request):
