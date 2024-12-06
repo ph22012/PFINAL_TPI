@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     
     #apps locales
     'modulo_men',
+    'bootstrap5',
 ]
 
 MIDDLEWARE = [
