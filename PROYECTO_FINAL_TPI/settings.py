@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'moduloDespacho',
     'modulo_catalogo',
     #apps locales
-    'modulo_men',
     'bootstrap5',
 ]
 
