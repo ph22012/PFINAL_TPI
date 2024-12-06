@@ -243,3 +243,6 @@ def order_detail(request, order_id):
         'details': details,
         'total': total,  # Pasar el total al contexto
     })
+def dashboard(request):
+    orders = Order.objects.all().order_by('-order_date')
+    return render(request, 'dashboard.html', {'orders': orders})
