@@ -1,11 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.contrib import messages
+from django.utils.timezone import now
 from .models import (
     Employee, ShoppingCart, Customer, Product, CustomerAddress,
     Departamento, Distrito, Municipio, Coupon, Detail, Rol
 )
 from moduloDespacho.models import Order_status, Order
+import json
+
+
 
 # Vista principal para mostrar pedidos recientes
 def order_list(request):
@@ -20,6 +24,7 @@ def order_create(request):
         departamento_id = request.POST.get('departamento_id')
         distrito_id = request.POST.get('distrito_id')
         address_detail = request.POST.get('address', '')
+        products_data = request.POST.get('products_data') 
 
         # Verificar que todos los datos necesarios estén presentes
         if not customer_id:
@@ -48,13 +53,45 @@ def order_create(request):
             )
 
         # Crear carrito si no existe
-        shopping_cart, _ = ShoppingCart.objects.get_or_create(customer=customer)
+        shopping_cart = ShoppingCart.objects.create(customer=customer)
 
         # Verificar cupón (si aplica)
         coupon_code = request.POST.get('coupon_code', None)
         coupon = None
         if coupon_code:
             coupon = Coupon.objects.filter(coupon_code=coupon_code).first()
+        
+        # Procesar productos y agregar al carrito
+        import json
+        if not products_data:
+            messages.error(request, 'No se recibieron productos. Por favor selecciona al menos un producto.')
+            return redirect('order_create')
+
+        try:
+            products = json.loads(products_data)
+            if not products:
+                raise ValueError("No hay productos seleccionados.")
+        except json.JSONDecodeError:
+            messages.error(request, 'Los datos de los productos son inválidos.')
+            return redirect('order_create')
+
+        # Crear detalles para cada producto
+        for product in products:
+            product_instance = get_object_or_404(Product, id=product['id'])
+            quantity = int(product['quantity'])
+            subtotal = float(product['subtotal'])
+
+            # Reducir stock del producto
+            product_instance.count -= quantity
+            product_instance.save()
+
+            # Crear el detalle en el carrito
+            Detail.objects.create(
+                shoppingcart=shopping_cart,
+                product=product_instance,
+                amount=quantity,
+                sub_total=subtotal
+            )
 
         # Crear pedido
         order_status = get_object_or_404(Order_status, id_status=1)
@@ -118,9 +155,16 @@ def validar_cupon(request):
     code = request.GET.get('code', '')
     try:
         coupon = Coupon.objects.get(coupon_code=code)
+        # Verificar si el cupón está expirado
+        if coupon.exp_date <= now():  # Utilizamos timezone.now() para fechas aware
+            return JsonResponse({'valid': False, 'message': 'El cupón ha expirado y no es válido.'})
+        
+        # Si el cupón es válido, desactivarlo
+        coupon.exp_date = now()  # Cambiar la fecha de expiración a la actual
+        coupon.save()
         return JsonResponse({'valid': True, 'discount': coupon.coupon_discount})
     except Coupon.DoesNotExist:
-        return JsonResponse({'valid': False, 'message': 'Cupón inválido o expirado.'})
+        return JsonResponse({'valid': False, 'message': 'Cupón inválido o no encontrado.'})
 
 def get_registered_address(request):
     customer_id = request.GET.get('customer_id')
@@ -188,6 +232,20 @@ def order_edit(request, order_id):
         'order': order,
         'distritos': distritos,
         'repartidores': repartidores,
+    })
+
+def order_detail(request, order_id):
+    # Obtener el pedido y sus detalles
+    order = get_object_or_404(Order, id=order_id)
+    details = Detail.objects.filter(shoppingcart=order.shoppingcart)
+
+    # Calcular el total
+    total = sum(detail.sub_total for detail in details)
+
+    return render(request, 'gestion_pedido/detail_order.html', {
+        'order': order,
+        'details': details,
+        'total': total,  # Pasar el total al contexto
     })
 def dashboard(request):
     orders = Order.objects.all().order_by('order_date')
