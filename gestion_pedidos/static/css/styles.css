@@ -1,0 +1,17 @@
+/* Mejorar las sugerencias desplegables */
+#customer_results, #product_results {
+    max-height: 200px; /* Limita la altura */
+    overflow-y: auto; /* Permite scroll si es necesario */
+    box-shadow: 0 4px 6px rgba(176, 197, 253, 0.199); /* Sombra para resaltar */
+}
+
+#customer_results li, #product_results li {
+    padding: 8px 12px; /* Espaciado interno */
+    border: 1px solid #ffffffc8; /* Separador entre elementos */
+    background-color: #c5daff; /* Fondo blanco */
+    transition: background-color 0.2s ease;
+}
+
+#customer_results li:hover, #product_results li:hover {
+    background-color: #e1edf9; /* Ligero cambio de fondo */
+}

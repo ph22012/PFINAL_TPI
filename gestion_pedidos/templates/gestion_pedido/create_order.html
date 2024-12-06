@@ -1,93 +1,144 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>Crear Pedido</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    />
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
 </head>
 <body>
-    <h1>Crear Pedido</h1>
-    {% if messages %}
-        <ul>
-            {% for message in messages %}
-                <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <form method="post">
-        {% csrf_token %}
+    <div class="container mt-4">
+        <h1 class="text-center text-primary">Crear Pedido</h1>
+    
+        <!-- Mensajes -->
+        {% if messages %}
+            <div class="alert alert-info">
+                <ul>
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    
+        <form method="post" class="mt-4 p-4 border rounded shadow-sm bg-light">
+            {% csrf_token %}
+    
+            <!-- Buscar cliente -->
+            <div class="mb-4">
+                <h3 class="text-secondary">Cliente</h3>
+                <input type="text" id="customer_search" class="form-control" placeholder="Buscar cliente por nombre">
+                <ul id="customer_results" class="list-group mt-2"></ul>
+                <input type="hidden" name="customer_id" id="customer_id">
+    
+                <label for="selected_customer" class="form-label mt-3">Cliente Seleccionado:</label>
+                <input type="text" id="selected_customer" class="form-control" readonly>
+            </div>
+    
+            <!-- Dirección -->
+            <div class="mb-4">
+                <h3 class="text-secondary">Dirección</h3>
+                <div class="form-check form-switch mb-3">
+                    <input type="checkbox" id="use_registered_address" name="use_registered_address" class="form-check-input">
+                    <label class="form-check-label" for="use_registered_address">Usar dirección registrada</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="text" id="address" name="address" class="form-control" placeholder="Escriba la dirección">
+                    <label for="address">Dirección</label>
+                </div>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="departamento" class="form-label">Departamento</label>
+                        <select id="departamento" name="departamento_id" class="form-select">
+                            <option value="">Seleccione un departamento</option>
+                            {% for departamento in departamentos %}
+                                <option value="{{ departamento.id }}">{{ departamento.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="municipio" class="form-label">Municipio</label>
+                        <select id="municipio" name="municipio_id" class="form-select">
+                            <option value="">Seleccione un municipio</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="distrito" class="form-label">Distrito</label>
+                        <select id="distrito" name="distrito_id" class="form-select">
+                            <option value="">Seleccione un distrito</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Buscar productos -->
+            <div class="mb-4">
+                <h3 class="text-secondary">Productos</h3>
+                <input type="text" id="product_search" class="form-control" placeholder="Buscar producto por nombre">
+                <ul id="product_results" class="list-group mt-2"></ul>
+                <input type="hidden" id="product_id">
+                
+                <label for="product_name" class="form-label mt-3">Producto:</label>
+                <input type="text" id="product_name" class="form-control" readonly>
+                <label for="product_price" class="form-label mt-3">Precio:</label>
+                <input type="text" id="product_price" class="form-control" readonly>
+                <label for="product_quantity" class="form-label mt-3">Cantidad:</label>
+                <input type="number" id="product_quantity" class="form-control" min="1" value="1">
+                <button type="button" id="add_product" class="btn btn-success mt-3">Agregar Producto</button>
+            </div>
+    
+            <!-- Tabla de detalles -->
+            <div class="mb-4">
+                <h3 class="text-secondary">Detalles del Pedido</h3>
+                <table id="order_details" class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Producto</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>Subtotal</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
 
-        <!-- Buscar cliente -->
-        <label for="customer_search">Buscar Cliente:</label>
-        <input type="text" id="customer_search" placeholder="Buscar cliente por nombre">
-        <ul id="customer_results"></ul>
-        <input type="hidden" name="customer_id" id="customer_id">
-
-        <label for="selected_customer">Cliente Seleccionado:</label>
-        <input type="text" id="selected_customer" readonly>
-
-        <!-- Dirección -->
-        <label for="address">Dirección:</label>
-        <input type="checkbox" id="use_registered_address" name="use_registered_address"> Usar dirección registrada
-        <input type="text" id="address" name="address" placeholder="Escriba la dirección">
-        <label for="departamento">Departamento:</label>
-        <select id="departamento" name="departamento_id">
-            <option value="">Seleccione un departamento</option>
-            {% for departamento in departamentos %}
-                <option value="{{ departamento.id }}">{{ departamento.name }}</option>
-            {% endfor %}
-        </select>
-
-        <label for="municipio">Municipio:</label>
-        <select id="municipio" name="municipio_id">
-            <option value="">Seleccione un municipio</option>
-            <!-- Opciones dinámicas llenadas por JavaScript -->
-        </select>
-
-        <label for="distrito">Distrito:</label>
-        <select id="distrito" name="distrito_id">
-            <option value="">Seleccione un distrito</option>
-            <!-- Opciones dinámicas llenadas por JavaScript -->
-        </select>
-
-        <!-- Buscar productos -->
-        <label for="product_search">Buscar Producto:</label>
-        <input type="text" id="product_search" placeholder="Buscar producto por nombre">
-        <ul id="product_results"></ul>
-        <input type="hidden" id="product_id">
-        <label for="product_name">Producto:</label>
-        <input type="text" id="product_name" readonly>
-        <label for="product_price">Precio:</label>
-        <input type="text" id="product_price" readonly>
-        <label for="product_quantity">Cantidad:</label>
-        <input type="number" id="product_quantity" min="1" value="1">
-        <button type="button" id="add_product">Agregar Producto</button>
-
-        <!-- Tabla de detalles -->
-        <h2>Detalles del Pedido</h2>
-        <table id="order_details">
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Precio</th>
-                    <th>Cantidad</th>
-                    <th>Subtotal</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-
-        <!-- Código de cupón -->
-        <label for="coupon_code">Código de Cupón:</label>
-        <input type="text" id="coupon_code" name="coupon_code">
-        <button type="button" id="apply_coupon">Aplicar Cupón</button>
-
-        <!-- Total -->
-        <h3>Total: $<span id="total">0.00</span></h3>
-
-        <button type="submit">Guardar Pedido</button>
-    </form>
+            <!-- Campo oculto para enviar datos -->
+            <input type="hidden" name="products_data" id="products-data">
+    
+            <!-- Código de cupón -->
+            <div class="mb-4">
+                <label for="coupon_code" class="form-label">Código de Cupón:</label>
+                <div class="input-group">
+                    <input type="text" id="coupon_code" name="coupon_code" class="form-control" placeholder="Código de cupón">
+                    <button type="button" id="apply_coupon" class="btn btn-warning">Aplicar</button>
+                </div>
+            </div>
+    
+            <!-- Total -->
+            <div class="mb-4 text-end">
+                <h3>Total: $<span id="total" class="text-success">0.00</span></h3>
+            </div>
+    
+            <!-- Botón de envío -->
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">Guardar Pedido</button>
+            </div>
+        </form>
+    </div>
+    
 
     <script>
+        let selectedProducts = []; // Inicializa el array de productos seleccionados
+        let total = 0; // Inicializa el total del pedido
+
         $(document).ready(function () {
         // Variables
         let total = 0;
@@ -113,6 +164,7 @@
             $('#customer_id').val(customerId);  // Almacena el ID en el campo oculto
             $('#selected_customer').val(customerName);  // Muestra el nombre del cliente seleccionado
             $('#customer_results').empty();  // Limpia los resultados de búsqueda
+            $('#customer_search').val(''); //Limpiar busqueda
         });
 
 
@@ -174,7 +226,7 @@
             }
         });
 
-        //Aignar dirección automaticamente
+        //Asignar dirección automaticamente
         $('#use_registered_address').on('change', function () {
             if (this.checked) {
                 const customerId = $('#customer_id').val();
@@ -192,9 +244,13 @@
                         $('#use_registered_address').prop('checked', false); // Desmarca el checkbox
                     } else {
                         // Rellenar los campos de dirección
-                        $('#departamento').val(data.departamento_id).trigger('change');
-                        $('#municipio').val(data.municipio_id);
-                        $('#distrito').val(data.distrito_id);
+                        $('#departamento').val(data.departamento_id).trigger('change'); // Actualizar municipios
+                        setTimeout(() => { 
+                            $('#municipio').val(data.municipio_id).trigger('change'); // Actualizar distritos
+                        }, 100); // Esperar a que se carguen los municipios
+                        setTimeout(() => {
+                            $('#distrito').val(data.distrito_id);
+                        }, 200); // Esperar a que se carguen los distritos
                         $('#address').val(data.address_detail);
                     }
                 });
@@ -220,49 +276,93 @@
             $('#product_price').val(price);
             $('#product_quantity').attr('max', stock); // Limita la cantidad al stock disponible
             $('#product_results').empty();
+
+            $('#product_search').val(''); //Limpiar busqueda
         });
 
+        function updateProductsData() {
+        $('#products-data').val(JSON.stringify(selectedProducts)); // Actualiza el campo oculto
+}
         // Agregar producto a la tabla de detalles
         $('#add_product').on('click', function () {
-            const name = $('#product_name').val();
-            const price = parseFloat($('#product_price').val());
-            const quantity = parseInt($('#product_quantity').val());
-            const stock = parseInt($('#product_quantity').attr('max'));
+            const productId = $('#product_id').val();
+            const productName = $('#product_name').val();
+            const productPrice = parseFloat($('#product_price').val());
+            const productQuantity = parseInt($('#product_quantity').val());
+            const productStock = parseInt($('#product_quantity').attr('max'));
 
-            if (quantity > stock) {
+            if (!productId || !productName || isNaN(productPrice) || isNaN(productQuantity)) {
+                alert('Por favor, selecciona un producto válido.');
+                return;
+            }
+
+            if (productQuantity > productStock) {
                 alert('No hay suficiente stock disponible.');
                 return;
             }
 
-            if (name && price && quantity) {
-                const subtotal = price * quantity;
-                total += subtotal;
+            const subtotal = productPrice * productQuantity;
 
-                $('#order_details tbody').append(`
-                    <tr>
-                        <td>${name}</td>
-                        <td>$${price.toFixed(2)}</td>
-                        <td>${quantity}</td>
-                        <td class="subtotal">$${subtotal.toFixed(2)}</td>
-                        <td><button type="button" class="remove-product">Eliminar</button></td>
-                    </tr>
-                `);
+            // Agregar el producto al array
+            selectedProducts.push({
+                id: productId,
+                name: productName,
+                price: productPrice,
+                quantity: productQuantity,
+                subtotal: subtotal
+            });
 
-                $('#total').text(total.toFixed(2));
-                clearProductFields();
-            } else {
-                alert('Por favor, selecciona un producto válido.');
-            }
+            // Actualizar el total
+            total += subtotal;
+
+            // Actualizar la tabla de productos
+            $('#order_details tbody').append(`
+                <tr data-id="${productId}">
+                    <td>${productName}</td>
+                    <td>$${productPrice.toFixed(2)}</td>
+                    <td>${productQuantity}</td>
+                    <td class="subtotal">$${subtotal.toFixed(2)}</td>
+                    <td><button type="button" class="remove-product">Eliminar</button></td>
+                </tr>
+            `);
+
+            // Actualizar el total en la pantalla
+            $('#total').text(total.toFixed(2));
+
+            // Actualizar el campo oculto
+            updateProductsData();
+
+            // Limpiar los campos de entrada
+            clearProductFields();
         });
 
         // Eliminar producto de la tabla de detalles
         $('#order_details').on('click', '.remove-product', function () {
             const row = $(this).closest('tr');
+            const productId = row.data('id');
             const subtotal = parseFloat(row.find('.subtotal').text().replace('$', ''));
+
+            // Eliminar del array
+            const index = selectedProducts.findIndex(product => product.id == productId);
+            if (index > -1) {
+                selectedProducts.splice(index, 1);
+            }
+
+            // Actualizar el total
             total -= subtotal;
+
+            // Actualizar la tabla y el total en la pantalla
             row.remove();
             $('#total').text(total.toFixed(2));
+
+            // Actualizar el campo oculto
+            updateProductsData();
         });
+
+        $('form').on('submit', function (event) {
+            console.log($('#products-data').val()); // Imprime el contenido del campo antes de enviarlo
+        });
+
 
         // Aplicar cupón
         $('#apply_coupon').on('click', function () {
