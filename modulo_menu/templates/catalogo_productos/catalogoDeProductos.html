@@ -1,41 +1,64 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catalogo De Productos</title>
+    <title>Catálogo de Productos</title>
+    <!-- Referencia al archivo CSS -->
+    <link rel="stylesheet" href="{% static 'css/styles1.css' %}">
 </head>
 <body>
-    <header>
-        <h1>Catálogo de Productos para Llevar</h1>
-    </header>
-    <main>
-        <section class="catalogo">
-            <!-- Producto 1 -->
-            <div class="producto">
-                <img src="https://via.placeholder.com/250" alt="Producto 1">
-                <h3>Producto 1</h3>
-                <p>Deliciosa descripción del producto 1.</p>
-                <div class="precio">$10.00</div>
-                <button>Agregar al carrito</button>
+    <div class="container">
+        <!-- Barra de navegación -->
+        <header>
+            <nav>
+                <span>Regresar</span>
+                <a href="{% url 'logout' %}" class="logout">Cerrar Sesión</a>
+            </nav>
+        </header>
+
+        <!-- Título y tabla de productos -->
+        <main>
+            <h1>Catálogo De Productos</h1>
+
+            <!-- Tabla Desplazable -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Producto</th>
+                            <th>Categoría</th>
+                            <th>Nombre</th>
+                            <th>Precio</th>
+                            <th>Cantidad Dispo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Aquí agregarías los datos dinámicos, como los productos -->
+                        {% for producto in productos %}
+                        <tr>
+                            <td>{{ producto.id }}</td>
+                            <td>{{ producto.categoria }}</td>
+                            <td>{{ producto.nombre }}</td>
+                            <td>{{ producto.precio }}</td>
+                            <td>{{ producto.cantidad_dispo }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-            <!-- Producto 2 -->
-            <div class="producto">
-                <img src="https://via.placeholder.com/250" alt="Producto 2">
-                <h3>Producto 2</h3>
-                <p>Deliciosa descripción del producto 2.</p>
-                <div class="precio">$15.00</div>
-                <button>Agregar al carrito</button>
+
+            <!-- Botones de acción -->
+            <div class="actions">
+                <button class="btn btn-success">Agregar Productos</button>
+                <button class="btn btn-danger">Eliminar Productos</button>
             </div>
-            <!-- Producto 3 -->
-            <div class="producto">
-                <img src="https://via.placeholder.com/250" alt="Producto 3">
-                <h3>Producto 3</h3>
-                <p>Deliciosa descripción del producto 3.</p>
-                <div class="precio">$20.00</div>
-                <button>Agregar al carrito</button>
-            </div>
-            <!-- Más productos... -->
-        </section>
+        </main>
+    </div>
+
+    <!-- Referencia al archivo JS -->
+    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>
