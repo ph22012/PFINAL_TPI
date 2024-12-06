@@ -3,10 +3,11 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.utils.timezone import now
 from .models import (
-    Employee, ShoppingCart, Customer, Product, CustomerAddress,
+    Employee, ShoppingCart, Customer, CustomerAddress,
     Departamento, Distrito, Municipio, Coupon, Detail, Rol
 )
 from moduloDespacho.models import Order_status, Order
+from modulo_catalogo.models import Product
 import json
 
 

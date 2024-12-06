@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'gestion_pedidos',
     'moduloDespacho',
+    'modulo_catalogo',
 ]
 
 MIDDLEWARE = [

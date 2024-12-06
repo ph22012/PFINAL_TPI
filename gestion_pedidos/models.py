@@ -56,6 +56,7 @@ class CustomerAddress(models.Model):
     address = models.TextField()
 
 # Modelo de productos y categorías
+""" SE COMENTAN PORQUE NO SE USAN MAS
 class Category(models.Model):
     name = models.CharField(max_length=256)
 
@@ -65,7 +66,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
     count = models.IntegerField()
-    daily_menu_date = models.DateField(null=True, blank=True)
+    daily_menu_date = models.DateField(null=True, blank=True)"""
 
 class ShoppingCart(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
