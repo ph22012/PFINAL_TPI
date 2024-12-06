@@ -1,4 +1,4 @@
-<form method="POST" class="shadow p-4 rounded bg-light">
+<form method="POST" action="{% url 'edit_customer_partial' customer.id %}" class="shadow p-4 rounded bg-light">
     {% csrf_token %}
     <div class="mb-3">
         <label for="firstname" class="form-label">Nombre:</label>

@@ -57,6 +57,22 @@
         </div>
     </div>
 
+    <!-- Modal para Editar Cliente -->
+    <div class="modal fade" id="editCustomerModal" tabindex="-1" aria-labelledby="editCustomerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCustomerModalLabel">Editar Cliente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Contenido del formulario se cargará aquí -->
+                    <div id="edit-customer-content">
+                        <p class="text-center text-muted">Cargando formulario...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     <!-- Footer -->
     <footer class="bg-light py-3">
         <div class="container text-center">
@@ -88,6 +104,15 @@
                 .catch(error => console.error('Error al cargar el formulario:', error));
         });
 
+        // Cargar el formulario "editar cliente" en el modal al abrirlo
+        document.getElementById('btn-edit-customer').addEventListener('click', function () {
+            fetch("{% url 'edit_customer_partial' 1 %}")
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('edit-customer-content').innerHTML = html;
+                })
+                .catch(error => console.error('Error al cargar el formulario:', error));
+        });
     </script>
 </body>
 </html>
