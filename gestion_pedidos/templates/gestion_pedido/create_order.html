@@ -33,7 +33,7 @@
         <select id="departamento" name="departamento_id">
             <option value="">Seleccione un departamento</option>
             {% for departamento in departamentos %}
-                <option value="{{ departamento.id }}">{{ departamento.name }}</option>
+                <option value="{{ departamento.id_departamento }}">{{ departamento.name }}</option>
             {% endfor %}
         </select>
 
@@ -126,7 +126,7 @@
                     municipioSelect.empty(); // Vaciar las opciones actuales
                     municipioSelect.append('<option value="">Seleccione un municipio</option>'); // Opción vacía
                     data.municipios.forEach(municipio => {
-                        municipioSelect.append(`<option value="${municipio.id}">${municipio.name}</option>`);
+                        municipioSelect.append(`<option value="${municipio.id_municipio}">${municipio.name}</option>`);
                     });
                     municipioSelect.trigger('change'); // Actualizar el evento de cambio del municipio
                 }).fail(function () {

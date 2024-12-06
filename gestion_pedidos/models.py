@@ -11,15 +11,36 @@ class Configuration(models.Model):
 
 # Modelos de localización
 class Departamento(models.Model):
+    id_departamento = models.AutoField(primary_key=True)
     name = models.CharField(max_length=256)
+    
+    class Meta:
+        db_table = "departamento"
+        managed = False
+    
+    def __str__(self):
+        return self.name
 
 class Municipio(models.Model):
+    id_municipio = models.AutoField(primary_key=True)
     name = models.CharField(max_length=256)
-    departamento = models.ForeignKey(Departamento, on_delete=models.CASCADE)
-
+    id_departamento = models.ForeignKey(Departamento,to_field='id_departamento',db_column='id_departamento', on_delete=models.CASCADE)
+    
+    class Meta:
+        db_table = "municipio"
+        managed = False
+    def __str__(self):
+        return self.name
 class Distrito(models.Model):
+    id_distrito = models.AutoField(primary_key=True)
     name = models.CharField(max_length=256)
-    municipio = models.ForeignKey(Municipio, on_delete=models.CASCADE)
+    id_municipio = models.ForeignKey(Municipio, to_field='id_municipio',db_column='id_municipio', on_delete=models.CASCADE)
+    
+    class Meta:
+        db_table = "distrito"
+        managed = False
+    def __str__(self):
+        return self.name
 
 # Modelo de cliente y dirección
 class Customer(models.Model):

@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.contrib import messages
 from .models import (
     Employee, ShoppingCart, Customer, Product, CustomerAddress,
-    Departamento, Distrito, Coupon, Detail, Rol
+    Departamento, Distrito, Municipio, Coupon, Detail, Rol
 )
 from moduloDespacho.models import Order_status, Order
 
@@ -90,12 +90,15 @@ def order_create(request):
 
 # Buscar municipios según departamento
 def buscar_municipios(request, departamento_id):
-    municipios = Distrito.objects.filter(municipio__departamento_id=departamento_id).values('id', 'name')
+    if request.method == 'GET':
+        departamento = Departamento.objects.filter(id_departamento=departamento_id).first()
+        
+        municipios = Municipio.objects.filter(id_departamento=departamento.id_departamento).values('id_municipio', 'name')
     return JsonResponse({'municipios': list(municipios)})
 
 # Buscar distritos según municipio
 def buscar_distritos(request, municipio_id):
-    distritos = Distrito.objects.filter(municipio_id=municipio_id).values('id', 'name')
+    distritos = Distrito.objects.filter(id_municipio=municipio_id).values('id_distrito', 'name')
     return JsonResponse({'distritos': list(distritos)})
 
 # Buscar productos por nombre
