@@ -9,7 +9,39 @@
     <h1>Editar Configuración</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        <div class="mb-3">
+            <label for="codigo" class="form-label">Código:</label>
+            <input type="text" class="form-control" id="codigo" name="codigo">
+        </div>
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción:</label>
+            <textarea class="form-control" id="descripcion" name="descripcion" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="tipo_descuento" class="form-label">Tipo de Descuento:</label>
+            <select class="form-select" id="tipo_descuento" name="tipo_descuento">
+                <option value="PORCENTAJE">Descuento Porcentual</option>
+                <option value="MONTO_FIJO">Descuento Monto Fijo</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="valor_descuento" class="form-label">Valor de Descuento:</label>
+            <input type="number" class="form-control" id="valor_descuento" name="valor_descuento">
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="fecha_inicio" class="form-label">Fecha Inicio:</label>
+                <input type="datetime-local" class="form-control" id="fecha_inicio" name="fecha_inicio">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="fecha_vencimiento" class="form-label">Fecha Vencimiento:</label>
+                <input type="datetime-local" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento">
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="uso_maximo" class="form-label">Uso Máximo:</label>
+            <input type="number" class="form-control" id="uso_maximo" name="uso_maximo">
+        </div>
         <button type="submit" class="btn btn-success mt-3">Guardar</button>
         <a href="{% url 'configuration_home' %}" class="btn btn-secondary mt-3">Cancelar</a>
     </form>

@@ -6,5 +6,6 @@
 #ignorar __pycache__
 #incluir base db
 db.sqlite3
+/db.sqlite3
 
 __pycache__/

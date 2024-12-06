@@ -20,12 +20,12 @@ class ConfigurationForm(forms.ModelForm):
         model = Configuration
         fields = ['name', 'pathLogo', 'path_slogan', 'color_pallette', 'address', 'isPointActive']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del negocio'}),
-            'pathLogo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ruta del logo'}),
-            'path_slogan': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ruta del eslogan'}),
-            'color_pallette': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Paleta de colores'}),
-            'address': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Dirección'}),
-            'isPointActive': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'Nombre de la configuración': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de la configuración'}),
+            'Ruta del logo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ruta del logo'}),
+            'Ruta del eslogan': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ruta del eslogan'}),
+            'Paleta de colores': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Paleta de colores'}),
+            'Dirección': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Dirección'}),
+            'Activar el programa de puntos': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
 
