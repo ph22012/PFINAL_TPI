@@ -109,7 +109,8 @@ def list_customers(request): #lista todos los consumidores/clientes
     return render(request, 'customers/list_customers.html', {'customers': customers})
 
 def list_customers_partial(request): #carga dinámicamente la lista de clientes
-    customers = Customer.objects.all()  
+    customers = Customer.objects.all()
+    print("algo") 
     return render(request, 'customers/list_customers.html', {'customers': customers})
 
 @login_required
@@ -140,7 +141,7 @@ def create_customer_partial(request):
         messages.success(request, "Cliente creado correctamente.")
         return redirect('customers')
     else:
-        return render(request, 'customers/create_customer.html')
+        return render(request, "customers/create_customer.html")
 
 @login_required
 def edit_customer(request, id): #edita un consumidor/cliente existente

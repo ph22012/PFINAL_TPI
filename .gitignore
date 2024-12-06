@@ -3,6 +3,9 @@
 /env
 /.venv
 
+#ignorar el archivo de bases de datos
+db.sqlite3
+
 #ignorar __pycache__
 
 __pycache__/
