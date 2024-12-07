@@ -41,14 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'modulo_administracion',
-    'bootstrap5',
     'gestion_pedidos',
     'repartidores',
     'pwa',
     'moduloDespacho',
     'modulo_catalogo',
     'customers',
-    #'bootstrap5',
+    'django_bootstrap5',
 ]
 
 AUTH_USER_MODEL = 'customers.CustomUser'
