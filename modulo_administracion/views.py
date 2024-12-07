@@ -154,49 +154,71 @@ def list_employees_partial(request): #carga dinámicamente la lista de empleados
 
 #@login_required
 def create_employee(request): #crea un nuevo empleado
+    roles = Role.objects.all()  # Obtiene todos los roles
+
     if request.method == 'POST':
-        employee = Employee(firstname = request.POST['firstname'], 
-                            lastname = request.POST['lastname'], 
-                            username = request.POST['username'], 
-                            password = request.POST['password'], 
-                            isActive = request.POST['isActive'], 
-                            id_role = request.POST['id_role'])
+        # Convierte el valor del POST 'id_role' a un objeto Role
+        role_id = request.POST['id_role']
+        role = Role.objects.get(id=role_id) 
+
+        employee = Employee(
+            firstname=request.POST['firstname'],
+            lastname=request.POST['lastname'],
+            username=request.POST['username'],
+            password=request.POST['password'],
+            isActive=request.POST['isActive'],
+            id_role=role,  # Asigna la instancia de Role
+        )
         employee.save()
         messages.success(request, "Empleado creado correctamente.")
         return redirect('employees')
     else:
-        return render(request, 'employees/create_employee.html')
+        return render(request, 'employees/create_employee.html', {'roles': roles})
 
 #@login_required
 def create_employee_partial(request): #crea un nuevo empleado dentro de un formulario dinámico
+    roles = Role.objects.all()  # Obtiene todos los roles
+    
     if request.method == 'POST':
-        employee = Employee(firstname = request.POST['firstname'], 
-                            lastname = request.POST['lastname'], 
-                            username = request.POST['username'], 
-                            password = request.POST['password'], 
-                            isActive = request.POST['isActive'], 
-                            id_role = request.POST['id_role'])
+        # Convierte el valor del POST 'id_role' a un objeto Role
+        role_id = request.POST['id_role']
+        role = Role.objects.get(id=role_id)
+        
+        employee = Employee(
+            firstname=request.POST['firstname'],
+            lastname=request.POST['lastname'],
+            username=request.POST['username'],
+            password=request.POST['password'],
+            isActive=request.POST['isActive'],
+            id_role=role,  # Asigna la instancia de Role
+        )
         employee.save()
         messages.success(request, "Empleado creado correctamente.")
         return redirect('employees')
     else:
-        return render(request, 'employees/create_employee.html')
+        return render(request, 'employees/create_employee.html', {'roles': roles})
 
 #@login_required
 def edit_employee(request, id): #edita un empleado existente
     employee = get_object_or_404(Employee, id = id)
+    roles = Role.objects.all()  # Obtiene todos los roles
+    
     if request.method == 'POST':
+        role_id = request.POST['id_role']
+        role = Role.objects.get(id=role_id)
+
         employee.firstname = request.POST['firstname']
         employee.lastname = request.POST['lastname']
         employee.username = request.POST['username']
         employee.password = request.POST['password']
         employee.isActive = request.POST['isActive']
-        employee.id_role = request.POST['id_role']
+        employee.id_role = role  # Asigna la instancia de Role en vez del id
         employee.save()
+
         messages.success(request, "Empleado actualizado correctamente.")
         return redirect('employees')
     else:
-        return render(request, 'employees/edit_employee.html', {'employee': employee})
+        return render(request, 'employees/edit_employee.html', {'employee': employee, 'roles': roles})
 
 #@login_required
 def delete_employee(request, id): #borra un empleado existente
