@@ -1,0 +1,82 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gestión de Menús</title>
+  <link rel="stylesheet" href="{% static 'css/style2.css' %}">
+</head>
+<body>
+  <div class="header">
+    
+    <a href="{% url 'index' %}" id="backBtn">Regresar</a>
+    <a href="{% url 'logout' %}" id="logoutBtn">Cerrar Sesión</a>
+  </div>
+  
+  <div class="container">
+    <h1>Gestión de Menús</h1>
+    
+    <h2>Productos del Catálogo</h2>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Id Prod</th>
+          <th>Categoría</th>
+          <th>Nombre</th>
+          <th>Precio</th>
+          <th>Cant/Disp</th>
+          <th>Descripción</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for producto in productos_catalogo %}
+        <tr>
+          <td>{{ producto.id }}</td>
+          <td>{{ producto.categoria }}</td>
+          <td>{{ producto.nombre }}</td>
+          <td>{{ producto.precio }}</td>
+          <td>{{ producto.cantidad }}</td>
+          <td>{{ producto.descripcion }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+    <h2>Agregar productos al menú</h2>
+    
+    <form method="POST" action="{% url 'index' %}">
+      {% csrf_token %}
+      <label for="ingresarID">Ingresar ID:</label>
+      <input type="text" id="ingresarID" name="ingresarID" required>
+      <button class="btn" type="submit">Aceptar</button>
+    </form>
+    
+    <h2>Productos del Menú</h2>
+    
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Precio</th>
+          <th>Cantidad</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for producto in productos_menu %}
+        <tr>
+          <td>{{ producto.nombre }}</td>
+          <td>{{ producto.precio }}</td>
+          <td>{{ producto.cantidad }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+    <form method="POST" action="{% url 'index' %}">
+      {% csrf_token %}
+      <button class="btn" type="submit">Crear Menú</button>
+    </form>
+  </div>
+</body>
+</html>

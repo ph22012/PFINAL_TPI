@@ -1,0 +1,30 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interfaz Usuario</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="header">
+        <span>Bienvenido: <strong>{{ usuario.username }}</strong></span>
+        <a href="{% url 'logout' %}" id="logoutBtn">Cerrar Sesión</a>
+    </div>
+    
+    <div class="content">
+        <a href="{% url 'catalogo_productos' %}" class="action-btn" id="catalogBtn">
+            <img src="https://img.icons8.com/ios-filled/50/000000/settings.png" alt="Gestionar Catálogo">
+            Gestionar Catálogo De Productos
+        </a>
+        <a href="{% url 'menu_diario' %}" class="action-btn" id="menuBtn">
+            <img src="https://img.icons8.com/ios-filled/50/000000/restaurant.png" alt="Crear Menú">
+            Crear Menú Del Día
+        </a>
+    </div>
+
+    <script src="{% static 'js/script_catalogo.js' %}"></script>
+</body>
+</html>
