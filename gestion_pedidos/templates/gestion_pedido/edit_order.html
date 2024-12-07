@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editar Pedido</title>
+</head>
+<body>
+    <h1>Editar Pedido #{{ order.id }}</h1>
+
+    <!-- Mostrar mensajes -->
+    {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <!-- Formulario -->
+    <form method="post">
+        {% csrf_token %}
+
+        <h3>Dirección</h3>
+        <label for="distrito">Distrito:</label>
+        <select id="distrito" name="distrito_id">
+            <option value="">Seleccione un distrito</option>
+            {% for distrito in distritos %}
+                <option value="{{ distrito.id }}" {% if order.address.Distrito.id == distrito.id %}selected{% endif %}>
+                    {{ distrito.name }}
+                </option>
+            {% endfor %}
+        </select>
+        <label for="address">Detalle de Dirección:</label>
+        <input type="text" id="address" name="address" value="{{ order.address.address }}">
+
+        <h3>Repartidor</h3>
+        <label for="repartidor">Repartidor Asignado:</label>
+        <select id="repartidor" name="repartidor_id">
+            <option value="">Seleccione un repartidor</option>
+            {% for repartidor in repartidores %}
+                <option value="{{ repartidor.id }}" {% if order.employee and order.employee.id == repartidor.id %}selected{% endif %}>
+                    {{ repartidor.firstname }} {{ repartidor.lastname }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Guardar Cambios</button>
+    </form>
+</body>
+</html>
