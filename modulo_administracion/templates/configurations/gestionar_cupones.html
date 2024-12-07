@@ -4,6 +4,7 @@
 
 {% block header %}  {% endblock %}
 
+
 {% block content %}
 
 <div class="container-fluid mt-4 coupon-management-container">
@@ -16,7 +17,7 @@
                     <h2 class="mb-0">Crear Nuevo Cupón</h2>
                 </div>
                 <div class="card-body">
-                    <form method="post">
+                    <form method="post" action="{% url 'gestionar_cupones' %}">
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="codigo" class="form-label">Código:</label>
@@ -69,6 +70,7 @@
                         <table class="table table-striped table-hover">
                             <thead class="table-dark">
                                 <tr>
+                                    <th>ID</th>
                                     <th>Código</th>
                                     <th>Tipo</th>
                                     <th>Valor</th>
@@ -76,22 +78,10 @@
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {% for cupon in cupones %}
-                                <tr>
-                                    <td>{{ cupon.codigo }}</td>
-                                    <td>{{ cupon.tipo_descuento }}</td>
-                                    <td>{{ cupon.valor_descuento }}</td>
-                                    <td>
-                                        {{ cupon.fecha_inicio|date:'Y-m-d H:i' }} -
-                                        {{ cupon.fecha_vencimiento|date:'Y-m-d H:i' }}
-                                    </td>
-                                    <td>
-                                        <a id="cambio" href="{% url 'desactivar_cupon' cupon.id %}" class="btn btn-sm btn-danger">Desactivar</a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
+                            <tbody id="tbody">
+                                
+                              </tbody>
+                              
                         </table>
                     </div>
                 </div>
@@ -104,10 +94,230 @@
 
 
 {% block scripts %}
-    <script>
-      console.log("hola");
-      document.getElementById("cambio").addEventListener("click", function() {
-        console.log("boton presionado")
-      });
-    </script>
+<script>
+    async function fetchData() {
+    try {
+        const response = await fetch("/administracion/gestionar-cupones/");
+        const data = await response.json();
+
+        console.log("Datos obtenidos:", data);
+
+        const tbody = document.getElementById("tbody");
+        tbody.innerHTML = ""; // Limpia el contenido previo
+
+        for (const cupon of data) {
+            const tr = document.createElement("tr");
+
+            const idTd = document.createElement("td");
+            idTd.idlist = cupon.id;
+            idTd.textContent = cupon.id;
+            tr.appendChild(idTd);
+
+            const codigoTd = document.createElement("td");
+            codigoTd.textContent = cupon.codigo;
+            tr.appendChild(codigoTd);
+
+            const tipoTd = document.createElement("td");
+            tipoTd.textContent = cupon.tipo_descuento;
+            tr.appendChild(tipoTd);
+
+            const valorTd = document.createElement("td");
+            valorTd.textContent = cupon.valor_descuento;
+            tr.appendChild(valorTd);
+
+            const fechasTd = document.createElement("td");
+            fechasTd.textContent = `${cupon.fecha_inicio} - ${cupon.fecha_vencimiento}`;
+            tr.appendChild(fechasTd);
+
+            const accionesTd = document.createElement("td");
+            const desactivarLink = document.createElement("a");
+            desactivarLink.textContent = "Desactivar";
+            desactivarLink.className = "btn btn-sm btn-danger";
+            const eliminarLink = document.createElement("a");
+            eliminarLink.textContent = "Eliminar";
+            eliminarLink.className = "btn btn-sm btn-danger pl-2";
+            
+
+            // Asignar evento de click al botón
+            desactivarLink.addEventListener("click", async (event) => {
+                event.preventDefault(); // Evita la recarga de la página
+
+                const flag = desactivarLink.classList.contains("btn-danger") ? 0 : 1;
+                const url = `/administracion/desactivar-cupon/${cupon.id}/${flag}/`;
+
+                try {
+                    const response = await fetch(url, { method: 'GET' });
+                    const data = await response.json();
+
+                    // Cambiar el estado del botón según el resultado
+                    if (desactivarLink.classList.contains("btn-danger")) {
+                        
+                        desactivarLink.classList.remove("btn-danger");
+                        desactivarLink.classList.add("btn-success");
+                        desactivarLink.innerHTML = "Activar";
+                    } else {
+                        desactivarLink.classList.remove("btn-success");
+                        desactivarLink.classList.add("btn-danger");
+                        desactivarLink.innerHTML = "Desactivar";
+                    }
+
+                    // Si lo deseas, puedes mostrar un mensaje en el frontend aquí
+                    console.log(data.message); // O usar una notificación
+
+                } catch (error) {
+                    console.error("Error al actualizar el estado del cupón:", error);
+                }
+            });
+            
+            // Asignar evento de click al botón
+            eliminarLink.addEventListener("click", async (event) => {
+                event.preventDefault(); // Evita la recarga de la página
+                
+                const url = `/administracion/eliminar-cupon/${cupon.id}/`;
+                
+                try {
+                    const response = await fetch(url, { method: 'GET' });
+                    const data = await response.json();
+                    
+                    // Si lo deseas, puedes mostrar un mensaje en el frontend aquí
+                    console.log(data.message); // O usar una notificación
+                    
+                    // Actualizar la lista de cupones
+                    updateCouponList(data.cupones);
+                } catch (error) {
+                    console.error("Error al eliminar el cupón:", error);
+                }
+            });
+
+
+            accionesTd.appendChild(desactivarLink);
+            accionesTd.appendChild(eliminarLink);
+            tr.appendChild(accionesTd);
+
+            tbody.appendChild(tr);
+        }
+    } catch (error) {
+        console.error("Error al obtener los datos:", error);
+    }
+}
+fetchData();
+
+document.getElementById("createCouponForm").addEventListener("submit", async function(event) {
+    event.preventDefault(); // Evita la recarga de la página
+
+    const formData = new FormData(this);
+
+    try {
+        // Asegúrate de que la URL sea la correcta
+        const response = await fetch("/administracion/gestionar-cupones/", {
+            method: "POST",
+            body: formData
+        });
+
+        if (response.ok) {
+            const data = await response.json(); // Si la respuesta es JSON
+
+            console.log("Cupón creado exitosamente");
+
+            // Limpiar formulario
+            this.reset();
+
+            // Actualizar la lista de cupones
+            updateCouponList(data.cupones);
+        } else {
+            console.error("Error al crear el cupón, estado:", response.status);
+        }
+    } catch (error) {
+        console.error("Error en la solicitud:", error);
+    }
+});
+
+async function updateCouponList(cupones) {
+    const tbody = document.getElementById("tbody");
+    tbody.innerHTML = ""; // Limpiar contenido previo
+
+    for (const cupon of cupones) {
+        const tr = document.createElement("tr");
+
+        const idTd = document.createElement("td");
+        idTd.textContent = cupon.id;
+        tr.appendChild(idTd);
+
+        const codigoTd = document.createElement("td");
+        codigoTd.textContent = cupon.codigo;
+        tr.appendChild(codigoTd);
+
+        const tipoTd = document.createElement("td");
+        tipoTd.textContent = cupon.tipo_descuento;
+        tr.appendChild(tipoTd);
+
+        const valorTd = document.createElement("td");
+        valorTd.textContent = cupon.valor_descuento;
+        tr.appendChild(valorTd);
+
+        const fechasTd = document.createElement("td");
+        fechasTd.textContent = `${cupon.fecha_inicio} - ${cupon.fecha_vencimiento}`;
+        tr.appendChild(fechasTd);
+
+        const accionesTd = document.createElement("td");
+        const desactivarLink = document.createElement("a");
+        desactivarLink.textContent = "Desactivar";
+        desactivarLink.className = "btn btn-sm btn-danger";
+        const eliminarLink = document.createElement("a");
+        eliminarLink.textContent = "Eliminar";
+        eliminarLink.className = "btn btn-sm btn-danger";
+
+        // Asignar evento de click al botón
+        desactivarLink.addEventListener("click", async (event) => {
+            event.preventDefault(); // Evita la recarga de la página
+
+            const flag = desactivarLink.classList.contains("btn-danger") ? 0 : 1;
+            const url = `/administracion/desactivar-cupon/${cupon.id}/${flag}/`;
+
+            try {
+                const response = await fetch(url, { method: 'GET' });
+                const data = await response.json();
+
+                // Cambiar el estado del botón según el resultado
+                if (desactivarLink.classList.contains("btn-danger")) {
+                    desactivarLink.classList.remove("btn-danger");
+                    desactivarLink.classList.add("btn-success");
+                    desactivarLink.textContent = "Activar";
+                } else {
+                    desactivarLink.classList.remove("btn-success");
+                    desactivarLink.classList.add("btn-danger");
+                    desactivarLink.textContent = "Desactivar";
+                }
+            } catch (error) {
+                console.error("Error al cambiar estado del cupón:", error);
+            }
+        });
+        // Asignar evento de click al botón
+        eliminarLink.addEventListener("click", async (event) => {
+            event.preventDefault(); // Evita la recarga de la página
+            
+            const url = `/administracion/eliminar-cupon/${cupon.id}/`;
+            
+            try {
+                const response = await fetch(url, { method: 'GET' });
+                const data = await response.json();
+                
+                // Si lo deseas, puedes mostrar un mensaje en el frontend aquí
+                console.log(data.message); // O usar una notificación
+                
+                // Actualizar la lista de cupones
+                updateCouponList(data.cupones);
+            } catch (error) {
+                console.error("Error al eliminar el cupón:", error);
+            }
+        });
+
+        accionesTd.appendChild(desactivarLink);
+        accionesTd.appendChild(eliminarLink);
+        tr.appendChild(accionesTd);
+
+        tbody.appendChild(tr);
+    }
+}
+</script>
 {% endblock %}

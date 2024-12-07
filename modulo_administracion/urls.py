@@ -8,7 +8,9 @@ urlpatterns = [
 
    #cupones 
     path('gestionar-cupones/', views.gestionar_cupones, name='gestionar_cupones'),
-    path('desactivar-cupon/<int:cupon_id>/', views.desactivar_cupon, name='desactivar_cupon'),
+    path('gestionar-cupones-view/', views.gestionar_cupones_view, name='gestionar_cupones_view'),
+    path('desactivar-cupon/<int:cupon_id>/<int:flag>/', views.desactivar_cupon, name='desactivar_cupon'),
+    path('eliminar-cupon/<int:cupon_id>/', views.eliminar_cupon, name='eliminar_cupon'),
     
     # Roles CRUD
     path('roles/', views.roles, name='roles'),

@@ -11,7 +11,7 @@
 </head>
 <body>
     <header id="navbar">
-        <h1>{% block header %}plantilla heredada{% endblock %}</h1>
+        <h1>{% block header %}{% endblock %}</h1>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark mt-2">
             <div class="container-fluid">
               <a class="navbar-brand" href="#">Navbar</a>
@@ -21,10 +21,10 @@
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link active" aria-current="page" href="{% url 'configuration_home' %}">Home</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
+                    <a class="nav-link" href="{% url 'gestionar_cupones_view' %}">Gestionar Cupones</a>
                   </li>
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -50,12 +50,40 @@
           </nav>
     </header>
 
-    <main>
-        {% block content %}
-        <div id = "root">
+    {% if messages %}
+    <div aria-live="polite" aria-atomic="true" class="position-fixed text-align-center" style="z-index: 1055">
+        {% for message in messages %}
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="5000">
+                <div class="toast-header">
+                    <span class="me-auto">
+                        {% if message.tags == 'success' %}
+                            ✅ Éxito
+                        {% elif message.tags == 'error' %}
+                            ❌ Error
+                        {% elif message.tags == 'warning' %}
+                            ⚠️ Advertencia
+                        {% else %}
+                            ℹ️ Información
+                        {% endif %}
+                    </span>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+                </div>
+                <div class="toast-body">
+                    {{ message }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
 
-        </div>
+    <main>
+      {% block first_script %} 
+      {% endblock %}
+      <div id = "root">
+        {% block content %}
+        
         {% endblock %}
+      </div>
     </main>
 
     <footer class="footer text-center pt-3">
@@ -67,5 +95,16 @@
 
     {% endblock %}
     {% bootstrap_javascript %}
+
+    <script>
+      // Activa automáticamente todos los toasts al cargar la página
+      document.addEventListener('DOMContentLoaded', function () {
+          var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+          toastElList.forEach(function (toastEl) {
+              var toast = new bootstrap.Toast(toastEl)
+              toast.show()
+          })
+      });
+  </script>
 </body>
 </html>

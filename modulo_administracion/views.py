@@ -6,6 +6,7 @@ from django.contrib import messages
 from .models import Configuration, Role, Employee, Customer, Cupon
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 def GeneralView(request):
     return HttpResponse("Hello, world. You're at the index.")
@@ -46,13 +47,13 @@ class ConfigurationUpdateView(UpdateView):
         return super().form_valid(form)
 
 
+def gestionar_cupones_view(request):
+    return render(request, 'configurations/gestionar_cupones.html')
 
-##cupones
 
 def gestionar_cupones(request):
-    cupones = Cupon.objects.all().order_by('-fecha_vencimiento')
-
     if request.method == 'POST':
+        # Recibir los datos del formulario
         codigo = request.POST.get('codigo')
         descripcion = request.POST.get('descripcion')
         tipo_descuento = request.POST.get('tipo_descuento')
@@ -61,6 +62,7 @@ def gestionar_cupones(request):
         fecha_vencimiento = request.POST.get('fecha_vencimiento')
         uso_maximo = request.POST.get('uso_maximo')
 
+        # Crear el nuevo cupón
         cupon = Cupon.objects.create(
             codigo=codigo,
             descripcion=descripcion,
@@ -70,21 +72,32 @@ def gestionar_cupones(request):
             fecha_vencimiento=fecha_vencimiento,
             uso_maximo=uso_maximo
         )
-        messages.success(request, f'Cupón {cupon.codigo} creado exitosamente')
-        return redirect('gestionar_cupones')
 
-    return render(request, 'configurations/gestionar_cupones.html', {
-        'cupones': cupones
-    })
+        return redirect('gestionar_cupones_view')
+
+    else:
+        # Si es un GET, solo mostrar la página sin cambiar nada
+        cupones = Cupon.objects.all().order_by('-fecha_vencimiento')
+        return JsonResponse(list(cupones.values()), safe=False)
 
 
-def desactivar_cupon(request, cupon_id):
+
+def desactivar_cupon(request, cupon_id, flag):
     cupon = get_object_or_404(Cupon, id=cupon_id)
-    cupon.activo = False
-    cupon.save()
-    messages.success(request, f'Cupón {cupon.codigo} desactivado')
-    return redirect('gestionar_cupones')
+    if flag == 1:
+        cupon.activo = True
+        cupon.save()
+        return JsonResponse({'estado': 'activado', 'codigo': cupon.codigo, 'message': f'Cupón {cupon.codigo} activado'})
+    else:
+        cupon.activo = False
+        cupon.save()
+        return JsonResponse({'estado': 'desactivado', 'codigo': cupon.codigo, 'message': f'Cupón {cupon.codigo} desactivado'})
 
+def eliminar_cupon(request, cupon_id):
+    cupon = get_object_or_404(Cupon, id=cupon_id)
+    cupon.delete()
+    messages.success(request, f'Cupón {cupon.codigo} eliminado exitosamente')
+    return redirect('gestionar_cupones_view')
 
 ###################### CRUD ROLES #######################
 def roles(request):
