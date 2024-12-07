@@ -1,14 +1,15 @@
 from django.db import models
 from modulo_catalogo.models import Product
+from modulo_administracion.models import Customer
 
 # Modelo de Configuración del negocio
-class Configuration(models.Model):
-    name = models.CharField(max_length=256)
-    main_logo = models.CharField(max_length=256)
-    slogan = models.CharField(max_length=256)
-    color_palette = models.CharField(max_length=256)
-    address = models.TextField()
-    is_points_active = models.BooleanField(default=False)
+# class Configuration(models.Model):
+#     name = models.CharField(max_length=256)
+#     main_logo = models.CharField(max_length=256)
+#     slogan = models.CharField(max_length=256)
+#     color_palette = models.CharField(max_length=256)
+#     address = models.TextField()
+#     is_points_active = models.BooleanField(default=False)
 
 # Modelos de localización
 class Departamento(models.Model):
@@ -44,12 +45,12 @@ class Distrito(models.Model):
         return self.name
 
 # Modelo de cliente y dirección
-class Customer(models.Model):
-    user = models.CharField(max_length=256)
-    password = models.CharField(max_length=256)
-    firstname = models.CharField(max_length=256)
-    lastname = models.CharField(max_length=256)
-    id_points = models.IntegerField()
+# class Customer(models.Model):
+#     user = models.CharField(max_length=256)
+#     password = models.CharField(max_length=256)
+#     firstname = models.CharField(max_length=256)
+#     lastname = models.CharField(max_length=256)
+#     id_points = models.IntegerField()
 
 class CustomerAddress(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
@@ -79,28 +80,28 @@ class Detail(models.Model):
     sub_total = models.DecimalField(max_digits=10, decimal_places=2)
 
 # Modelo de Cupones y Puntos
-class RewardPoints(models.Model):
-    exp_date = models.DateTimeField()
-    points_count = models.IntegerField()
+# class RewardPoints(models.Model):
+#     exp_date = models.DateTimeField()
+#     points_count = models.IntegerField()
 
-class Coupon(models.Model):
-    coupon_code = models.CharField(max_length=256)
-    coupon_discount = models.DecimalField(max_digits=4, decimal_places=2)
-    exp_date = models.DateTimeField()
+# class Coupon(models.Model):
+#     coupon_code = models.CharField(max_length=256)
+#     coupon_discount = models.DecimalField(max_digits=4, decimal_places=2)
+#     exp_date = models.DateTimeField()
 
 # Modelo de pedidos
 
 # Roles de empleados
-class Rol(models.Model):
-    name = models.CharField(max_length=256)
+# class Rol(models.Model):
+#     name = models.CharField(max_length=256)
 
-class Employee(models.Model):
-    id_rol = models.ForeignKey(Rol, on_delete=models.CASCADE)
-    firstname = models.CharField(max_length=256)
-    lastname = models.CharField(max_length=256)
-    username = models.CharField(max_length=256)
-    password = models.CharField(max_length=256)
-    is_active = models.BooleanField(default=True)
+# class Employee(models.Model):
+#     id_rol = models.ForeignKey(Rol, on_delete=models.CASCADE)
+#     firstname = models.CharField(max_length=256)
+#     lastname = models.CharField(max_length=256)
+#     username = models.CharField(max_length=256)
+#     password = models.CharField(max_length=256)
+#     is_active = models.BooleanField(default=True)
 
 #Se desactivan momentaneamente las tablas relacionadas con pedidos
 """class OrderStatus(models.Model):
