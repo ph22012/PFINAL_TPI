@@ -1,6 +1,14 @@
 #ignorar el venv
 /venv
+/env
+/.venv
+
+#ignorar el archivo de bases de datos
+db.sqlite3
 
 #ignorar __pycache__
+#incluir base db
+db.sqlite3
+/db.sqlite3
 
 __pycache__/
