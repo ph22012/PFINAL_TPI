@@ -2,7 +2,7 @@
 /venv
 /env
 /.venv
-
+modulo_administracion/static/img
 #ignorar __pycache__
 #incluir base db
 db.sqlite3
