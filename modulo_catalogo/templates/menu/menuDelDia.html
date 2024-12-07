@@ -3,16 +3,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Regresar</title>
+  <title>Gestión de Menús</title>
   <link rel="stylesheet" href="{% static 'css/style2.css' %}">
 </head>
 <body>
-    <div class="header">
-        <span>Gestion de Menus: <strong>{{ usuario.username }}</strong></span>
-        <a href="{% url 'logout' %}" id="logoutBtn">Cerrar Sesión</a>
-    </div>
+  <div class="header">
+    
+    <a href="{% url 'index' %}" id="backBtn">Regresar</a>
+    <a href="{% url 'logout' %}" id="logoutBtn">Cerrar Sesión</a>
+  </div>
+  
   <div class="container">
-    <h1>Productos del catálogo</h1>
+    <h1>Gestión de Menús</h1>
+    
+    <h2>Productos del Catálogo</h2>
     
     <table>
       <thead>
@@ -26,82 +30,53 @@
         </tr>
       </thead>
       <tbody>
+        {% for producto in productos_catalogo %}
         <tr>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
+          <td>{{ producto.id }}</td>
+          <td>{{ producto.categoria }}</td>
+          <td>{{ producto.nombre }}</td>
+          <td>{{ producto.precio }}</td>
+          <td>{{ producto.cantidad }}</td>
+          <td>{{ producto.descripcion }}</td>
         </tr>
-        <tr>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
-        </tr>
-        <tr>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
-        </tr>
-        <tr>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
-        </tr>
+        {% endfor %}
       </tbody>
     </table>
     
     <h2>Agregar productos al menú</h2>
     
-    <label for="ingresarID">Ingresar ID:</label>
-    <input type="text" id="ingresarID" name="ingresarID">
-    <button class="btn">Aceptar</button>
+    <form method="POST" action="{% url 'index' %}">
+      {% csrf_token %}
+      <label for="ingresarID">Ingresar ID:</label>
+      <input type="text" id="ingresarID" name="ingresarID" required>
+      <button class="btn" type="submit">Aceptar</button>
+    </form>
     
-    <h2>Productos del menú</h2>
+    <h2>Productos del Menú</h2>
     
     <table>
       <thead>
         <tr>
           <th>Nombre</th>
           <th>Precio</th>
-          <th>Categoría</th>
+          <th>Cantidad</th>
         </tr>
       </thead>
       <tbody>
+        {% for producto in productos_menu %}
         <tr>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
+          <td>{{ producto.nombre }}</td>
+          <td>{{ producto.precio }}</td>
+          <td>{{ producto.cantidad }}</td>
         </tr>
-        <tr>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
-        </tr>
-        <tr>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
-        </tr>
-        <tr>
-          <td>Contenido</td>
-          <td>Contenido</td>
-          <td>Contenido</td>
-        </tr>
+        {% endfor %}
       </tbody>
     </table>
     
-    <button class="btn">Crear Menú</button>
+    <form method="POST" action="{% url 'index' %}">
+      {% csrf_token %}
+      <button class="btn" type="submit">Crear Menú</button>
+    </form>
   </div>
 </body>
 </html>

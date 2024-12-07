@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
+
+from modulo_catalogo.models import Product
 
 # Create your views here.
 def index(request):
