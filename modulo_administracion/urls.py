@@ -13,14 +13,18 @@ urlpatterns = [
     # Roles CRUD
     path('roles/', views.roles, name='roles'),
     path('roles/list/', views.list_roles, name='list_roles'),
+    path('roles/list_roles_partial/', views.list_roles_partial, name='list_roles_partial'),
     path('roles/create/', views.create_role, name='create_role'),
+    path('roles/create_role_partial/', views.create_role_partial, name='create_role_partial'),
     path('roles/edit/<int:id>/', views.edit_role, name='edit_role'),
     path('roles/delete/<int:id>/', views.delete_role, name='delete_role'),
 
     # Employees CRUD
     path('employees/', views.employees, name='employees'),
     path('employees/list/', views.list_employees, name='list_employees'),
+    path('employees/list_employees_partial/', views.list_employees_partial, name='list_employees_partial'),
     path('employees/create/', views.create_employee, name='create_employee'),
+    path('employees/create_employee_partial/', views.create_employee_partial, name='create_employee_partial'),
     path('employees/edit/<int:id>/', views.edit_employee, name='edit_employee'),
     path('employees/delete/<int:id>/', views.delete_employee, name='delete_employee'),
 

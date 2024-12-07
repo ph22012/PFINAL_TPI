@@ -1,15 +1,13 @@
-{% load static %}
-{% load bootstrap5 %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+{% extends '../base.html' %}
+
+{% block title %} Gestión de Clientes {% endblock %}
+
+{% block header %}     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <title>Gestión de Clientes</title>
-    {% bootstrap_css %}
-</head>
-<body>
+{% endblock %}
+
+{% block content %}
     <!-- Encabezado principal -->
     <header class="bg-primary text-white py-3">
         <div class="container text-center">
@@ -35,7 +33,7 @@
 
         <!-- Contenedor dinámico -->
         <div id="dynamic-content" class="mt-4">
-            <!-- Aquí se cargará dinámicamente el contenido de `list_customers.html` -->
+            <!-- Aquí se cargará dinámicamente el contenido de list_customers.html -->
         </div>
     </div>
 
@@ -56,19 +54,21 @@
             </div>
         </div>
     </div>
+{% endblock %}
 
     <!-- Footer -->
-    <footer class="bg-light py-3">
-        <div class="container text-center">
-            <small class="text-muted">&copy; 2024 Gestión de Clientes</small>
-        </div>
-    </footer>
+    {% block footer %}
+        <footer class="bg-light py-3">
+            <div class="container text-center">
+                <small class="text-muted">&copy; 2024 Gestión de Clientes</small>
+            </div>
+        </footer>
+    {% endblock %}
 
-    {% bootstrap_javascript %}
-
-    <!-- Script para manejar contenido dinámico -->
+<!-- Script para manejar contenido dinámico -->
+{% block scripts %}
     <script>
-        // Cargar la lista de clientes dinámicamente
+    // Cargar la lista de clientes dinámicamente
         document.getElementById('btn-list-customers').addEventListener('click', function () {
             fetch("{% url 'list_customers_partial' %}")
                 .then(response => response.text())
@@ -88,5 +88,4 @@
                 .catch(error => console.error('Error al cargar el formulario:', error));
         });
     </script>
-</body>
-</html>
+{% endblock %}
