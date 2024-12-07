@@ -58,7 +58,7 @@
                         <select id="departamento" name="departamento_id" class="form-select">
                             <option value="">Seleccione un departamento</option>
                             {% for departamento in departamentos %}
-                                <option value="{{ departamento.id }}">{{ departamento.name }}</option>
+                                <option value="{{ departamento.id_departamento }}">{{ departamento.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -178,7 +178,7 @@
                     municipioSelect.empty(); // Vaciar las opciones actuales
                     municipioSelect.append('<option value="">Seleccione un municipio</option>'); // Opción vacía
                     data.municipios.forEach(municipio => {
-                        municipioSelect.append(`<option value="${municipio.id}">${municipio.name}</option>`);
+                        municipioSelect.append(`<option value="${municipio.id_municipio}">${municipio.name}</option>`);
                     });
                     municipioSelect.trigger('change'); // Actualizar el evento de cambio del municipio
                 }).fail(function () {
@@ -201,7 +201,7 @@
                     distritoSelect.empty(); // Vaciar las opciones actuales
                     distritoSelect.append('<option value="">Seleccione un distrito</option>'); // Opción vacía
                     data.distritos.forEach(distrito => {
-                        distritoSelect.append(`<option value="${distrito.id}">${distrito.name}</option>`);
+                        distritoSelect.append(`<option value="${distrito.id_distrito}">${distrito.name}</option>`);
                     });
                 }).fail(function () {
                     alert('Error al cargar los distritos. Verifica tu conexión.');

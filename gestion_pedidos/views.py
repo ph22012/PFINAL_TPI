@@ -3,17 +3,19 @@ from django.http import JsonResponse
 from django.contrib import messages
 from django.utils.timezone import now
 from .models import (
-    Order, OrderStatus, Employee, ShoppingCart, Customer, Product, CustomerAddress,
-    Departamento, Distrito, Coupon, Detail, Rol
+    Employee, ShoppingCart, Customer, CustomerAddress,
+    Departamento, Distrito, Municipio, Coupon, Detail, Rol
 )
 from django.db.models import Min, Case, When, Value
+from moduloDespacho.models import Order_status, Order
+from modulo_catalogo.models import Product
 import json
 
 
 
 # Vista principal para mostrar pedidos recientes
 def order_list(request):
-    orders = Order.objects.all().order_by('-order_date')[:10]  # Obtener los pedidos más recientes
+    orders = Order.objects.all().order_by('order_date')[:10]  # Obtener los pedidos más recientes
     return render(request, 'gestion_pedido/order_list.html', {'orders': orders})
 
 # Vista para crear un nuevo pedido
@@ -36,7 +38,7 @@ def order_create(request):
 
         # Obtener o crear objetos relacionados
         customer = get_object_or_404(Customer, id=customer_id)
-        distrito = get_object_or_404(Distrito, id=distrito_id)
+        distrito = get_object_or_404(Distrito, id_distrito=distrito_id)
 
         # Crear o usar una dirección registrada
         if 'use_registered_address' in request.POST:
@@ -77,7 +79,7 @@ def order_create(request):
 
         # Crear detalles para cada producto
         for product in products:
-            product_instance = get_object_or_404(Product, id=product['id'])
+            product_instance = get_object_or_404(Product, id_product=product['id'])
             quantity = int(product['quantity'])
             subtotal = float(product['subtotal'])
 
@@ -94,8 +96,7 @@ def order_create(request):
             )
 
         # Crear pedido
-        order_status = get_object_or_404(OrderStatus, status='Espera')
-
+        order_status = get_object_or_404(Order_status, id_status=1)
         # Filtrar empleados activos con el rol de repartidor
         repartidor_role = get_object_or_404(Rol, name='Repartidor')  # Asegúrate de que este rol existe
         repartidores_activos = Employee.objects.filter(is_active=True, id_rol=repartidor_role)
@@ -118,14 +119,22 @@ def order_create(request):
 
         # Asignar el pedido al repartidor disponible
         order = Order.objects.create(
+"""
             shoppingcart=shopping_cart,
             address=customer_address,
             coupon=coupon,
             status=order_status,
             employee=repartidor_disponible,
+=======TOCA REVISAR CUAL CAMBIO DEJAR
+            id_cart=shopping_cart,
+            id_address=customer_address,  # Ahora es una instancia de CustomerAddress
+            id_cupon=coupon,            
+            id_employee=available_employee,
+            id_status=order_status,
+            order_date=now(),"""
         )
 
-        messages.success(request, f'Pedido #{order.id} creado exitosamente.')
+        messages.success(request, f'Pedido #{order.id_order} creado exitosamente.')
         return redirect('order_create')
 
     # Obtener datos iniciales
@@ -141,19 +150,22 @@ def order_create(request):
 
 # Buscar municipios según departamento
 def buscar_municipios(request, departamento_id):
-    municipios = Distrito.objects.filter(municipio__departamento_id=departamento_id).values('id', 'name')
+    if request.method == 'GET':
+        departamento = Departamento.objects.filter(id_departamento=departamento_id).first()
+        
+        municipios = Municipio.objects.filter(id_departamento=departamento.id_departamento).values('id_municipio', 'name')
     return JsonResponse({'municipios': list(municipios)})
 
 # Buscar distritos según municipio
 def buscar_distritos(request, municipio_id):
-    distritos = Distrito.objects.filter(municipio_id=municipio_id).values('id', 'name')
+    distritos = Distrito.objects.filter(id_municipio=municipio_id).values('id_distrito', 'name')
     return JsonResponse({'distritos': list(distritos)})
 
 # Buscar productos por nombre
 def search_products(request):
     query = request.GET.get('query', '')
     products = Product.objects.filter(name__icontains=query)
-    return JsonResponse({'products': list(products.values('id', 'name', 'price', 'count'))})
+    return JsonResponse({'products': list(products.values('id_product', 'name', 'price', 'count'))})
 
 # Buscar clientes por nombre
 def search_customers(request):
@@ -259,5 +271,5 @@ def order_detail(request, order_id):
         'total': total,  # Pasar el total al contexto
     })
 def dashboard(request):
-    orders = Order.objects.all().order_by('-order_date')
+    orders = Order.objects.all().order_by('order_date')
     return render(request, 'dashboard.html', {'orders': orders})
