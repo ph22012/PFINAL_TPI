@@ -2,7 +2,7 @@
 {% load bootstrap5 %}
 
 <!DOCTYPE html lang="es">
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,17 +11,17 @@
 </head>
 <body>
     <header id="navbar">
-        <h1>{% block header %}{% endblock %}</h1>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mt-2">
+        {% block header %} {% endblock %}
+        <nav id = "selectNavbar" class="navbar navbar-expand-lg navbar-dark">
             <div class="container-fluid">
-              <a class="navbar-brand" href="#">Navbar</a>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <a class="navbar-brand d-none" href="#">Home</a>
+              <button class="navbar-toggler d-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'configuration_home' %}">Home</a>
+                    <a class="nav-link active" aria-current="page" href="{% url 'configuration_home' %}">Configuraciones</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="{% url 'gestionar_cupones_view' %}">Gestionar Cupones</a>
@@ -39,12 +39,12 @@
                     </ul>
                   </li> 
                   <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                    <a class="nav-link disabled d-none" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                   </li>
                 </ul>
                 <form class="d-flex">
-                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                  <button class="btn btn-outline-success" type="submit">Search</button>
+                  <input class="form-control me-2 d-none" type="search" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-outline-successcd-none" type="submit">Search</button>
                 </form>
               </div>
             </div>
@@ -89,7 +89,7 @@
 
     <footer class="footer text-center pt-3">
 
-            {% block footer %}Default Footer{% endblock %}
+            {% block footer %}{% endblock %}
     </footer>
 
     {% block scripts %}
@@ -106,6 +106,17 @@
               toast.show()
           })
       });
+
+      const config = JSON.parse(localStorage.getItem("configuration"));
+      if (config) {
+        const nav = document.getElementById("selectNavbar");
+        nav.style.backgroundColor = config.color_pallette;
+      }
+      else{
+        const nav = document.getElementById("selectNavbar");
+        nav.classList.add("bg-dark");
+      }
+      console.log("esto es el config del base : ", config);
   </script>
 </body>
 </html>

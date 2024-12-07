@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
+import os
 
 
 # configuration.
@@ -40,8 +41,8 @@ def gestionar_configuraciones(request):
         fs.save(pathLogo.name, pathLogo) if pathLogo else None
         fs.save(path_slogan.name, path_slogan) if path_slogan else None
 
-        pathLogo_url = f'modulo_administracion/static/img/{pathLogo.name}' if pathLogo else None
-        path_slogan_url = f'modulo_administracion/static/img/{path_slogan.name}' if path_slogan else None
+        pathLogo_url = f'{pathLogo.name}' if pathLogo else None
+        path_slogan_url = f'{path_slogan.name}' if path_slogan else None
 
         # Crear nueva configuración
         configuracion = Configuration.objects.create(
@@ -62,46 +63,84 @@ def gestionar_configuraciones(request):
 
 def editar_configuracion(request, configuracion_id):
     configuracion = get_object_or_404(Configuration, id=configuracion_id)
+    fs = FileSystemStorage(location='modulo_administracion/static/img')
 
     if request.method == 'POST':
-        # Actualizar campos
-        configuracion.name = request.POST.get('name')
-        configuracion.address = request.POST.get('address')
-        configuracion.color_pallette = request.POST.get('color_pallette')
+        # Actualizar campos del formulario
+        configuracion.name = request.POST.get('name', configuracion.name)
+        configuracion.address = request.POST.get('address', configuracion.address)
+        configuracion.color_pallette = request.POST.get('color_pallette', configuracion.color_pallette)
         configuracion.isPointActive = request.POST.get('isPointActive') == "on"
 
-        # Manejo de imágenes
-        if 'pathLogo' in request.FILES:
-            fs = FileSystemStorage(location='modulo_administracion/static/img')
-            configuracion.pathLogo = fs.save(request.FILES['pathLogo'].name, request.FILES['pathLogo'])
-        if 'path_slogan' in request.FILES:
-            fs = FileSystemStorage(location='modulo_administracion/static/img')
-            configuracion.path_slogan = fs.save(request.FILES['path_slogan'].name, request.FILES['path_slogan'])
+        # Manejo de logo
+        if request.POST.get('deleteLogo') == 'true':  # Si el usuario quiere eliminar el logo actual
+            if configuracion.pathLogo and os.path.exists(fs.path(configuracion.pathLogo)):
+                os.remove(fs.path(configuracion.pathLogo))
+            configuracion.pathLogo = None
+        elif 'pathLogo' in request.FILES:  # Si sube un nuevo archivo de logo
+            if configuracion.pathLogo and os.path.exists(fs.path(configuracion.pathLogo)):
+                os.remove(fs.path(configuracion.pathLogo))  # Elimina el archivo antiguo
+            configuracion.pathLogo = fs.save(request.FILES['pathLogo'], request.FILES['pathLogo'])
+
+        # Manejo de slogan
+        if request.POST.get('deleteSlogan') == 'true':  # Si el usuario quiere eliminar el slogan actual
+            if configuracion.path_slogan and os.path.exists(fs.path(configuracion.path_slogan)):
+                os.remove(fs.path(configuracion.path_slogan))
+            configuracion.path_slogan = None
+        elif 'path_slogan' in request.FILES:  # Si sube un nuevo archivo de slogan
+            if configuracion.path_slogan and os.path.exists(fs.path(configuracion.path_slogan)):
+                os.remove(fs.path(configuracion.path_slogan))  # Elimina el archivo antiguo
+            configuracion.path_slogan = fs.save(request.FILES['path_slogan'], request.FILES['path_slogan'])
 
         configuracion.save()
         messages.success(request, f'Configuración {configuracion.name} actualizada exitosamente')
-        return redirect('gestionar_configuraciones_view')
+        return JsonResponse({'success': True, 'message': 'Configuración actualizada con éxito.'})
 
-    # Retornar configuración como JSON
-    return JsonResponse({
-        "id": configuracion.id,
-        "name": configuracion.name,
-        "address": configuracion.address,
-        "color_pallette": configuracion.color_pallette,
-        "pathLogo": configuracion.pathLogo,
-        "path_slogan": configuracion.path_slogan,
-        "isPointActive": configuracion.isPointActive
-    })
+    else:
+        # Retornar configuración como JSON para edición
+        return JsonResponse({
+            "id": configuracion.id,
+            "name": configuracion.name,
+            "address": configuracion.address,
+            "color_pallette": configuracion.color_pallette,
+            "pathLogo": configuracion.pathLogo if configuracion.pathLogo else "",
+            "path_slogan": configuracion.path_slogan if configuracion.path_slogan else "",
+            "isPointActive": configuracion.isPointActive,
+        })
+
 
 def eliminar_configuracion(request, configuracion_id):
+    fs = FileSystemStorage(location='modulo_administracion/static/img')
     configuracion = get_object_or_404(Configuration, id=configuracion_id)
+    print(f'Eliminando configuración {configuracion.pathLogo}')
+    print(f'Eliminando configuración {configuracion.path_slogan}')
+    # Eliminar archivos de imágenes
+    if configuracion.pathLogo and os.path.exists(fs.path(configuracion.pathLogo)):
+        print("Existe este path")
+        os.remove(fs.path(configuracion.pathLogo))
+    if configuracion.path_slogan and os.path.exists(fs.path(configuracion.path_slogan)):
+        os.remove(fs.path(configuracion.path_slogan))
+
     configuracion.delete()
     messages.success(request, f'Configuración {configuracion.name} eliminada exitosamente')
     return redirect('gestionar_configuraciones_view')
 
+def aplicar_configuracion(request, configuracion_id):
+    configuracion = get_object_or_404(Configuration, id=configuracion_id)
+    return JsonResponse({
+            "id": configuracion.id,
+            "name": configuracion.name,
+            "address": configuracion.address,
+            "color_pallette": configuracion.color_pallette,
+            "pathLogo": configuracion.pathLogo if configuracion.pathLogo else "",
+            "path_slogan": configuracion.path_slogan if configuracion.path_slogan else "",
+            "isPointActive": configuracion.isPointActive,
+        })
+
+###################### CRUD CUPONES #######################
+
 def gestionar_cupones_view(request):
     return render(request, 'configurations/gestionar_cupones.html')
-
 
 def gestionar_cupones(request):
     if request.method == 'POST':

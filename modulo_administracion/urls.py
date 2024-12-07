@@ -8,6 +8,7 @@ urlpatterns = [
     path('gestionar-configuraciones-view/', views.gestionar_configuraciones_view, name='gestionar_configuraciones_view'),
     path('editar-configuracion/<int:configuracion_id>/', views.editar_configuracion, name='editar_configuracion'),
     path('eliminar-configuracion/<int:configuracion_id>/', views.eliminar_configuracion, name='eliminar_configuracion'),
+    path('aplicar-configuracion/<int:configuracion_id>/', views.aplicar_configuracion, name='aplicar_configuracion'),
 
    #cupones 
     path('gestionar-cupones/', views.gestionar_cupones, name='gestionar_cupones'),

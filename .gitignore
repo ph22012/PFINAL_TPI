@@ -3,6 +3,8 @@
 /env
 /.venv
 
+
+
 #ignorar el archivo de bases de datos
 db.sqlite3
 
