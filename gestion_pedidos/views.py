@@ -9,7 +9,7 @@ from .models import (
 from django.db.models import Min, Case, When, Value
 from moduloDespacho.models import Order_status, Order
 from modulo_catalogo.models import Product
-from modulo_administracion.models import Customer, CustomerAddress, Employee, Role
+from modulo_administracion.models import Customer, Employee, Role
 import json
 
 

@@ -47,7 +47,7 @@ class Customer(models.Model):
     #PASSWORD SE ESTA HEREDADO DE CUSTOMUSER, ES DECIR QUE AUN SE ENCRIPTA EL PASSWORD
     firstName = models.CharField(max_length=256)
     lastName = models.CharField(max_length=256)
-    id_points = models.ForeignKey(RewardPoints) #Se debe crear una tabla relacionada con puntos
+    id_points = models.ForeignKey(RewardPoints, on_delete=models.CASCADE) #Se debe crear una tabla relacionada con puntos
     
     def __str__(self):
         return str(self.user)
