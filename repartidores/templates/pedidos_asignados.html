@@ -1,0 +1,26 @@
+<h1>Pedidos Asignados</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Cliente</th>
+            <th>Dirección</th>
+            <th>Total</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in pedidos_con_totales %}
+            <tr>
+                <td>{{ item.pedido.id }}</td>
+                <td>{{ item.pedido.shoppingcart.customer.firstname }} {{ item.pedido.shoppingcart.customer.lastname }}</td>
+                <td>{{ item.pedido.address.address }}</td>
+                <td>${{ item.total }}</td>
+                <td>
+                    <a href="{% url 'repartidores:entregar' item.pedido.id %}" class="btn btn-success">Marcar como Entregado</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
