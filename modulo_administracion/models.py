@@ -9,7 +9,7 @@ class Configuration(models.Model):
     color_pallette = models.CharField(max_length=100, null=True, blank=True)
     address = models.CharField(max_length=100, null=True, blank=True)
     isPointActive = models.BooleanField(default=False)#programa de lealtad
-    configurationPast = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True)
+
 
 class Cupon(models.Model):
     id = models.AutoField(primary_key=True, auto_created=True)
