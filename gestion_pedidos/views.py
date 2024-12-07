@@ -99,7 +99,7 @@ def order_create(request):
         # Crear pedido
         order_status = get_object_or_404(Order_status, id_status=1)
         # Filtrar empleados activos con el rol de repartidor
-        repartidor_role = get_object_or_404(Rol, name='Repartidor')  # Asegúrate de que este rol existe
+        repartidor_role = get_object_or_404(Role, name='Repartidor')  # Asegúrate de que este rol existe
         repartidores_activos = Employee.objects.filter(is_active=True, id_rol=repartidor_role)
 
         if not repartidores_activos.exists():
