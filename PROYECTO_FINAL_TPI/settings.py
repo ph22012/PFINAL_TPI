@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'modulo_administracion',
+    'bootstrap5',
     'gestion_pedidos',
     'repartidores',
     'pwa',
@@ -142,6 +144,8 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# MEDIA_URL = '/imgs'  # URL para acceder a los archivos subidos
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
 
 PWA_APP_NAME = 'repartidores'
 PWA_APP_DESCRIPTION = "Aplicación de repartidores"

@@ -1,0 +1,91 @@
+
+{% extends '../base.html' %}
+
+{% block title %} Gestión de Clientes {% endblock %}
+
+{% block header %}     
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <!-- Encabezado principal -->
+    <header class="bg-primary text-white py-3">
+        <div class="container text-center">
+            <h1 class="fw-bold">Gestión de Clientes</h1>
+        </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="text-center">
+                    <!-- Botones de acción -->
+                    <button id="btn-list-customers" class="btn btn-outline-primary btn-lg m-2">
+                        <i class="bi bi-list-ul"></i> Listar Clientes
+                    </button>
+                    <button id="btn-create-customer" class="btn btn-outline-success btn-lg m-2" data-bs-toggle="modal" data-bs-target="#createCustomerModal">
+                        <i class="bi bi-plus-circle"></i> Crear Cliente
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenedor dinámico -->
+        <div id="dynamic-content" class="mt-4">
+            <!-- Aquí se cargará dinámicamente el contenido de list_customers.html -->
+        </div>
+    </div>
+
+    <!-- Modal para Crear Cliente -->
+    <div class="modal fade" id="createCustomerModal" tabindex="-1" aria-labelledby="createCustomerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createCustomerModalLabel">Crear Cliente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Contenido del formulario se cargará aquí -->
+                    <div id="create-customer-content">
+                        <p class="text-center text-muted">Cargando formulario...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+    <!-- Footer -->
+    {% block footer %}
+        <footer class="bg-light py-3">
+            <div class="container text-center">
+                <small class="text-muted">&copy; 2024 Gestión de Clientes</small>
+            </div>
+        </footer>
+    {% endblock %}
+
+<!-- Script para manejar contenido dinámico -->
+{% block scripts %}
+    <script>
+    // Cargar la lista de clientes dinámicamente
+        document.getElementById('btn-list-customers').addEventListener('click', function () {
+            fetch("{% url 'list_customers_partial' %}")
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('dynamic-content').innerHTML = html;
+                })
+                .catch(error => console.error('Error al cargar la lista de clientes:', error));
+        });
+
+        // Cargar el formulario "crear cliente" en el modal al abrirlo
+        document.getElementById('btn-create-customer').addEventListener('click', function () {
+            fetch("{% url 'create_customer_partial' %}")
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('create-customer-content').innerHTML = html;
+                })
+                .catch(error => console.error('Error al cargar el formulario:', error));
+        });
+    </script>
+{% endblock %}
