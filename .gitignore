@@ -2,8 +2,8 @@
 /venv
 /env
 
-#ignorar __pycache__
-
+#ignorar _pycache_
+_pycache_/
 __pycache__/
 
 #ignorar base de datos por ser binario

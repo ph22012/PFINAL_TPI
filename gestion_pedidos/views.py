@@ -6,6 +6,7 @@ from .models import (
     Employee, ShoppingCart, Customer, CustomerAddress,
     Departamento, Distrito, Municipio, Coupon, Detail, Rol
 )
+from django.db.models import Min, Case, When, Value
 from moduloDespacho.models import Order_status, Order
 from modulo_catalogo.models import Product
 import json
@@ -98,19 +99,39 @@ def order_create(request):
         order_status = get_object_or_404(Order_status, id_status=1)
         # Filtrar empleados activos con el rol de repartidor
         repartidor_role = get_object_or_404(Rol, name='Repartidor')  # Asegúrate de que este rol existe
-        available_employee = Employee.objects.filter(is_active=True, id_rol=repartidor_role).first()
+        repartidores_activos = Employee.objects.filter(is_active=True, id_rol=repartidor_role)
 
-        if not available_employee:
+        if not repartidores_activos.exists():
             messages.error(request, 'No hay empleados disponibles con el rol de repartidor.')
             return redirect('order_create')  # Redirige a la página de creación con un mensaje de error
 
+        # Priorizar repartidores con pedidos entregados
+        repartidor_disponible = repartidores_activos.annotate(
+            pedidos_entregados=Case(
+                When(order__status__status='Entregado', then=Value(1)),
+                default=Value(0)
+            )
+        ).order_by('-pedidos_entregados', 'order__last_update').first()
+
+        if not repartidor_disponible:
+            messages.error(request, 'No hay repartidores disponibles para asignar.')
+            return redirect('order_create')
+
+        # Asignar el pedido al repartidor disponible
         order = Order.objects.create(
+"""
+            shoppingcart=shopping_cart,
+            address=customer_address,
+            coupon=coupon,
+            status=order_status,
+            employee=repartidor_disponible,
+=======TOCA REVISAR CUAL CAMBIO DEJAR
             id_cart=shopping_cart,
             id_address=customer_address,  # Ahora es una instancia de CustomerAddress
             id_cupon=coupon,            
             id_employee=available_employee,
             id_status=order_status,
-            order_date=now(),
+            order_date=now(),"""
         )
 
         messages.success(request, f'Pedido #{order.id_order} creado exitosamente.')
