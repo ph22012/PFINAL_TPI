@@ -4,11 +4,17 @@ from . import views
 urlpatterns = [
     path('', views.GeneralView, name='GeneralView'),
     path('configuracion/', views.configuration_home, name='configuration_home'),
-     path('configuration/<int:pk>/', views.ConfigurationUpdateView.as_view(), name='configuration_update'),
+    path('gestionar-configuraciones/', views.gestionar_configuraciones, name='gestionar_configuraciones'),
+    path('gestionar-configuraciones-view/', views.gestionar_configuraciones_view, name='gestionar_configuraciones_view'),
+    path('editar-configuracion/<int:configuracion_id>/', views.editar_configuracion, name='editar_configuracion'),
+    path('eliminar-configuracion/<int:configuracion_id>/', views.eliminar_configuracion, name='eliminar_configuracion'),
+    path('aplicar-configuracion/<int:configuracion_id>/', views.aplicar_configuracion, name='aplicar_configuracion'),
 
    #cupones 
     path('gestionar-cupones/', views.gestionar_cupones, name='gestionar_cupones'),
-    path('desactivar-cupon/<int:cupon_id>/', views.desactivar_cupon, name='desactivar_cupon'),
+    path('gestionar-cupones-view/', views.gestionar_cupones_view, name='gestionar_cupones_view'),
+    path('desactivar-cupon/<int:cupon_id>/<int:flag>/', views.desactivar_cupon, name='desactivar_cupon'),
+    path('eliminar-cupon/<int:cupon_id>/', views.eliminar_cupon, name='eliminar_cupon'),
     
     # Roles CRUD
     path('roles/', views.roles, name='roles'),

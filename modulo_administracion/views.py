@@ -6,6 +6,9 @@ from django.contrib import messages
 from .models import Configuration, Cupon, Role, Employee, Customer
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.core.files.storage import FileSystemStorage
+import os
 
 
 # configuration.
@@ -18,45 +21,130 @@ def GeneralView(request):
 def configuration_home(request):
     return render(request, 'configurations/configuracion_home.html')
 
-    
-class ConfigurationForm(forms.ModelForm):
-    class Meta:
-        model = Configuration
-        fields = ['name', 'pathLogo', 'path_slogan', 'color_pallette', 'address', 'isPointActive']
-        widgets = {
-            'Nombre de la configuración': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de la configuración'}),
-            'Ruta del logo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ruta del logo'}),
-            'Ruta del eslogan': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ruta del eslogan'}),
-            'Paleta de colores': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Paleta de colores'}),
-            'Dirección': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Dirección'}),
-            'Activar el programa de puntos': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-        }
+def gestionar_configuraciones_view(request):
+    return render(request, 'configurations/gestionar_configuraciones.html')
 
+def gestionar_configuraciones(request):
+    if request.method == 'POST':
+        # Obtener datos del formulario
+        name = request.POST.get('name')
+        address = request.POST.get('address')
+        color_pallette = request.POST.get('color_pallette')
+        isPointActive = request.POST.get('isPointActive') == "on"
 
+        # Manejo de imágenes
+        pathLogo = request.FILES.get('pathLogo')
+        path_slogan = request.FILES.get('path_slogan')
 
-class ConfigurationUpdateView(UpdateView):
-    model = Configuration
-    form_class = ConfigurationForm
-    template_name = 'configurations/configuration_form.html'
-    success_url = reverse_lazy('admin_home')
+        # Guardar imágenes en la carpeta static/img
+        fs = FileSystemStorage(location='modulo_administracion/static/img')
+        fs.save(pathLogo.name, pathLogo) if pathLogo else None
+        fs.save(path_slogan.name, path_slogan) if path_slogan else None
 
-    def form_valid(self, form):
-        instance = form.save(commit=False)
-        if not instance.isPointActive:
-            messages.info(self.request, "El programa de puntos ha sido desactivado. Los puntos actuales no se perderán.")
-        else:
-            messages.success(self.request, "El programa de puntos ha sido activado con éxito.")
-        instance.save()
-        return super().form_valid(form)
+        pathLogo_url = f'{pathLogo.name}' if pathLogo else None
+        path_slogan_url = f'{path_slogan.name}' if path_slogan else None
 
+        # Crear nueva configuración
+        configuracion = Configuration.objects.create(
+            name=name,
+            address=address,
+            color_pallette=color_pallette,
+            pathLogo=pathLogo_url,
+            path_slogan=path_slogan_url,
+            isPointActive=isPointActive
+        )
+        messages.success(request, f'Configuración {configuracion.name} creada exitosamente')
+        return redirect('gestionar_configuraciones_view')
 
+    else:
+        # Si es un GET, retornar las configuraciones existentes
+        configuraciones = Configuration.objects.all().order_by('-id')
+        return JsonResponse(list(configuraciones.values()), safe=False)
 
-##cupones
-
-def gestionar_cupones(request):
-    cupones = Cupon.objects.all().order_by('-fecha_vencimiento')
+def editar_configuracion(request, configuracion_id):
+    configuracion = get_object_or_404(Configuration, id=configuracion_id)
+    fs = FileSystemStorage(location='modulo_administracion/static/img')
 
     if request.method == 'POST':
+        # Actualizar campos del formulario
+        configuracion.name = request.POST.get('name', configuracion.name)
+        configuracion.address = request.POST.get('address', configuracion.address)
+        configuracion.color_pallette = request.POST.get('color_pallette', configuracion.color_pallette)
+        configuracion.isPointActive = request.POST.get('isPointActive') == "on"
+
+        # Manejo de logo
+        if request.POST.get('deleteLogo') == 'true':  # Si el usuario quiere eliminar el logo actual
+            if configuracion.pathLogo and os.path.exists(fs.path(configuracion.pathLogo)):
+                os.remove(fs.path(configuracion.pathLogo))
+            configuracion.pathLogo = None
+        elif 'pathLogo' in request.FILES:  # Si sube un nuevo archivo de logo
+            if configuracion.pathLogo and os.path.exists(fs.path(configuracion.pathLogo)):
+                os.remove(fs.path(configuracion.pathLogo))  # Elimina el archivo antiguo
+            configuracion.pathLogo = fs.save(request.FILES['pathLogo'], request.FILES['pathLogo'])
+
+        # Manejo de slogan
+        if request.POST.get('deleteSlogan') == 'true':  # Si el usuario quiere eliminar el slogan actual
+            if configuracion.path_slogan and os.path.exists(fs.path(configuracion.path_slogan)):
+                os.remove(fs.path(configuracion.path_slogan))
+            configuracion.path_slogan = None
+        elif 'path_slogan' in request.FILES:  # Si sube un nuevo archivo de slogan
+            if configuracion.path_slogan and os.path.exists(fs.path(configuracion.path_slogan)):
+                os.remove(fs.path(configuracion.path_slogan))  # Elimina el archivo antiguo
+            configuracion.path_slogan = fs.save(request.FILES['path_slogan'], request.FILES['path_slogan'])
+
+        configuracion.save()
+        messages.success(request, f'Configuración {configuracion.name} actualizada exitosamente')
+        return JsonResponse({'success': True, 'message': 'Configuración actualizada con éxito.'})
+
+    else:
+        # Retornar configuración como JSON para edición
+        return JsonResponse({
+            "id": configuracion.id,
+            "name": configuracion.name,
+            "address": configuracion.address,
+            "color_pallette": configuracion.color_pallette,
+            "pathLogo": configuracion.pathLogo if configuracion.pathLogo else "",
+            "path_slogan": configuracion.path_slogan if configuracion.path_slogan else "",
+            "isPointActive": configuracion.isPointActive,
+        })
+
+
+def eliminar_configuracion(request, configuracion_id):
+    fs = FileSystemStorage(location='modulo_administracion/static/img')
+    configuracion = get_object_or_404(Configuration, id=configuracion_id)
+    print(f'Eliminando configuración {configuracion.pathLogo}')
+    print(f'Eliminando configuración {configuracion.path_slogan}')
+    # Eliminar archivos de imágenes
+    if configuracion.pathLogo and os.path.exists(fs.path(configuracion.pathLogo)):
+        print("Existe este path")
+        os.remove(fs.path(configuracion.pathLogo))
+    if configuracion.path_slogan and os.path.exists(fs.path(configuracion.path_slogan)):
+        os.remove(fs.path(configuracion.path_slogan))
+
+    configuracion.delete()
+    messages.success(request, f'Configuración {configuracion.name} eliminada exitosamente')
+    return redirect('gestionar_configuraciones_view')
+
+def aplicar_configuracion(request, configuracion_id):
+    configuracion = get_object_or_404(Configuration, id=configuracion_id)
+    return JsonResponse({
+            "id": configuracion.id,
+            "name": configuracion.name,
+            "address": configuracion.address,
+            "color_pallette": configuracion.color_pallette,
+            "pathLogo": configuracion.pathLogo if configuracion.pathLogo else "",
+            "path_slogan": configuracion.path_slogan if configuracion.path_slogan else "",
+            "isPointActive": configuracion.isPointActive,
+        })
+
+###################### CRUD CUPONES #######################
+
+def gestionar_cupones_view(request):
+    return render(request, 'configurations/gestionar_cupones.html')
+
+def gestionar_cupones(request):
+    if request.method == 'POST':
+        # Recibir los datos del formulario
         codigo = request.POST.get('codigo')
         descripcion = request.POST.get('descripcion')
         tipo_descuento = request.POST.get('tipo_descuento')
@@ -65,6 +153,7 @@ def gestionar_cupones(request):
         fecha_vencimiento = request.POST.get('fecha_vencimiento')
         uso_maximo = request.POST.get('uso_maximo')
 
+        # Crear el nuevo cupón
         cupon = Cupon.objects.create(
             codigo=codigo,
             descripcion=descripcion,
@@ -75,20 +164,33 @@ def gestionar_cupones(request):
             uso_maximo=uso_maximo
         )
         messages.success(request, f'Cupón {cupon.codigo} creado exitosamente')
-        return redirect('gestionar_cupones')
+        return redirect('gestionar_cupones_view')
 
-    return render(request, 'configurations/gestionar_cupones.html', {
-        'cupones': cupones
-    })
+    else:
+        # Si es un GET, solo mostrar la página sin cambiar nada
+        cupones = Cupon.objects.all().order_by('-fecha_vencimiento')
+        return JsonResponse(list(cupones.values()), safe=False)
 
 
-def desactivar_cupon(request, cupon_id):
+
+def desactivar_cupon(request, cupon_id, flag):
     cupon = get_object_or_404(Cupon, id=cupon_id)
-    cupon.activo = False
-    cupon.save()
-    messages.success(request, f'Cupón {cupon.codigo} desactivado')
-    return redirect('gestionar_cupones')
+    if flag == 1:
+        cupon.activo = True
+        cupon.save()
+        messages.success(request, f'Cupón {cupon.codigo} activado exitosamente')
+        return JsonResponse({'estado': 'activado', 'codigo': cupon.codigo, 'message': f'Cupón {cupon.codigo} activado'})
+    else:
+        cupon.activo = False
+        cupon.save()
+        messages.success(request, f'Cupón {cupon.codigo} desactivado exitosamente')
+        return JsonResponse({'estado': 'desactivado', 'codigo': cupon.codigo, 'message': f'Cupón {cupon.codigo} desactivado'})
 
+def eliminar_cupon(request, cupon_id):
+    cupon = get_object_or_404(Cupon, id=cupon_id)
+    cupon.delete()
+    messages.success(request, f'Cupón {cupon.codigo} eliminado exitosamente')
+    return redirect('gestionar_cupones_view')
 
 ###################### CRUD ROLES #######################
 def roles(request):

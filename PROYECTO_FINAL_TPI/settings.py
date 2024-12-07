@@ -41,14 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'modulo_administracion',
-    'bootstrap5',
     'gestion_pedidos',
     'repartidores',
     'pwa',
     'moduloDespacho',
     'modulo_catalogo',
     'customers',
-    #'bootstrap5',
+    'django_bootstrap5',
 ]
 
 AUTH_USER_MODEL = 'customers.CustomUser'
@@ -95,13 +94,23 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'proyect_tpi',
+        'USER': 'doadmin',
+        'PASSWORD': 'AVNS_dyqf-SATr1CSF8JuIHa',
+        'HOST': 'db-mysql-nyc3-69213-do-user-15242306-0.m.db.ondigitalocean.com',
+        'PORT': '25060',  # Cambia si usas un puerto diferente
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
