@@ -4,7 +4,10 @@ from . import views
 urlpatterns = [
     path('', views.GeneralView, name='GeneralView'),
     path('configuracion/', views.configuration_home, name='configuration_home'),
-     path('configuration/<int:pk>/', views.ConfigurationUpdateView.as_view(), name='configuration_update'),
+    path('gestionar-configuraciones/', views.gestionar_configuraciones, name='gestionar_configuraciones'),
+    path('gestionar-configuraciones-view/', views.gestionar_configuraciones_view, name='gestionar_configuraciones_view'),
+    path('editar-configuracion/<int:configuracion_id>/', views.editar_configuracion, name='editar_configuracion'),
+    path('eliminar-configuracion/<int:configuracion_id>/', views.eliminar_configuracion, name='eliminar_configuracion'),
 
    #cupones 
     path('gestionar-cupones/', views.gestionar_cupones, name='gestionar_cupones'),
