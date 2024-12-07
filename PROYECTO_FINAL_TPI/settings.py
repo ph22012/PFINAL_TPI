@@ -15,6 +15,7 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'static/js', 'serviceworker.js') 
 
 
 # Quick-start development settings - unsuitable for production
@@ -32,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,7 +42,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'modulo_administracion',
     'bootstrap5',
+    'gestion_pedidos',
+    'repartidores',
+    'pwa',
+    'moduloDespacho',
+    'modulo_catalogo',
+    'customers',
+    #'bootstrap5',
 ]
+
+AUTH_USER_MODEL = 'customers.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -70,7 +81,15 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'PROYECTO_FINAL_TPI.wsgi.application'
+#WSGI_APPLICATION = 'PROYECTO_FINAL_TPI.wsgi.application'
+ASGI_APPLICATION = 'PROYECTO_FINAL_TPI.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    }
+}
+
 
 
 # Database
@@ -129,6 +148,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -136,3 +156,21 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # MEDIA_URL = '/imgs'  # URL para acceder a los archivos subidos
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
+
+PWA_APP_NAME = 'repartidores'
+PWA_APP_DESCRIPTION = "Aplicación de repartidores"
+PWA_APP_THEME_COLOR = '#000000'
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_ICONS = [
+    {
+        'src': 'static/images/icon.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': '/static/images/icon.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_LANG = 'es-ES'
