@@ -22,4 +22,5 @@ urlpatterns = [
     path('pedidos/', include('gestion_pedidos.urls')),
     path('despacho/', include('moduloDespacho.urls')),
     path('usuarioDelMenu/', include('modulo_catalogo.urls')),
+    path('clientes/', include('customers.urls')),
 ]
