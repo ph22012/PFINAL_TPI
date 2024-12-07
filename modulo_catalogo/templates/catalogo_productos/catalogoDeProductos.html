@@ -14,7 +14,7 @@
         <!-- Barra de navegación -->
         <header>
             <nav>
-                <span>Regresar</span>
+                <a href="{% url 'index' %}" id="backBtn">Regresar</a>
                 <a href="{% url 'logout' %}" class="logout">Cerrar Sesión</a>
             </nav>
         </header>
@@ -52,10 +52,62 @@
 
             <!-- Botones de acción -->
             <div class="actions">
-                <button class="btn btn-success">Agregar Productos</button>
-                <button class="btn btn-danger">Eliminar Productos</button>
+                <!-- Botón de Agregar Productos (Abre el Modal para agregar productos) -->
+                <button class="btn btn-success" id="openAgregarModal">Agregar Productos</button>
+
+                <!-- Botón de Eliminar Productos (Abre el Modal para eliminar productos) -->
+                <button class="btn btn-danger" id="openEliminarModal">Eliminar Productos</button>
             </div>
         </main>
+    </div>
+
+    <!-- Modal para Agregar Productos -->
+    <div id="agregarModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeAgregarModal">&times;</span>
+            <h2>Agregar Productos</h2>
+            <form id="formAgregar">
+                <label for="id_producto">ID Producto:</label>
+                <input type="text" id="id_producto" name="id_producto" required>
+                <button type="button" id="buscarProducto">Buscar</button>
+            </form>
+
+            <h3>Productos Encontrados</h3>
+            <table id="tablaProductos">
+                <thead>
+                    <tr>
+                        <th>ID Producto</th>
+                        <th>Nombre</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Aquí se agregarán los productos encontrados -->
+                </tbody>
+            </table>
+
+            <div class="modal-actions">
+                <button id="agregarAlCatalogo" class="btn btn-success">Agregar al Catálogo</button>
+                <button id="cerrarModal" class="btn btn-danger">Salir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Eliminar Productos -->
+    <div id="eliminarModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeEliminarModal">&times;</span>
+            <h2>Eliminar Producto</h2>
+            <form id="formEliminar">
+                <label for="id_producto_eliminar">ID Producto:</label>
+                <input type="text" id="id_producto_eliminar" name="id_producto_eliminar" required>
+                <button type="button" id="eliminarProducto">Eliminar</button>
+            </form>
+
+            <div class="modal-actions">
+                <button id="cerrarEliminarModal" class="btn btn-danger">Salir</button>
+            </div>
+        </div>
     </div>
 
     <!-- Referencia al archivo JS -->
