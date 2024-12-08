@@ -1,9 +1,6 @@
-{% extends '../base.html' %}
-
-{% block title %} Configuraciones {% endblock %}
-
+{% extends '../base.html' %} 
+{% block title %} Configuraciones {% endblock %} 
 {% block header %}  {% endblock %}
-
 {% block content %}
 <div class="container-fluid mt-4">
     <h1 class="mb-4 text-center">Gestionar Configuraciones</h1>
@@ -13,45 +10,111 @@
         <div class="col-lg-5">
             <div class="card h-100">
                 <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0" id="form-title">Crear Nueva Configuración</h2>
+                    <h2 class="mb-0" id="form-title">
+                        Crear Nueva Configuración
+                    </h2>
                 </div>
                 <div class="card-body">
-                    <form id="configForm" method="post" enctype="multipart/form-data" action="{% url 'gestionar_configuraciones' %}">
+                    <form
+                        id="configForm"
+                        method="post"
+                        enctype="multipart/form-data"
+                        action="{% url 'gestionar_configuraciones' %}"
+                    >
                         {% csrf_token %}
-                        <input type="hidden" id="configuracionId" name="configuracionId">
+                        <input
+                            type="hidden"
+                            id="configuracionId"
+                            name="configuracionId"
+                        />
                         <div class="mb-3">
                             <label for="name" class="form-label">Nombre:</label>
-                            <input type="text" class="form-control" id="name" name="name">
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="name"
+                                name="name"
+                            />
                         </div>
                         <div class="mb-3">
-                            <label for="address" class="form-label">Dirección:</label>
-                            <input type="text" class="form-control" id="address" name="address">
+                            <label for="address" class="form-label"
+                                >Dirección:</label
+                            >
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="address"
+                                name="address"
+                            />
                         </div>
-                        <label for="color_palletter" class="form-label">Paleta de Colores:</label>
+                        <label for="color_palletter" class="form-label"
+                            >Paleta de Colores:</label
+                        >
                         <div class="mb-3">
-                            <label for="color_pallette" class="form-label">Color dashboard:</label>
-    
-                            <input type="color" id="color_pallette" name="color_pallette" class="form-control" value="#563d7c" title="Elige un color">
+                            <label for="color_pallette" class="form-label"
+                                >Color dashboard:</label
+                            >
+
+                            <input
+                                type="color"
+                                id="color_pallette"
+                                name="color_pallette"
+                                class="form-control"
+                                value="#563d7c"
+                                title="Elige un color"
+                            />
                         </div>
                         <div class="mb-3">
-                            <label for="color_pallette_bg" class="form-label">Color fondo:</label>
-    
-                            <input type="color" id="color_pallette_bg" name="color_pallette_bg" class="form-control" value="#563d7c" title="Elige un color">
+                            <label for="color_pallette_bg" class="form-label"
+                                >Color fondo:</label
+                            >
+
+                            <input
+                                type="color"
+                                id="color_pallette_bg"
+                                name="color_pallette_bg"
+                                class="form-control"
+                                value="#563d7c"
+                                title="Elige un color"
+                            />
                         </div>
                         <div class="mb-3">
-                            <label for="pathLogo" class="form-label">Logo:</label>
-                            <input type="file" class="form-control" id="pathLogo" name="pathLogo">
+                            <label for="pathLogo" class="form-label"
+                                >Logo:</label
+                            >
+                            <input
+                                type="file"
+                                class="form-control"
+                                id="pathLogo"
+                                name="pathLogo"
+                            />
                         </div>
                         <div class="mb-3">
-                            <label for="path_slogan" class="form-label">Slogan:</label>
-                            <input type="file" class="form-control" id="path_slogan" name="path_slogan">
+                            <label for="path_slogan" class="form-label"
+                                >Slogan:</label
+                            >
+                            <input
+                                type="file"
+                                class="form-control"
+                                id="path_slogan"
+                                name="path_slogan"
+                            />
                         </div>
                         <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="isPointActive" name="isPointActive">
-                            <label for="isPointActive" class="form-check-label">¿Programa de lealtad activo?</label>
+                            <input
+                                type="checkbox"
+                                class="form-check-input"
+                                id="isPointActive"
+                                name="isPointActive"
+                            />
+                            <label for="isPointActive" class="form-check-label"
+                                >¿Programa de lealtad activo?</label
+                            >
                         </div>
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Guardar Configuración</button>
+                            <button type="submit" class="btn btn-primary">
+                                Guardar Configuración
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -84,114 +147,210 @@
 </div>
 
 <!-- Modal para editar configuraciones -->
-<div class="modal fade" id="editConfigModal" tabindex="-1" aria-labelledby="editConfigModalLabel" aria-hidden="true">
+<div
+    class="modal fade"
+    id="editConfigModal"
+    tabindex="-1"
+    aria-labelledby="editConfigModalLabel"
+    aria-hidden="true"
+>
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="editConfigModalLabel">Editar Configuración</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <h5 class="modal-title" id="editConfigModalLabel">
+                    Editar Configuración
+                </h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Cerrar"
+                ></button>
             </div>
             <div class="modal-body">
                 <form id="editConfigForm">
                     {% csrf_token %}
-                    <input type="hidden" id="editConfigId" name="configuracionId">
+                    <input
+                        type="hidden"
+                        id="editConfigId"
+                        name="configuracionId"
+                    />
 
                     <div class="mb-3">
                         <label for="editName" class="form-label">Nombre:</label>
-                        <input type="text" class="form-control" id="editName" name="name">
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="editName"
+                            name="name"
+                        />
                     </div>
                     <div class="mb-3">
-                        <label for="editAddress" class="form-label">Dirección:</label>
-                        <input type="text" class="form-control" id="editAddress" name="address">
+                        <label for="editAddress" class="form-label"
+                            >Dirección:</label
+                        >
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="editAddress"
+                            name="address"
+                        />
                     </div>
-                    <label for="color_palletter" class="form-label">Paleta de Colores:</label>
+                    <label for="color_palletter" class="form-label"
+                        >Paleta de Colores:</label
+                    >
                     <div class="mb-3">
-                        <label for="editColorPallette" class="form-label">Color dashboard:</label>
+                        <label for="editColorPallette" class="form-label"
+                            >Color dashboard:</label
+                        >
 
-                        <input type="color" id="editColorPallette" name="color_pallette" class="form-control" value="#563d7c" title="Elige un color">
+                        <input
+                            type="color"
+                            id="editColorPallette"
+                            name="color_pallette"
+                            class="form-control"
+                            value="#563d7c"
+                            title="Elige un color"
+                        />
                     </div>
                     <div class="mb-3">
-                        <label for="editColorPallette_bg" class="form-label">Color fondo</label>
+                        <label for="editColorPallette_bg" class="form-label"
+                            >Color fondo</label
+                        >
 
-                        <input type="color" id="editColorPallette_bg" name="color_pallette_bg" class="form-control" value="#563d7c" title="Elige un color">
-                        </div>
+                        <input
+                            type="color"
+                            id="editColorPallette_bg"
+                            name="color_pallette_bg"
+                            class="form-control"
+                            value="#563d7c"
+                            title="Elige un color"
+                        />
+                    </div>
                     <div class="mb-3">
                         <label for="editLogo" class="form-label">Logo:</label>
                         <div id="editLogoContainer"></div>
-                        <button type="button" id="editLogoDelete" class="btn btn-danger btn-sm mt-2">Eliminar Logo</button>
-                        <input type="file" class="form-control d-none" id="newLogo" name="pathLogo">
+                        <button
+                            type="button"
+                            id="editLogoDelete"
+                            class="btn btn-danger btn-sm mt-2"
+                        >
+                            Eliminar Logo
+                        </button>
+                        <input
+                            type="file"
+                            class="form-control d-none"
+                            id="newLogo"
+                            name="pathLogo"
+                        />
                     </div>
                     <div class="mb-3">
-                        <label for="editSlogan" class="form-label">Slogan:</label>
+                        <label for="editSlogan" class="form-label"
+                            >Slogan:</label
+                        >
                         <div id="editSloganContainer"></div>
-                        <button type="button" id="editSloganDelete" class="btn btn-danger btn-sm mt-2">Eliminar Slogan</button>
-                        <input type="file" class="form-control d-none" id="newSlogan" name="path_slogan">
+                        <button
+                            type="button"
+                            id="editSloganDelete"
+                            class="btn btn-danger btn-sm mt-2"
+                        >
+                            Eliminar Slogan
+                        </button>
+                        <input
+                            type="file"
+                            class="form-control d-none"
+                            id="newSlogan"
+                            name="path_slogan"
+                        />
                     </div>
                     <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="editIsPointActive" name="isPointActive">
-                        <label for="editIsPointActive" class="form-check-label">¿Programa de lealtad activo?</label>
+                        <input
+                            type="checkbox"
+                            class="form-check-input"
+                            id="editIsPointActive"
+                            name="isPointActive"
+                        />
+                        <label for="editIsPointActive" class="form-check-label"
+                            >¿Programa de lealtad activo?</label
+                        >
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" id="updateConfigBtn" class="btn btn-primary">Actualizar</button>
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                >
+                    Cerrar
+                </button>
+                <button
+                    type="button"
+                    id="updateConfigBtn"
+                    class="btn btn-primary"
+                >
+                    Actualizar
+                </button>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
+{% endblock %} {% block scripts %}
+<script>
+    async function fetchConfigurations() {
+        try {
+            const response = await fetch(
+                "{% url 'gestionar_configuraciones' %}"
+            );
+            const configuraciones = await response.json();
 
+            const tbody = document.getElementById("configTableBody");
+            tbody.innerHTML = ""; // Limpiar tabla
 
-{% block scripts %}
-    <script>
-        async function fetchConfigurations() {
-            try {
-                const response = await fetch("{% url 'gestionar_configuraciones' %}");
-                const configuraciones = await response.json();
+            configuraciones.forEach((config) => {
+                const tr = document.createElement("tr");
 
-                const tbody = document.getElementById("configTableBody");
-                tbody.innerHTML = ""; // Limpiar tabla
+                const idTd = document.createElement("td");
+                idTd.textContent = config.id;
+                tr.appendChild(idTd);
 
-                configuraciones.forEach(config => {
-                    const tr = document.createElement("tr");
+                const nameTd = document.createElement("td");
+                nameTd.textContent = config.name || "Sin Nombre";
+                tr.appendChild(nameTd);
 
-                    const idTd = document.createElement("td");
-                    idTd.textContent = config.id;
-                    tr.appendChild(idTd);
+                const actionsTd = document.createElement("td");
 
-                    const nameTd = document.createElement("td");
-                    nameTd.textContent = config.name || "Sin Nombre";
-                    tr.appendChild(nameTd);
-                    
-                    
-                    const actionsTd = document.createElement("td");
+                const aplicarBtn = document.createElement("button");
+                aplicarBtn.className = "btn btn-sm btn-success me-2";
+                aplicarBtn.textContent = "Aplicar";
+                aplicarBtn.addEventListener("click", () =>
+                    aplicarConfig(config.id)
+                );
+                actionsTd.appendChild(aplicarBtn);
 
-                    const aplicarBtn = document.createElement("button");
-                    aplicarBtn.className = "btn btn-sm btn-success me-2";
-                    aplicarBtn.textContent = "Aplicar";
-                    aplicarBtn.addEventListener("click", () => aplicarConfig(config.id));
-                    actionsTd.appendChild(aplicarBtn);
-                    
-                    const editBtn = document.createElement("button");
-                    editBtn.className = "btn btn-sm btn-warning me-2";
-                    editBtn.textContent = "Editar";
-                    editBtn.addEventListener("click", () => loadConfigForEdit(config.id));
-                    actionsTd.appendChild(editBtn);
+                const editBtn = document.createElement("button");
+                editBtn.className = "btn btn-sm btn-warning me-2";
+                editBtn.textContent = "Editar";
+                editBtn.addEventListener("click", () =>
+                    loadConfigForEdit(config.id)
+                );
+                actionsTd.appendChild(editBtn);
 
-                    const deleteBtn = document.createElement("button");
-                    deleteBtn.className = "btn btn-sm btn-danger";
-                    deleteBtn.textContent = "Eliminar";
-                    deleteBtn.addEventListener("click", () => deleteConfiguration(config.id));
-                    actionsTd.appendChild(deleteBtn);
+                const deleteBtn = document.createElement("button");
+                deleteBtn.className = "btn btn-sm btn-danger";
+                deleteBtn.textContent = "Eliminar";
+                deleteBtn.addEventListener("click", () =>
+                    deleteConfiguration(config.id)
+                );
+                actionsTd.appendChild(deleteBtn);
 
-                    tr.appendChild(actionsTd);
-                    tbody.appendChild(tr);
-                });
-            } catch (error) {
-                console.error("Error al obtener configuraciones:", error);
-            }
+                tr.appendChild(actionsTd);
+                tbody.appendChild(tr);
+            });
+        } catch (error) {
+            console.error("Error al obtener configuraciones:", error);
         }
+    }
 
         async function aplicarConfig(id) {
             const response = await fetch(`/administracion/aplicar-configuracion/${id}/`);
@@ -201,57 +360,78 @@
             window.location.reload();
         }
 
-        async function loadConfigForEdit(id) {
-            const response = await fetch(`/administracion/editar-configuracion/${id}/`, { method: "GET" });
-            const config = await response.json();
-            console.log("esto es la data del fetch: ", config); 
+    async function loadConfigForEdit(id) {
+        const response = await fetch(
+            `/administracion/editar-configuracion/${id}/`,
+            { method: "GET" }
+        );
+        const config = await response.json();
+        console.log("esto es la data del fetch: ", config);
 
-            document.getElementById("editConfigId").value = config.id;
-            document.getElementById("editName").value = config.name;
-            document.getElementById("editAddress").value = config.address;
-            document.getElementById("editColorPallette").value = config.color_pallette;
-            document.getElementById("editColorPallette_bg").value = config.color_pallette_bg;
-            document.getElementById("editIsPointActive").checked = config.isPointActive;
+        document.getElementById("editConfigId").value = config.id;
+        document.getElementById("editName").value = config.name;
+        document.getElementById("editAddress").value = config.address;
+        document.getElementById("editColorPallette").value =
+            config.color_pallette;
+        document.getElementById("editColorPallette_bg").value =
+            config.color_pallette_bg;
+        document.getElementById("editIsPointActive").checked =
+            config.isPointActive;
 
-            const editLogoContainer = document.getElementById("editLogoContainer");
-            editLogoContainer.innerHTML = config.pathLogo ? `<img src="/static/img/${config.pathLogo}" style="max-width: 100px;">` : "Sin Logo";
+        const editLogoContainer = document.getElementById("editLogoContainer");
+        editLogoContainer.innerHTML = config.pathLogo
+            ? `<img src="/static/img/${config.pathLogo}" style="max-width: 100px;">`
+            : "Sin Logo";
 
-            const editSloganContainer = document.getElementById("editSloganContainer");
-            editSloganContainer.innerHTML = config.path_slogan ? `<img src="/static/img/${config.path_slogan}" style="max-width: 100px;">` : "Sin Slogan";
+        const editSloganContainer = document.getElementById(
+            "editSloganContainer"
+        );
+        editSloganContainer.innerHTML = config.path_slogan
+            ? `<img src="/static/img/${config.path_slogan}" style="max-width: 100px;">`
+            : "Sin Slogan";
 
-            new bootstrap.Modal(document.getElementById("editConfigModal")).show();
-        }
+        new bootstrap.Modal(document.getElementById("editConfigModal")).show();
+    }
 
-        document.getElementById("updateConfigBtn").addEventListener("click", async () => {
+    document
+        .getElementById("updateConfigBtn")
+        .addEventListener("click", async () => {
             const form = document.getElementById("editConfigForm");
             const formData = new FormData(form);
 
-            const response = await fetch(`/administracion/editar-configuracion/${formData.get("configuracionId")}/`, {
-                method: "POST",
-                body: formData,
-            });
+            const response = await fetch(
+                `/administracion/editar-configuracion/${formData.get(
+                    "configuracionId"
+                )}/`,
+                {
+                    method: "POST",
+                    body: formData,
+                }
+            );
 
             if (response.ok) {
                 alert("Configuración actualizada");
-                document.getElementById("editConfigModal").modal('hide');
+                document.getElementById("editConfigModal").modal("hide");
             }
         });
 
-        async function deleteConfiguration(id) {
-            if (!confirm("¿Estás seguro de que deseas eliminar esta configuración?")) return;
+    async function deleteConfiguration(id) {
+        if (
+            !confirm("¿Estás seguro de que deseas eliminar esta configuración?")
+        )
+            return;
 
-            try {
-                await fetch(`/administracion/eliminar-configuracion/${id}/`);
-                alert("Configuración eliminada exitosamente");
-                localStorage.removeItem("configuration");
-                fetchConfigurations();
-            } catch (error) {
-                alert("Error al eliminar configuración");
-                console.error("Error al eliminar configuración:", error);
-            }
+        try {
+            await fetch(`/administracion/eliminar-configuracion/${id}/`);
+            alert("Configuración eliminada exitosamente");
+            localStorage.removeItem("configuration");
+            fetchConfigurations();
+        } catch (error) {
+            alert("Error al eliminar configuración");
+            console.error("Error al eliminar configuración:", error);
         }
+    }
 
-        document.addEventListener("DOMContentLoaded", fetchConfigurations);
-
-    </script>
+    document.addEventListener("DOMContentLoaded", fetchConfigurations);
+</script>
 {% endblock %}
