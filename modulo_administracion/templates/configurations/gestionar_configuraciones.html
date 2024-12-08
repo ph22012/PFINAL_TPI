@@ -242,6 +242,7 @@
             try {
                 await fetch(`/administracion/eliminar-configuracion/${id}/`);
                 alert("Configuración eliminada exitosamente");
+                localStorage.removeItem("configuration");
                 fetchConfigurations();
             } catch (error) {
                 alert("Error al eliminar configuración");
