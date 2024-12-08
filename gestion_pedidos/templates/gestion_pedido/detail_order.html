@@ -14,15 +14,15 @@
 
         <!-- Información del cliente -->
         <h3>Cliente</h3>
-        <p class="fs-5">Nombre: {{ order.shoppingcart.customer.firstName }} {{ order.shoppingcart.customer.lastName }}</p>
-        <p class="fs-5">Usuario: {{ order.shoppingcart.customer.user }}</p>
+        <p class="fs-5">Nombre: {{ order.id_cart.customer.firstName }} {{ order.id_cart.customer.lastName }}</p>
+        <p class="fs-5">Usuario: {{ order.id_cart.customer.user }}</p>
     
         <!-- Dirección -->
         <h3>Dirección</h3>
-        <p class="fs-5">Distrito: {{ order.address.Distrito.name }}</p>
-        <p class="fs-5">Municipio: {{ order.address.Distrito.municipio.name }}</p>
-        <p class="fs-5">Departamento: {{ order.address.Distrito.municipio.departamento.name }}</p>
-        <p class="fs-5">Dirección: {{ order.address.address }}</p>
+        <p class="fs-5">Distrito: {{ order.id_address.Distrito.name }}</p>
+        <p class="fs-5">Municipio: {{ order.id_address.Distrito.id_municipio.name }}</p>
+        <p class="fs-5">Departamento: {{ order.id_address.Distrito.id_municipio.id_departamento.name }}</p>
+        <p class="fs-5">Dirección: {{ order.id_address.address }}</p>
     
         <!-- Productos -->
         <h3>Productos</h3>
@@ -49,22 +49,22 @@
     
         <!-- Repartidor -->
         <h3>Repartidor</h3>
-        {% if order.employee %}
-            <p class="fs-5">Nombre: {{ order.employee.firstName }} {{ order.employee.lastName }}</p>
+        {% if order.id_employee %}
+            <p class="fs-5">Nombre: {{ order.id_employee.firstName }} {{ order.id_employee.lastName }}</p>
         {% else %}
             <p class="fs-5">No asignado</p>
         {% endif %}
     
         <!-- Estado del pedido -->
         <h3>Estado</h3>
-        <p class="fs-5">{{ order.status.status }}</p>
+        <p class="fs-5">{{ order.id_status.status }}</p>
     
         <!-- Total -->
         <h3>Total</h3>
         <p class="fs-5">${{ total }}</p>
     </div>
     <div class="d-grid">
-        <button type="submit" class="btn btn-success mt-3">Regresar</button>
+        <button type="submit" href="{% url 'dashboard' %}" class="btn btn-success mt-3">Regresar</button>
     </div>
 </body>
 </html>
