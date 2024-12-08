@@ -383,7 +383,7 @@ def create_customer_partial(request): #crea un nuevo consumidor/cliente dentro d
                             #idConfiguration = request.POST['idConfiguration']
                             )
         #customer.save()
-        Customer.objects.create(user = customUser, firstName = request.POST['firstname'], 
+            Customer.objects.create(user = customUser, firstName = request.POST['firstname'], 
                             lastName = request.POST['lastname'], id_points = puntos)
         messages.success(request, "Cliente creado correctamente.")
         return redirect('customers')
