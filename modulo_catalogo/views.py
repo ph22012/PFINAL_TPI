@@ -2,6 +2,7 @@ from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Product
 import json
+from datetime import date
 
 # Create your views here.
 def index_catalogo(request):
@@ -72,7 +73,7 @@ def editar_producto(request):
         cantidad = data[0]['cantidad']
         
         try :
-             producto = Product.objects.get(id_product=idProducto)
+             producto = Product.objects.get(id_producto=idProducto)
              producto.count = cantidad
              producto.save()
         except Product.DoesNotExist:
@@ -97,3 +98,19 @@ def buscar_producto(request):
                 })
         except Product.DoesNotExist:
                 return HttpResponse("Producto no encontrado")
+def menu_diario(request):
+    hoy = date.today()
+    productos_catalogo = Product.objects.all()
+    productos_menu = Product.objects.filter(dailyMenuDate=hoy)
+    
+    if request.method == 'POST':
+        print(request.POST)
+        ingresarID = request.POST['ingresarID']
+        try:
+            producto = Product.objects.get(id_product=ingresarID)
+            producto.dailyMenuDate = hoy
+            producto.save()
+            return redirect('indexCatalogo')
+        except Product.DoesNotExist:
+            return HttpResponse("Producto no encontrado")
+    return render(request, 'menu/menuDelDia.html', {'productos_catalogo': productos_catalogo, 'productos_menu': productos_menu})
