@@ -197,7 +197,8 @@
             const response = await fetch(`/administracion/aplicar-configuracion/${id}/`);
             const data = await response.json();
             console.log("esto es la data del fetch: ", data); 
-            localStorage.setItem("configuration", JSON.stringify(data));
+            await localStorage.setItem("configuration", JSON.stringify(data));
+            window.location.reload();
         }
 
         async function loadConfigForEdit(id) {
