@@ -19,11 +19,14 @@ def order_list(request):
 def order_create(request):
     if request.method == 'POST':
         # Validar datos del formulario
-        customer_id = request.POST.get('id_customer')
+        customer_id = request.POST.get('customer_id')
         id_departamento = request.POST.get('id_departamento')
         id_distrito = request.POST.get('id_distrito')
         address_detail = request.POST.get('address', '')
         products_data = request.POST.get('products_data') 
+
+        print(request.POST)
+        print(customer_id)
 
         # Verificar que todos los datos necesarios estén presentes
         if not customer_id:
@@ -236,8 +239,8 @@ def order_edit(request, order_id):
 
 def order_detail(request, order_id):
     # Obtener el pedido y sus detalles
-    order = get_object_or_404(Order, id=order_id)
-    details = Detail.objects.filter(shoppingcart=order.shoppingcart)
+    order = get_object_or_404(Order, id_order=order_id)
+    details = Detail.objects.filter(shoppingcart=order.id_cart)
 
     # Calcular el total
     total = sum(detail.sub_total for detail in details)

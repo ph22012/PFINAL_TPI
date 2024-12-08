@@ -151,7 +151,7 @@
                     const results = $('#customer_results');
                     results.empty();
                     data.customers.forEach(customer => {
-                        results.append(`<li data-id="${customer.id}" data-name="${customer.firstname} ${customer.lastname}">${customer.firstname} ${customer.lastname}</li>`);
+                        results.append(`<li data-id="${customer.id_customer}" data-name="${customer.firstName} ${customer.lastName}">${customer.firstName} ${customer.lastName}</li>`);
                     });
                 });
             }
@@ -220,7 +220,7 @@
                     const results = $('#product_results');
                     results.empty();
                     data.products.forEach(product => {
-                        results.append(`<li data-id="${product.id}" data-name="${product.name}" data-price="${product.price}" data-stock="${product.count}">${product.name} - $${product.price} (Stock: ${product.count})</li>`);
+                        results.append(`<li data-id="${product.id_product}" data-name="${product.name}" data-price="${product.price}" data-stock="${product.count}">${product.name} - $${product.price} (Stock: ${product.count})</li>`);
                     });
                 });
             }
