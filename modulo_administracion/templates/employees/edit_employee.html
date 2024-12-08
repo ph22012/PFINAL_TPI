@@ -1,6 +1,5 @@
 {% load static %}
 {% load django_bootstrap5 %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,29 +12,29 @@
 <body>
     <div class="container py-4">
         <h1 class="text-center mb-4">Editar Empleado</h1>
-        <form method="POST" action="{% url 'edit_employee' employee.id %}" class="shadow p-4 rounded bg-light">
+        <form method="POST" action="{% url 'edit_employee' employee.id_employee %}" class="shadow p-4 rounded bg-light">
             {% csrf_token %}
             <div class="mb-3">
                 <label for="firstname" class="form-label">Nombre:</label>
-                <input type="text" name="firstname" id="firstname" value="{{ employee.firstname }}" class="form-control" placeholder="Ingresa el nombre" required>
+                <input type="text" name="firstname" id="firstname" value="{{ employee.firstName }}" class="form-control" placeholder="Ingresa el nombre" required>
             </div>
             <div class="mb-3">
                 <label for="lastname" class="form-label">Apellido:</label>
-                <input type="text" name="lastname" id="lastname" value="{{ employee.lastname }}" class="form-control" placeholder="Ingresa el apellido" required>
+                <input type="text" name="lastname" id="lastname" value="{{ employee.lastName }}" class="form-control" placeholder="Ingresa el apellido" required>
             </div>
             <div class="mb-3">
                 <label for="username" class="form-label">Usuario:</label>
-                <input type="text" name="username" id="username" value="{{ employee.username }}" class="form-control" placeholder="Ingresa el usuario" required>
+                <input type="text" name="username" id="username" value="{{ employee.user.username }}" class="form-control" placeholder="Ingresa el usuario" required>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Contraseña:</label>
-                <input type="password" name="password" id="password" value="{{ employee.password }}" class="form-control" placeholder="Ingresa la contraseña" required>
+                <input type="password" name="password" id="password" class="form-control" placeholder="Ingresa la contraseña" required>
             </div>
             <div class="mb-3">
                 <label for="id_role" class="form-label">Rol:</label>
                 <select name="id_role" id="id_role" class="form-control">
                     {% for role in roles %}
-                        <option value="{{ role.id }}" {% if role.id == employee.id_role %}selected{% endif %}>
+                        <option value="{{ role.id }}" {% if role.id == employee.id_rol %}selected{% endif %}>
                             {{ role.name }}
                         </option>
                     {% endfor %}
@@ -71,7 +70,7 @@
             const id_role = document.getElementById('id_role').value;
             const isActive = document.getElementById('isActive').value;
 
-            fetch('{% url "edit_employee" id=employee.id %}', {
+            fetch('{% url "edit_employee" id=employee.id_employee %}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

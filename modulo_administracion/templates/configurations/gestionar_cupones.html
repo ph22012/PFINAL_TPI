@@ -21,7 +21,7 @@
                         {% csrf_token %}
                         <div class="mb-3">
                             <label for="codigo" class="form-label">Código:</label>
-                            <input type="text" class="form-control" id="codigo" name="codigo">
+                            <input type="text" class="form-control" id="codigo" name="codigo" required>
                         </div>
                         <div class="mb-3">
                             <label for="descripcion" class="form-label">Descripción:</label>
@@ -36,21 +36,21 @@
                         </div>
                         <div class="mb-3">
                             <label for="valor_descuento" class="form-label">Valor de Descuento:</label>
-                            <input type="number" class="form-control" id="valor_descuento" name="valor_descuento">
+                            <input type="number" class="form-control" id="valor_descuento" name="valor_descuento" required>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="fecha_inicio" class="form-label">Fecha Inicio:</label>
-                                <input type="datetime-local" class="form-control" id="fecha_inicio" name="fecha_inicio">
+                                <input type="datetime-local" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label for="fecha_vencimiento" class="form-label">Fecha Vencimiento:</label>
-                                <input type="datetime-local" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento">
+                                <input type="datetime-local" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento" required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label for="uso_maximo" class="form-label">Uso Máximo:</label>
-                            <input type="number" class="form-control" id="uso_maximo" name="uso_maximo">
+                            <input type="number" class="form-control" id="uso_maximo" name="uso_maximo" required>
                         </div>
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary">Crear Cupón</button>
@@ -122,7 +122,7 @@
             tr.appendChild(tipoTd);
 
             const valorTd = document.createElement("td");
-            valorTd.textContent = cupon.valor_descuento;
+            valorTd.textContent = cupon.tipo_descuento === "MONTO_FIJO" ? `$${cupon.valor_descuento}` : `${cupon.valor_descuento}%`;
             tr.appendChild(valorTd);
 
             const fechasTd = document.createElement("td");

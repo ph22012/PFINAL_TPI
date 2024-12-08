@@ -8,14 +8,18 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
+from django.utils.timezone import now
 import os
 
+#404 not found
+def custom_page_not_found(request, exception):
+    return render(request, '404.html', status=404)
 
 # configuration.
 
 
 def GeneralView(request):
-    return HttpResponse("Hello, world. You're at the index.")
+    return render(request, 'home.html')
 
 # configuration.
 def configuration_home(request):
@@ -30,6 +34,7 @@ def gestionar_configuraciones(request):
         name = request.POST.get('name')
         address = request.POST.get('address')
         color_pallette = request.POST.get('color_pallette')
+        color_pallette_bg = request.POST.get('color_pallette_bg')
         isPointActive = request.POST.get('isPointActive') == "on"
 
         # Manejo de imágenes
@@ -49,6 +54,7 @@ def gestionar_configuraciones(request):
             name=name,
             address=address,
             color_pallette=color_pallette,
+            color_pallette_bg=color_pallette_bg,
             pathLogo=pathLogo_url,
             path_slogan=path_slogan_url,
             isPointActive=isPointActive
@@ -70,6 +76,7 @@ def editar_configuracion(request, configuracion_id):
         configuracion.name = request.POST.get('name', configuracion.name)
         configuracion.address = request.POST.get('address', configuracion.address)
         configuracion.color_pallette = request.POST.get('color_pallette', configuracion.color_pallette)
+        configuracion.color_pallette_bg = request.POST.get('color_pallette_bg', configuracion.color_pallette_bg)
         configuracion.isPointActive = request.POST.get('isPointActive') == "on"
 
         # Manejo de logo
@@ -103,6 +110,7 @@ def editar_configuracion(request, configuracion_id):
             "name": configuracion.name,
             "address": configuracion.address,
             "color_pallette": configuracion.color_pallette,
+            "color_pallette_bg": configuracion.color_pallette_bg,
             "pathLogo": configuracion.pathLogo if configuracion.pathLogo else "",
             "path_slogan": configuracion.path_slogan if configuracion.path_slogan else "",
             "isPointActive": configuracion.isPointActive,
@@ -132,6 +140,7 @@ def aplicar_configuracion(request, configuracion_id):
             "name": configuracion.name,
             "address": configuracion.address,
             "color_pallette": configuracion.color_pallette,
+            "color_pallette_bg": configuracion.color_pallette_bg,
             "pathLogo": configuracion.pathLogo if configuracion.pathLogo else "",
             "path_slogan": configuracion.path_slogan if configuracion.path_slogan else "",
             "isPointActive": configuracion.isPointActive,
@@ -286,35 +295,41 @@ def create_employee_partial(request): #crea un nuevo empleado dentro de un formu
         role_id = request.POST['id_role']
         role = Role.objects.get(id=role_id)
         
-        employee = Employee(
-            firstname=request.POST['firstname'],
-            lastname=request.POST['lastname'],
-            username=request.POST['username'],
-            password=request.POST['password'],
-            isActive=request.POST['isActive'],
-            id_role=role,  # Asigna la instancia de Role
-        )
-        employee.save()
-        messages.success(request, "Empleado creado correctamente.")
-        return redirect('employees')
+        #Captura los datos del formulario
+        firstname=request.POST['firstname']
+        lastname=request.POST['lastname']
+        username=request.POST['username']
+        password=request.POST['password']
+        isActive=request.POST['isActive']
+          
+        #Crea el empleado, primero con customUser
+        if CustomUser.objects.filter(username=username).exists():
+           print('El usuario ya existe')
+           return redirect('employees')
+        else:
+            user = CustomUser.objects.create_user(username=username, password=password, is_employee=True)
+            empleado = Employee.objects.create(user=user, firstName=firstname, lastName=lastname, is_active=isActive, id_rol=role)
+            empleado.save()
+            messages.success(request, "Empleado creado correctamente.")
+            return redirect('employees')
     else:
         return render(request, 'employees/create_employee.html', {'roles': roles})
 
 #@login_required
 def edit_employee(request, id): #edita un empleado existente
-    employee = get_object_or_404(Employee, id = id)
+    employee = get_object_or_404(Employee, id_employee = id)
     roles = Role.objects.all()  # Obtiene todos los roles
     
     if request.method == 'POST':
         role_id = request.POST['id_role']
         role = Role.objects.get(id=role_id)
 
-        employee.firstname = request.POST['firstname']
-        employee.lastname = request.POST['lastname']
-        employee.username = request.POST['username']
-        employee.password = request.POST['password']
-        employee.isActive = request.POST['isActive']
-        employee.id_role = role  # Asigna la instancia de Role en vez del id
+        employee.firstName = request.POST['firstname']
+        employee.lastName = request.POST['lastname']
+        employee.user.username = request.POST['username']
+        employee.user.set_password = request.POST['password']
+        employee.is_active = request.POST['isActive']
+        employee.id_rol = role  # Asigna la instancia de Role en vez del id
         employee.save()
 
         messages.success(request, "Empleado actualizado correctamente.")
@@ -324,8 +339,8 @@ def edit_employee(request, id): #edita un empleado existente
 
 #@login_required
 def delete_employee(request, id): #borra un empleado existente
-    employee = get_object_or_404(Employee, id = id)
-    employee.delete()
+    employee = get_object_or_404(Employee, id_employee = id)
+    employee.user.delete()
     messages.success(request, "Empleado eliminado correctamente.")
     return redirect('employees')
 
@@ -364,15 +379,19 @@ def create_customer(request): #crea un nuevo consumidor/cliente
 def create_customer_partial(request): #crea un nuevo consumidor/cliente dentro de un formulario dinámico
     
     if request.method == 'POST':
-        puntos = RewardPoints.objects.get(id=1)
-        customUser = CustomUser.objects.create_user( 
+        if CustomUser.objects.filter(username=request.POST['user']).exists():
+            print('El usuario ya existe')
+            return redirect('customers')
+        else:
+            puntos = RewardPoints.objects.create(exp_date=now(), points_count=0)
+            customUser = CustomUser.objects.create_user( 
                             username = request.POST['user'],
                             password = request.POST['password'],
                             is_customer = True,
                             #idConfiguration = request.POST['idConfiguration']
                             )
         #customer.save()
-        Customer.objects.create(user = customUser, firstName = request.POST['firstname'], 
+            Customer.objects.create(user = customUser, firstName = request.POST['firstname'], 
                             lastName = request.POST['lastname'], id_points = puntos)
         messages.success(request, "Cliente creado correctamente.")
         return redirect('customers')

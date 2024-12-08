@@ -7,6 +7,7 @@ class Configuration(models.Model):
     pathLogo = models.CharField(max_length=100, null=True, blank=True)
     path_slogan = models.CharField(max_length=100, null=True, blank=True)
     color_pallette = models.CharField(max_length=100, null=True, blank=True)
+    color_pallette_bg = models.CharField(max_length=100, null=True, blank=True)
     address = models.CharField(max_length=100, null=True, blank=True)
     isPointActive = models.BooleanField(default=False)#programa de lealtad
 
@@ -30,11 +31,11 @@ class RewardPoints(models.Model):
     points_count = models.IntegerField()
 
 class Role(models.Model):
-    id = models.AutoField(primary_key=True, auto_created=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=256)
     
     class Meta:
-        db_table = "role"
+        db_table = 'role'
         managed = False
     
     def __str__(self):

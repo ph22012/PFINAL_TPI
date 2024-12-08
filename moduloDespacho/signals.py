@@ -26,7 +26,7 @@ def nuevaOrden(sender, instance,created, **kwargs):
                      "id_cart": instance.id_cart.id,
                      "id_address": instance.id_address.id,
                      "id_cupon": cupon,
-                     "id_employee": instance.id_employee.id,
+                     "id_employee": instance.id_employee.id_employee,
                      "id_status":{
                          "id_status": instance.id_status.id_status,
                          "status": instance.id_status.status,
@@ -100,7 +100,7 @@ def updateOrder(sender, instance,created, **kwargs):
                     "id_cart": instance.id_cart.id,
                     "id_address": instance.id_address.id,
                     "id_cupon": cupon,
-                    "id_employee": instance.id_employee.id,
+                    "id_employee": instance.id_employee.id_employee,
                     "id_status":{
                         "id_status": instance.id_status.id_status,
                         "status": instance.id_status.status,

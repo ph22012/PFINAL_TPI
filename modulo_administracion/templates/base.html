@@ -8,47 +8,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Default Title{% endblock %}</title>
     {% bootstrap_css %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    {% bootstrap_javascript %}
+    <style>
+      .dashboard-card {
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .dashboard-card:hover {
+          transform: scale(1.05);
+          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      }
+  </style>
 </head>
-<body>
+<body id = "root">
     <header id="navbar">
         {% block header %} {% endblock %}
-        <nav id = "selectNavbar" class="navbar navbar-expand-lg navbar-dark">
-            <div class="container-fluid">
-              <a class="navbar-brand d-none" href="#">Home</a>
-              <button class="navbar-toggler d-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+        <nav id="selectNavbar" class="navbar navbar-expand-lg navbar-dark ">
+          <div class="container-fluid">
+              <!-- Logo alineado a la izquierda -->
+              <a class="navbar-brand" href="{% url 'GeneralView' %}"><img id="logo" class="d-none" src="" alt="logo" style="border-radius: 50%; width: auto; height: 40px;"></a>
+              <a class="navbar-brand" href="{% url 'GeneralView' %}">Home</a>
+      
+              <!-- Botón de colapso para dispositivos pequeños -->
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
               </button>
+      
+              <!-- Menú colapsable -->
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                  <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'configuration_home' %}">Configuraciones</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{% url 'gestionar_cupones_view' %}">Gestionar Cupones</a>
-                  </li>
-                  
-                  <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Dropdown
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <li><a class="dropdown-item" href="/configuracion">consultar</a></li>
-                      <li><a class="dropdown-item" href="#">usuarios</a></li>
-                      <li><hr class="dropdown-divider"></li>
-                      <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
-                  </li> 
-                  <li class="nav-item">
-                    <a class="nav-link disabled d-none" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                  </li>
-                </ul>
-                <form class="d-flex">
-                  <input class="form-control me-2 d-none" type="search" placeholder="Search" aria-label="Search">
-                  <button class="btn btn-outline-successcd-none" type="submit">Search</button>
-                </form>
+                  <!-- Lista de navegación alineada a la derecha -->
+                  <ul class="navbar-nav ms-auto mb-2 mb-lg-0 ">
+                      <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Configuraciones
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'gestionar_configuraciones_view' %}">Personalizar ajustes</a></li>
+                            <li><a class="dropdown-item" href="{% url 'gestionar_cupones_view' %}">Gestionar cupones</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Datos del restaurante</a></li>
+                        </ul>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="{% url 'roles' %}">Roles</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="{% url 'employees' %}">Empleados</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="{% url 'customers' %}">Clientes</a>
+                      </li>
+                      
+                  </ul>
               </div>
-            </div>
-          </nav>
+          </div>
+      </nav>
     </header>
 
     {% if messages %}
@@ -77,10 +91,10 @@
     </div>
     {% endif %}
 
-    <main>
+    <main >
       {% block first_script %} 
       {% endblock %}
-      <div id = "root">
+      <div >
         {% block content %}
         
         {% endblock %}
@@ -95,7 +109,7 @@
     {% block scripts %}
 
     {% endblock %}
-    {% bootstrap_javascript %}
+    
 
     <script>
       // Activa automáticamente todos los toasts al cargar la página
@@ -106,17 +120,24 @@
               toast.show()
           })
       });
-
+      const nav = document.getElementById("selectNavbar");
+      const root = document.getElementById("root");
+      const logo = document.getElementById("logo");
       const config = JSON.parse(localStorage.getItem("configuration"));
       if (config) {
-        const nav = document.getElementById("selectNavbar");
         nav.style.backgroundColor = config.color_pallette;
+        root.style.backgroundColor = config.color_pallette_bg;
+        logo.classList.remove("d-none");
+        logo.src = `/static/img/${config.pathLogo}`;
       }
       else{
         const nav = document.getElementById("selectNavbar");
         nav.classList.add("bg-dark");
+        logo.classList.add("d-none");
       }
       console.log("esto es el config del base : ", config);
+
+      
   </script>
 </body>
 </html>

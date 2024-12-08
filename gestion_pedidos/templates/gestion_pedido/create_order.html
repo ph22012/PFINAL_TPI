@@ -55,7 +55,7 @@
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label for="departamento" class="form-label">Departamento</label>
-                        <select id="departamento" name="departamento_id" class="form-select">
+                        <select id="departamento" name="id_departamento" class="form-select">
                             <option value="">Seleccione un departamento</option>
                             {% for departamento in departamentos %}
                                 <option value="{{ departamento.id_departamento }}">{{ departamento.name }}</option>
@@ -64,13 +64,13 @@
                     </div>
                     <div class="col-md-4">
                         <label for="municipio" class="form-label">Municipio</label>
-                        <select id="municipio" name="municipio_id" class="form-select">
+                        <select id="municipio" name="id_municipio" class="form-select">
                             <option value="">Seleccione un municipio</option>
                         </select>
                     </div>
                     <div class="col-md-4">
                         <label for="distrito" class="form-label">Distrito</label>
-                        <select id="distrito" name="distrito_id" class="form-select">
+                        <select id="distrito" name="id_distrito" class="form-select">
                             <option value="">Seleccione un distrito</option>
                         </select>
                     </div>
@@ -151,7 +151,7 @@
                     const results = $('#customer_results');
                     results.empty();
                     data.customers.forEach(customer => {
-                        results.append(`<li data-id="${customer.id}" data-name="${customer.firstname} ${customer.lastname}">${customer.firstname} ${customer.lastname}</li>`);
+                        results.append(`<li data-id="${customer.id_customer}" data-name="${customer.firstName} ${customer.lastName}">${customer.firstName} ${customer.lastName}</li>`);
                     });
                 });
             }
@@ -220,7 +220,7 @@
                     const results = $('#product_results');
                     results.empty();
                     data.products.forEach(product => {
-                        results.append(`<li data-id="${product.id}" data-name="${product.name}" data-price="${product.price}" data-stock="${product.count}">${product.name} - $${product.price} (Stock: ${product.count})</li>`);
+                        results.append(`<li data-id="${product.id_product}" data-name="${product.name}" data-price="${product.price}" data-stock="${product.count}">${product.name} - $${product.price} (Stock: ${product.count})</li>`);
                     });
                 });
             }
@@ -244,12 +244,12 @@
                         $('#use_registered_address').prop('checked', false); // Desmarca el checkbox
                     } else {
                         // Rellenar los campos de dirección
-                        $('#departamento').val(data.departamento_id).trigger('change'); // Actualizar municipios
+                        $('#departamento').val(data.id_departamento).trigger('change'); // Actualizar municipios
                         setTimeout(() => { 
-                            $('#municipio').val(data.municipio_id).trigger('change'); // Actualizar distritos
+                            $('#municipio').val(data.id_municipio).trigger('change'); // Actualizar distritos
                         }, 100); // Esperar a que se carguen los municipios
                         setTimeout(() => {
-                            $('#distrito').val(data.distrito_id);
+                            $('#distrito').val(data.id_distrito);
                         }, 200); // Esperar a que se carguen los distritos
                         $('#address').val(data.address_detail);
                     }

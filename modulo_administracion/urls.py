@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from django.conf.urls import handler404
 
 urlpatterns = [
     path('', views.GeneralView, name='GeneralView'),
@@ -44,3 +45,5 @@ urlpatterns = [
     path('customers/edit_customer_partial/<int:id>/', views.edit_customer_partial, name='edit_customer_partial'),
     path('customers/delete/<int:id>/', views.delete_customer, name='delete_customer'),
 ]
+
+handler404 = views.custom_page_not_found
