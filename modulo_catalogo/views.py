@@ -5,7 +5,7 @@ from modulo_catalogo.models import Product
 
 # Create your views here.
 def index(request):
-    return render(request, 'index.html')  # Renderiza la plantilla principal
+    return render(request, 'indexCata.html')  # Renderiza la plantilla principal
 
 def catalogo_productos(request):
     return render(request, 'catalogo_productos/catalogoDeProductos.html')  # Renderiza la plantilla de catalogo de productos
