@@ -7,6 +7,7 @@ class Configuration(models.Model):
     pathLogo = models.CharField(max_length=100, null=True, blank=True)
     path_slogan = models.CharField(max_length=100, null=True, blank=True)
     color_pallette = models.CharField(max_length=100, null=True, blank=True)
+    color_pallette_bg = models.CharField(max_length=100, null=True, blank=True)
     address = models.CharField(max_length=100, null=True, blank=True)
     isPointActive = models.BooleanField(default=False)#programa de lealtad
 

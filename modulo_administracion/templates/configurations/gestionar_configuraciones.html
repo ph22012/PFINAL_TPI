@@ -27,10 +27,16 @@
                             <label for="address" class="form-label">Dirección:</label>
                             <input type="text" class="form-control" id="address" name="address">
                         </div>
+                        <label for="color_palletter" class="form-label">Paleta de Colores:</label>
                         <div class="mb-3">
-                            <label for="color_pallette" class="form-label">Paleta de Colores:</label>
+                            <label for="color_pallette" class="form-label">Color dashboard:</label>
     
                             <input type="color" id="color_pallette" name="color_pallette" class="form-control" value="#563d7c" title="Elige un color">
+                        </div>
+                        <div class="mb-3">
+                            <label for="color_pallette_bg" class="form-label">Color fondo:</label>
+    
+                            <input type="color" id="color_pallette_bg" name="color_pallette_bg" class="form-control" value="#563d7c" title="Elige un color">
                         </div>
                         <div class="mb-3">
                             <label for="pathLogo" class="form-label">Logo:</label>
@@ -98,10 +104,17 @@
                         <label for="editAddress" class="form-label">Dirección:</label>
                         <input type="text" class="form-control" id="editAddress" name="address">
                     </div>
+                    <label for="color_palletter" class="form-label">Paleta de Colores:</label>
                     <div class="mb-3">
-                        <label for="editColorPallette" class="form-label">Paleta de Colores:</label>
+                        <label for="editColorPallette" class="form-label">Color dashboard:</label>
+
                         <input type="color" id="editColorPallette" name="color_pallette" class="form-control" value="#563d7c" title="Elige un color">
                     </div>
+                    <div class="mb-3">
+                        <label for="editColorPallette_bg" class="form-label">Color fondo</label>
+
+                        <input type="color" id="editColorPallette_bg" name="color_pallette_bg" class="form-control" value="#563d7c" title="Elige un color">
+                        </div>
                     <div class="mb-3">
                         <label for="editLogo" class="form-label">Logo:</label>
                         <div id="editLogoContainer"></div>
@@ -196,13 +209,14 @@
             document.getElementById("editName").value = config.name;
             document.getElementById("editAddress").value = config.address;
             document.getElementById("editColorPallette").value = config.color_pallette;
+            document.getElementById("editColorPallette_bg").value = config.color_pallette_bg;
             document.getElementById("editIsPointActive").checked = config.isPointActive;
 
             const editLogoContainer = document.getElementById("editLogoContainer");
-            editLogoContainer.innerHTML = config.pathLogo ? `<img src="${config.pathLogo}" style="max-width: 100px;">` : "Sin Logo";
+            editLogoContainer.innerHTML = config.pathLogo ? `<img src="modulo_administracion/static/img/${config.pathLogo}" style="max-width: 100px;">` : "Sin Logo";
 
             const editSloganContainer = document.getElementById("editSloganContainer");
-            editSloganContainer.innerHTML = config.path_slogan ? `<img src="${config.path_slogan}" style="max-width: 100px;">` : "Sin Slogan";
+            editSloganContainer.innerHTML = config.path_slogan ? `<img src="modulo_administracion/static/img/${config.path_slogan}" style="max-width: 100px;">` : "Sin Slogan";
 
             new bootstrap.Modal(document.getElementById("editConfigModal")).show();
         }
