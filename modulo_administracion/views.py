@@ -10,6 +10,9 @@ from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 import os
 
+#404 not found
+def custom_page_not_found(request, exception):
+    return render(request, '404.html', status=404)
 
 # configuration.
 
