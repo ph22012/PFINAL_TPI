@@ -352,6 +352,7 @@
         }
     }
 
+<<<<<<< HEAD
         async function aplicarConfig(id) {
             const response = await fetch(`/administracion/aplicar-configuracion/${id}/`);
             const data = await response.json();
@@ -359,6 +360,17 @@
             await localStorage.setItem("configuration", JSON.stringify(data));
             window.location.reload();
         }
+=======
+    async function aplicarConfig(id) {
+        const response = await fetch(
+            `/administracion/aplicar-configuracion/${id}/`
+        );
+        const data = await response.json();
+        console.log("esto es la data del fetch: ", data);
+        await localStorage.setItem("configuration", JSON.stringify(data));
+        window.location.reload();
+    }
+>>>>>>> e6807dd14e09dce1a2419c69d552c3c0c7929f1c
 
     async function loadConfigForEdit(id) {
         const response = await fetch(
