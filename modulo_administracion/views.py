@@ -286,17 +286,23 @@ def create_employee_partial(request): #crea un nuevo empleado dentro de un formu
         role_id = request.POST['id_role']
         role = Role.objects.get(id=role_id)
         
-        employee = Employee(
-            firstname=request.POST['firstname'],
-            lastname=request.POST['lastname'],
-            username=request.POST['username'],
-            password=request.POST['password'],
-            isActive=request.POST['isActive'],
-            id_role=role,  # Asigna la instancia de Role
-        )
-        employee.save()
-        messages.success(request, "Empleado creado correctamente.")
-        return redirect('employees')
+        #Captura los datos del formulario
+        firstname=request.POST['firstname']
+        lastname=request.POST['lastname']
+        username=request.POST['username']
+        password=request.POST['password']
+        isActive=request.POST['isActive']
+          
+        #Crea el empleado, primero con customUser
+        if CustomUser.objects.filter(username=username).exists():
+           print('El usuario ya existe')
+           return redirect('employees')
+        else:
+            user = CustomUser.objects.create_user(username=username, password=password, is_employee=True)
+            empleado = Employee.objects.create(user=user, firstName=firstname, lastName=lastname, is_active=isActive, id_rol=role)
+            empleado.save()
+            messages.success(request, "Empleado creado correctamente.")
+            return redirect('employees')
     else:
         return render(request, 'employees/create_employee.html', {'roles': roles})
 
