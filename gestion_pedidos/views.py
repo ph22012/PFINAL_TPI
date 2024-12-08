@@ -206,7 +206,7 @@ def order_edit(request, id_order):
 
         # Obtener el distrito y actualizar la dirección
         distrito = get_object_or_404(Distrito, id_distrito=id_distrito)
-        customer_address, _ = CustomerAddress.objects.get_or_create(
+        customer_address, _ = CustomerAddress.objects.update_or_create(
             customer=order.id_cart.customer,
             Distrito=distrito,
             defaults={'address': address_detail}
