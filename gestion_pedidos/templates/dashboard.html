@@ -29,7 +29,7 @@
                             <td>{{ order.order_date }}</td>
                             <td>{{order.id_address}}</td>
                             <td>{{order.last_update}}</td>
-                            <td><button type="button" class="btn btn-primary btn-sm" id="ver">Ver pedido</button></td>
+                            <td><button type="button" href="{% url 'order_detail' order_id=order.id_order %}" class="btn btn-primary btn-sm" id="ver">Ver pedido</button></td>
                             <td><button type="button" class="btn btn-warning btn-sm" id="editar">Editar pedido</button></td>
                         {%endfor%}
                     </tbody>

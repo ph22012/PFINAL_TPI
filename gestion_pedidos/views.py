@@ -192,48 +192,51 @@ def get_registered_address(request):
     })
 
 # Editar order
-def order_edit(request, order_id):
+def order_edit(request, id_order):
     # Obtener el pedido
-    order = get_object_or_404(Order, id=order_id)
+    order = get_object_or_404(Order, id_order=id_order)
 
-    # Manejar el formulario de edición
     if request.method == 'POST':
         # Dirección
-        id_distrito = request.POST.get('id_distrito')
+        id_distrito = request.POST.get('distrito_id')
         address_detail = request.POST.get('address')
         if not id_distrito or not address_detail:
             messages.error(request, 'Por favor, completa todos los campos de dirección.')
-            return redirect('order_edit', order_id=order_id)
+            return redirect('edit_order', id_order=id_order)
 
         # Obtener el distrito y actualizar la dirección
-        distrito = get_object_or_404(Distrito, id=id_distrito)
+        distrito = get_object_or_404(Distrito, id_distrito=id_distrito)
         customer_address, _ = CustomerAddress.objects.get_or_create(
-            customer=order.shoppingcart.customer,
+            customer=order.id_cart.customer,
             Distrito=distrito,
             defaults={'address': address_detail}
         )
-        order.address = customer_address
+        order.id_address = customer_address
 
         # Repartidor
         repartidor_id = request.POST.get('repartidor_id')
         if repartidor_id:
-            repartidor_role = get_object_or_404(Role, name='Repartidor')  # Asegúrate de tener este rol
-            repartidor = get_object_or_404(Employee, id=repartidor_id, id_rol=repartidor_role, is_active=True)
-            order.employee = repartidor
+            repartidor_role = get_object_or_404(Role, name='Repartidor')
+            repartidor = get_object_or_404(Employee, id_employee=repartidor_id, id_rol=repartidor_role, is_active=True)
+            order.id_employee = repartidor
 
         # Guardar cambios
         order.save()
-        messages.success(request, f'Pedido #{order.id} actualizado exitosamente.')
-        return redirect('order_create')
+        messages.success(request, f'Pedido #{order.id_order} actualizado exitosamente.')
+        return redirect('edit_order', id_order=id_order)
 
     # Obtener datos para mostrar en el formulario
     distritos = Distrito.objects.all()
-    repartidor_role = get_object_or_404(Role, name='Repartidor')  # Filtrar empleados por rol
+    municipios = Municipio.objects.all()
+    departamentos = Departamento.objects.all()
+    repartidor_role = get_object_or_404(Role, name='Repartidor')
     repartidores = Employee.objects.filter(id_rol=repartidor_role, is_active=True)
 
     return render(request, 'gestion_pedido/edit_order.html', {
         'order': order,
         'distritos': distritos,
+        'municipios': municipios,
+        'departamentos': departamentos,
         'repartidores': repartidores,
     })
 
