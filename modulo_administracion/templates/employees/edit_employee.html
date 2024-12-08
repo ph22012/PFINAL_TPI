@@ -13,7 +13,7 @@
 <body>
     <div class="container py-4">
         <h1 class="text-center mb-4">Editar Empleado</h1>
-        <form method="POST" action="{% url 'edit_employee' employee.id %}" class="shadow p-4 rounded bg-light">
+        <form method="POST" action="{% url 'edit_employee' Employee.id_employee %}" class="shadow p-4 rounded bg-light">
             {% csrf_token %}
             <div class="mb-3">
                 <label for="firstname" class="form-label">Nombre:</label>

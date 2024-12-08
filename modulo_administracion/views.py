@@ -308,19 +308,19 @@ def create_employee_partial(request): #crea un nuevo empleado dentro de un formu
 
 #@login_required
 def edit_employee(request, id): #edita un empleado existente
-    employee = get_object_or_404(Employee, id = id)
+    employee = get_object_or_404(Employee, id_employee = id)
     roles = Role.objects.all()  # Obtiene todos los roles
     
     if request.method == 'POST':
         role_id = request.POST['id_role']
         role = Role.objects.get(id=role_id)
 
-        employee.firstname = request.POST['firstname']
-        employee.lastname = request.POST['lastname']
-        employee.username = request.POST['username']
-        employee.password = request.POST['password']
-        employee.isActive = request.POST['isActive']
-        employee.id_role = role  # Asigna la instancia de Role en vez del id
+        employee.firstName = request.POST['firstname']
+        employee.lastName = request.POST['lastname']
+        employee.user.username = request.POST['username']
+        employee.user.set_password = request.POST['password']
+        employee.is_active = request.POST['isActive']
+        employee.id_rol = role  # Asigna la instancia de Role en vez del id
         employee.save()
 
         messages.success(request, "Empleado actualizado correctamente.")
