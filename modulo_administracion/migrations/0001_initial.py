@@ -34,6 +34,7 @@ class Migration(migrations.Migration):
                 ('pathLogo', models.CharField(blank=True, max_length=100, null=True)),
                 ('path_slogan', models.CharField(blank=True, max_length=100, null=True)),
                 ('color_pallette', models.CharField(blank=True, max_length=100, null=True)),
+                ('color_pallette_bg', models.CharField(blank=True, max_length=100, null=True)),
                 ('address', models.CharField(blank=True, max_length=100, null=True)),
                 ('isPointActive', models.BooleanField(default=False)),
             ],

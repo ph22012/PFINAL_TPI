@@ -175,3 +175,24 @@ table#tablaProductos th {
 #formAgregar button:hover {
     background-color: #45a049;
 }
+
+#formEditar input[type="text"],
+#formEditar input[type="number"] {
+    padding: 8px;
+    margin: 5px 0;
+    width: 200px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#formEditar button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#formEditar button:hover {
+    background-color: #45a049;
+}

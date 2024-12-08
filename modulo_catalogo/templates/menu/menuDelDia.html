@@ -9,7 +9,7 @@
 <body>
   <div class="header">
     
-    <a href="{% url 'index' %}" id="backBtn">Regresar</a>
+    <a href="{% url 'indexCatalogo' %}" id="backBtn">Regresar</a>
     <a href="{% url 'logout' %}" id="logoutBtn">Cerrar Sesión</a>
   </div>
   
@@ -45,7 +45,7 @@
     
     <h2>Agregar productos al menú</h2>
     
-    <form method="POST" action="{% url 'index' %}">
+    <form method="POST" action="{% url 'indexCatalogo' %}">
       {% csrf_token %}
       <label for="ingresarID">Ingresar ID:</label>
       <input type="text" id="ingresarID" name="ingresarID" required>
@@ -73,7 +73,7 @@
       </tbody>
     </table>
     
-    <form method="POST" action="{% url 'index' %}">
+    <form method="POST" action="{% url 'indexCatalogo' %}">
       {% csrf_token %}
       <button class="btn" type="submit">Crear Menú</button>
     </form>

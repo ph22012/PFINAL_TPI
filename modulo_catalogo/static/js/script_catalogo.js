@@ -5,10 +5,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Modal de Agregar Productos
     var agregarModal = document.getElementById('agregarModal');
     var openAgregarModal = document.getElementById('openAgregarModal');
+    console.log("Se detecto:" +openAgregarModal);
     var closeAgregarModal = document.getElementById('closeAgregarModal');
-    var buscarProducto = document.getElementById('buscarProducto');
+    var buscarProducto1 = document.getElementById('buscarProducto');
     var agregarAlCatalogo = document.getElementById('agregarAlCatalogo');
     var cerrarModal = document.getElementById('cerrarModal');
+    var tablaProductos1 = document.getElementById('tablaProductos1');
+    var idProductoInput1 = document.getElementById('id_producto');
+
+    // Modal de Editar Productos
+    var editarModal = document.getElementById('editarModal');
+    var openEditarModal = document.getElementById('openEditarModal');
+    console.log("Se detecto:" +openEditarModal);
+    var closeEditarModal = document.getElementById('closeEditarModal');
+    var buscarProducto = document.getElementById('buscarProductoEditar');
+    var actualizarElCatalogo = document.getElementById('actualizarElCatalogo');
+    var cerrarEditarModal = document.getElementById('cerrarEditarModal');
     var tablaProductos = document.getElementById('tablaProductos');
     var idProductoInput = document.getElementById('id_producto');
 
@@ -22,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Abrir Modal de Agregar Productos
     openAgregarModal.onclick = function() {
+        console.log("Abriendo Modal de Agregar Productos");
         agregarModal.style.display = "block";
     }
 
@@ -33,6 +46,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Cerrar Modal de Agregar Productos con "Salir"
     cerrarModal.onclick = function() {
         agregarModal.style.display = "none";
+    }
+
+    // Abrir Modal de Editar Productos
+    openEditarModal.onclick = function() {
+        console.log("Abriendo Modal de Editar Productos");
+        editarModal.style.display = "block";
+    }
+
+    // Cerrar Modal de Editar Productos
+    closeEditarModal.onclick = function() {
+        editarModal.style.display = "none";
+    }
+
+    // Cerrar Modal de Editar Productos con "Salir"
+    cerrarEditarModal.onclick = function() {
+        editarModal.style.display = "none";
     }
 
     // Función para buscar el producto por ID
@@ -51,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Agregar el producto al catálogo
-    agregarAlCatalogo.onclick = function() {
+    actualizarElCatalogo.onclick = function() {
         var productos = [];
         var rows = tablaProductos.querySelectorAll('tbody tr');
         rows.forEach(function(row) {
@@ -99,13 +128,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Cerrar ambos modales si se hace clic fuera de ellos
+    // Cerrar  modales si se hace clic fuera de ellos
     window.onclick = function(event) {
         if (event.target === agregarModal) {
             agregarModal.style.display = "none";
         }
         if (event.target === eliminarModal) {
             eliminarModal.style.display = "none";
+        }
+        if (event.target === editarModal) {
+            editarModal.style.display = "none";
         }
     }
 });

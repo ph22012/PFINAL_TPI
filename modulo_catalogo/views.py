@@ -1,14 +1,14 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-
-from modulo_catalogo.models import Product
+from .models import Product
 
 # Create your views here.
-def index(request):
-    return render(request, 'indexCata.html')  # Renderiza la plantilla principal
+def index_catalogo(request):
+    return render(request, 'index_catalogo.html')  # Renderiza la plantilla principal
 
 def catalogo_productos(request):
-    return render(request, 'catalogo_productos/catalogoDeProductos.html')  # Renderiza la plantilla de catalogo de productos
+    products = Product.objects.all()
+    return render(request, 'catalogo_productos/catalogoDeProductos.html', {'productos': products})  # Renderiza la plantilla de catalogo de productos
 
 def logout_view(request):
     return render(request, 'index.html')  # Renderiza la plantilla principal

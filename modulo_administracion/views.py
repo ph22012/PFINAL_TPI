@@ -8,14 +8,18 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
+from django.utils.timezone import now
 import os
 
+#404 not found
+def custom_page_not_found(request, exception):
+    return render(request, '404.html', status=404)
 
 # configuration.
 
 
 def GeneralView(request):
-    return HttpResponse("Hello, world. You're at the index.")
+    return render(request, 'home.html')
 
 # configuration.
 def configuration_home(request):
@@ -30,6 +34,7 @@ def gestionar_configuraciones(request):
         name = request.POST.get('name')
         address = request.POST.get('address')
         color_pallette = request.POST.get('color_pallette')
+        color_pallette_bg = request.POST.get('color_pallette_bg')
         isPointActive = request.POST.get('isPointActive') == "on"
 
         # Manejo de imágenes
@@ -49,6 +54,7 @@ def gestionar_configuraciones(request):
             name=name,
             address=address,
             color_pallette=color_pallette,
+            color_pallette_bg=color_pallette_bg,
             pathLogo=pathLogo_url,
             path_slogan=path_slogan_url,
             isPointActive=isPointActive
@@ -70,6 +76,7 @@ def editar_configuracion(request, configuracion_id):
         configuracion.name = request.POST.get('name', configuracion.name)
         configuracion.address = request.POST.get('address', configuracion.address)
         configuracion.color_pallette = request.POST.get('color_pallette', configuracion.color_pallette)
+        configuracion.color_pallette_bg = request.POST.get('color_pallette_bg', configuracion.color_pallette_bg)
         configuracion.isPointActive = request.POST.get('isPointActive') == "on"
 
         # Manejo de logo
@@ -103,6 +110,7 @@ def editar_configuracion(request, configuracion_id):
             "name": configuracion.name,
             "address": configuracion.address,
             "color_pallette": configuracion.color_pallette,
+            "color_pallette_bg": configuracion.color_pallette_bg,
             "pathLogo": configuracion.pathLogo if configuracion.pathLogo else "",
             "path_slogan": configuracion.path_slogan if configuracion.path_slogan else "",
             "isPointActive": configuracion.isPointActive,
@@ -132,6 +140,7 @@ def aplicar_configuracion(request, configuracion_id):
             "name": configuracion.name,
             "address": configuracion.address,
             "color_pallette": configuracion.color_pallette,
+            "color_pallette_bg": configuracion.color_pallette_bg,
             "pathLogo": configuracion.pathLogo if configuracion.pathLogo else "",
             "path_slogan": configuracion.path_slogan if configuracion.path_slogan else "",
             "isPointActive": configuracion.isPointActive,
@@ -370,15 +379,19 @@ def create_customer(request): #crea un nuevo consumidor/cliente
 def create_customer_partial(request): #crea un nuevo consumidor/cliente dentro de un formulario dinámico
     
     if request.method == 'POST':
-        puntos = RewardPoints.objects.get(id=1)
-        customUser = CustomUser.objects.create_user( 
+        if CustomUser.objects.filter(username=request.POST['user']).exists():
+            print('El usuario ya existe')
+            return redirect('customers')
+        else:
+            puntos = RewardPoints.objects.create(exp_date=now(), points_count=0)
+            customUser = CustomUser.objects.create_user( 
                             username = request.POST['user'],
                             password = request.POST['password'],
                             is_customer = True,
                             #idConfiguration = request.POST['idConfiguration']
                             )
         #customer.save()
-        Customer.objects.create(user = customUser, firstName = request.POST['firstname'], 
+            Customer.objects.create(user = customUser, firstName = request.POST['firstname'], 
                             lastName = request.POST['lastname'], id_points = puntos)
         messages.success(request, "Cliente creado correctamente.")
         return redirect('customers')
