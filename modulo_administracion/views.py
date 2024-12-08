@@ -11,6 +11,9 @@ from django.core.files.storage import FileSystemStorage
 from django.utils.timezone import now
 import os
 
+#404 not found
+def custom_page_not_found(request, exception):
+    return render(request, '404.html', status=404)
 
 # configuration.
 

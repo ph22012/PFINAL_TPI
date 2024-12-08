@@ -214,10 +214,10 @@
             document.getElementById("editIsPointActive").checked = config.isPointActive;
 
             const editLogoContainer = document.getElementById("editLogoContainer");
-            editLogoContainer.innerHTML = config.pathLogo ? `<img src="modulo_administracion/static/img/${config.pathLogo}" style="max-width: 100px;">` : "Sin Logo";
+            editLogoContainer.innerHTML = config.pathLogo ? `<img src="/static/img/${config.pathLogo}" style="max-width: 100px;">` : "Sin Logo";
 
             const editSloganContainer = document.getElementById("editSloganContainer");
-            editSloganContainer.innerHTML = config.path_slogan ? `<img src="modulo_administracion/static/img/${config.path_slogan}" style="max-width: 100px;">` : "Sin Slogan";
+            editSloganContainer.innerHTML = config.path_slogan ? `<img src="/static/img/${config.path_slogan}" style="max-width: 100px;">` : "Sin Slogan";
 
             new bootstrap.Modal(document.getElementById("editConfigModal")).show();
         }
