@@ -14,7 +14,7 @@
         <!-- Barra de navegación -->
         <header>
             <nav>
-                <a href="{% url 'index' %}" id="backBtn">Regresar</a>
+                <a href="{% url 'indexCatalogo' %}" id="backBtn">Regresar</a>
                 <a href="{% url 'logout' %}" class="logout">Cerrar Sesión</a>
             </nav>
         </header>
@@ -40,10 +40,10 @@
                         {% for producto in productos %}
                         <tr>
                             <td>{{ producto.id_product }}</td>
-                            <td>{{ producto.categoria }}</td>
-                            <td>{{ producto.nombre }}</td>
-                            <td>{{ producto.precio }}</td>
-                            <td>{{ producto.cantidad_dispo }}</td>
+                            <td>{{ producto.id_category.name }}</td>
+                            <td>{{ producto.name }}</td>
+                            <td>${{ producto.price }}</td>
+                            <td>{{ producto.count }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -54,6 +54,9 @@
             <div class="actions">
                 <!-- Botón de Agregar Productos (Abre el Modal para agregar productos) -->
                 <button class="btn btn-success" id="openAgregarModal">Agregar Productos</button>
+
+                <!-- Botón de Agregar Productos (Abre el Modal para agregar productos) -->
+                <button class="btn btn-success" id="openEditarModal">Editar Productos</button>
 
                 <!-- Botón de Eliminar Productos (Abre el Modal para eliminar productos) -->
                 <button class="btn btn-danger" id="openEliminarModal">Eliminar Productos</button>
@@ -67,13 +70,13 @@
             <span class="close" id="closeAgregarModal">&times;</span>
             <h2>Agregar Productos</h2>
             <form id="formAgregar">
-                <label for="id_producto">ID Producto:</label>
-                <input type="text" id="id_producto" name="id_producto" required>
+                <label for="id_producto1">ID Producto:</label>
+                <input type="text" id="id_producto1" name="id_producto" required>
                 <button type="button" id="buscarProducto">Buscar</button>
             </form>
 
             <h3>Productos Encontrados</h3>
-            <table id="tablaProductos">
+            <table id="tablaProductos1">
                 <thead>
                     <tr>
                         <th>ID Producto</th>
@@ -92,7 +95,38 @@
             </div>
         </div>
     </div>
+    <!-- Modal para editar Productos -->
+    <div id="editarModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeEditarModal">&times;</span>
+            <h2>Editar Productos</h2>
+            <form id="formEditar">
+                <label for="id_producto">ID Producto:</label>
+                <input type="text" id="id_producto" name="id_producto" required>
+                <button type="button" id="buscarProductoEditar">Buscar</button>
+            </form>
 
+            <h3>Productos Encontrados</h3>
+            <table id="tablaProductos">
+                <thead>
+                    <tr>
+                        <th>ID Producto</th>
+                        <th>Nombre</th>
+                        <th>Cantidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Aquí se agregarán los productos encontrados -->
+                </tbody>
+            </table>
+
+            <div class="modal-actions">
+                <button id="actualizarElCatalogo" class="btn btn-success">Actualizar producto</button>
+                <button id="cerrarEditarModal" class="btn btn-danger">Salir</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- Modal para Eliminar Productos -->
     <div id="eliminarModal" class="modal">
         <div class="modal-content">
@@ -111,6 +145,6 @@
     </div>
 
     <!-- Referencia al archivo JS -->
-    <script src="{% static 'js/script_catalogo.js' %}"></script>
+    <script src="../../static/js/script_catalogo.js"></script>
 </body>
 </html>

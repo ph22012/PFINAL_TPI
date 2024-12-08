@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'django_bootstrap5',
 ]
 
-AUTH_USER_MODEL = 'customers.CustomUser'
+AUTH_USER_MODEL = 'modulo_administracion.CustomUser'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

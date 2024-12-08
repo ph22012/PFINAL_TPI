@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from gestion_pedidos.models import Employee, Order, OrderStatus
+from modulo_administracion.models import Employee
+from moduloDespacho.models import Order_status, Order
 from django.utils.timezone import now
 from django.db.models import Sum
 
@@ -40,7 +41,7 @@ def desactivar_repartidor(request):
 
 def entregar_pedido(request, pedido_id):
     pedido = get_object_or_404(Order, id=pedido_id, employee=request.user.id)
-    pedido.status = OrderStatus.objects.get(status="Entregado")
+    pedido.status = Order_status.objects.get(status="Entregado")
     pedido.last_update = now()
     pedido.save()
     messages.success(request, f"El pedido #{pedido.id} se ha marcado como entregado.")

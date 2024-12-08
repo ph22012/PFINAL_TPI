@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login as auth_login
 from django.shortcuts import redirect
-from .models import CustomUser, Customer, Employee
+from modulo_administracion.models import CustomUser, Customer, Employee
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 

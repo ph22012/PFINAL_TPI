@@ -3,11 +3,12 @@ from django.views.generic import UpdateView, TemplateView
 from django.urls import reverse_lazy
 from django import forms
 from django.contrib import messages
-from .models import Configuration, Cupon, Role, Employee, Customer
+from .models import Configuration, Cupon, RewardPoints, Role, Employee, Customer, CustomUser
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
+from django.utils.timezone import now
 import os
 
 
@@ -286,35 +287,41 @@ def create_employee_partial(request): #crea un nuevo empleado dentro de un formu
         role_id = request.POST['id_role']
         role = Role.objects.get(id=role_id)
         
-        employee = Employee(
-            firstname=request.POST['firstname'],
-            lastname=request.POST['lastname'],
-            username=request.POST['username'],
-            password=request.POST['password'],
-            isActive=request.POST['isActive'],
-            id_role=role,  # Asigna la instancia de Role
-        )
-        employee.save()
-        messages.success(request, "Empleado creado correctamente.")
-        return redirect('employees')
+        #Captura los datos del formulario
+        firstname=request.POST['firstname']
+        lastname=request.POST['lastname']
+        username=request.POST['username']
+        password=request.POST['password']
+        isActive=request.POST['isActive']
+          
+        #Crea el empleado, primero con customUser
+        if CustomUser.objects.filter(username=username).exists():
+           print('El usuario ya existe')
+           return redirect('employees')
+        else:
+            user = CustomUser.objects.create_user(username=username, password=password, is_employee=True)
+            empleado = Employee.objects.create(user=user, firstName=firstname, lastName=lastname, is_active=isActive, id_rol=role)
+            empleado.save()
+            messages.success(request, "Empleado creado correctamente.")
+            return redirect('employees')
     else:
         return render(request, 'employees/create_employee.html', {'roles': roles})
 
 #@login_required
 def edit_employee(request, id): #edita un empleado existente
-    employee = get_object_or_404(Employee, id = id)
+    employee = get_object_or_404(Employee, id_employee = id)
     roles = Role.objects.all()  # Obtiene todos los roles
     
     if request.method == 'POST':
         role_id = request.POST['id_role']
         role = Role.objects.get(id=role_id)
 
-        employee.firstname = request.POST['firstname']
-        employee.lastname = request.POST['lastname']
-        employee.username = request.POST['username']
-        employee.password = request.POST['password']
-        employee.isActive = request.POST['isActive']
-        employee.id_role = role  # Asigna la instancia de Role en vez del id
+        employee.firstName = request.POST['firstname']
+        employee.lastName = request.POST['lastname']
+        employee.user.username = request.POST['username']
+        employee.user.set_password = request.POST['password']
+        employee.is_active = request.POST['isActive']
+        employee.id_rol = role  # Asigna la instancia de Role en vez del id
         employee.save()
 
         messages.success(request, "Empleado actualizado correctamente.")
@@ -324,8 +331,8 @@ def edit_employee(request, id): #edita un empleado existente
 
 #@login_required
 def delete_employee(request, id): #borra un empleado existente
-    employee = get_object_or_404(Employee, id = id)
-    employee.delete()
+    employee = get_object_or_404(Employee, id_employee = id)
+    employee.user.delete()
     messages.success(request, "Empleado eliminado correctamente.")
     return redirect('employees')
 
@@ -345,28 +352,39 @@ def list_customers_partial(request): #carga dinámicamente la lista de clientes
 #@login_required
 def create_customer(request): #crea un nuevo consumidor/cliente
     if request.method == 'POST':
-        customer = Customer(firstname = request.POST['firstname'], 
-                            lastname = request.POST['lastname'], 
-                            user = request.POST['user'], 
-                            password = request.POST['password']
+        puntos = RewardPoints.objects.get(id=1)
+        customUser = CustomUser.objects.create_user( 
+                            username = request.POST['user'],
+                            password = request.POST['password'],
+                            is_customer = True,
                             #idConfiguration = request.POST['idConfiguration']
                             )
-        customer.save()
+        #customer.save()
+        Customer.objects.create(user = customUser, firstName = request.POST['firstname'], 
+                            lastName = request.POST['lastname'], id_points = puntos)
         messages.success(request, "Cliente creado correctamente.")
         return redirect('customers')
     else:
-        return render(request, 'customers/create_customer.html')
+        return render(request, "customers/create_customer.html")
 
 #@login_required
 def create_customer_partial(request): #crea un nuevo consumidor/cliente dentro de un formulario dinámico
+    
     if request.method == 'POST':
-        customer = Customer(firstname = request.POST['firstname'], 
-                            lastname = request.POST['lastname'], 
-                            user = request.POST['user'], 
-                            password = request.POST['password']
+        if CustomUser.objects.filter(username=request.POST['user']).exists():
+            print('El usuario ya existe')
+            return redirect('customers')
+        else:
+            puntos = RewardPoints.objects.create(exp_date=now(), points_count=0)
+            customUser = CustomUser.objects.create_user( 
+                            username = request.POST['user'],
+                            password = request.POST['password'],
+                            is_customer = True,
                             #idConfiguration = request.POST['idConfiguration']
                             )
-        customer.save()
+        #customer.save()
+            Customer.objects.create(user = customUser, firstName = request.POST['firstname'], 
+                            lastName = request.POST['lastname'], id_points = puntos)
         messages.success(request, "Cliente creado correctamente.")
         return redirect('customers')
     else:
@@ -374,12 +392,13 @@ def create_customer_partial(request): #crea un nuevo consumidor/cliente dentro d
 
 #@login_required
 def edit_customer(request, id): #edita un consumidor/cliente existente
-    customer = get_object_or_404(Customer, id = id)
+    customer = get_object_or_404(Customer, id_customer = id)
     if request.method == 'POST':
-        customer.firstname = request.POST['firstname']
-        customer.lastname = request.POST['lastname']
-        customer.user = request.POST['user']
-        customer.password = request.POST['password']
+        customer.firstName = request.POST['firstname']
+        customer.lastName = request.POST['lastname']
+        customer.user.username = request.POST['user']
+        contraseña = request.POST['password']
+        customer.user.set_password(contraseña)
         #customer.idConfiguration = request.POST['idConfiguration']
         customer.save()
         messages.success(request, "Cliente actualizado correctamente.")
@@ -389,13 +408,15 @@ def edit_customer(request, id): #edita un consumidor/cliente existente
 
 #@login_required
 def edit_customer_partial(request, id): #carga dinámicamente el formulario de edición de cliente
-    customer = get_object_or_404(Customer, id = id)
+    customer = get_object_or_404(Customer, id_customer = id)
     if request.method == 'POST':
-        customer.firstname = request.POST['firstname']
-        customer.lastname = request.POST['lastname']
-        customer.user = request.POST['user']
-        customer.password = request.POST['password']
+        customer.firstName = request.POST['firstname']
+        customer.lastName = request.POST['lastname']
+        customer.user.username = request.POST['user']
+        contraseña = request.POST['password']
+        customer.user.set_password(contraseña)
         #customer.idConfiguration = request.POST['idConfiguration']
+        customer.user.save()
         customer.save()
         messages.success(request, "Cliente actualizado correctamente.")
         return redirect('customers')
@@ -404,7 +425,8 @@ def edit_customer_partial(request, id): #carga dinámicamente el formulario de e
 
 #@login_required
 def delete_customer(request, id): #borra un consumidor/cliente existente    
-    customer = get_object_or_404(Customer, id = id)
+    customer = get_object_or_404(Customer, id_customer = id)
+    customer.user.delete()
     customer.delete()
     messages.success(request, "Cliente eliminado correctamente.")
     return redirect('customers')
