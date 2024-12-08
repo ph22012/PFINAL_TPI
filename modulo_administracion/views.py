@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
+from django.utils.timezone import now
 import os
 
 
@@ -370,8 +371,12 @@ def create_customer(request): #crea un nuevo consumidor/cliente
 def create_customer_partial(request): #crea un nuevo consumidor/cliente dentro de un formulario dinámico
     
     if request.method == 'POST':
-        puntos = RewardPoints.objects.get(id=1)
-        customUser = CustomUser.objects.create_user( 
+        if CustomUser.objects.filter(username=request.POST['user']).exists():
+            print('El usuario ya existe')
+            return redirect('customers')
+        else:
+            puntos = RewardPoints.objects.create(exp_date=now(), points_count=0)
+            customUser = CustomUser.objects.create_user( 
                             username = request.POST['user'],
                             password = request.POST['password'],
                             is_customer = True,
