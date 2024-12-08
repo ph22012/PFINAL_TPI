@@ -30,11 +30,11 @@ class RewardPoints(models.Model):
     points_count = models.IntegerField()
 
 class Role(models.Model):
-    id = models.AutoField(primary_key=True, auto_created=True)
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=256)
     
     class Meta:
-        db_table = "rol"
+        db_table = 'role'
         managed = False
     
     def __str__(self):

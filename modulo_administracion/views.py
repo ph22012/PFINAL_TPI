@@ -330,8 +330,8 @@ def edit_employee(request, id): #edita un empleado existente
 
 #@login_required
 def delete_employee(request, id): #borra un empleado existente
-    employee = get_object_or_404(Employee, id = id)
-    employee.delete()
+    employee = get_object_or_404(Employee, id_employee = id)
+    employee.user.delete()
     messages.success(request, "Empleado eliminado correctamente.")
     return redirect('employees')
 
