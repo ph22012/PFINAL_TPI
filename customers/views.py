@@ -48,3 +48,6 @@ def login(request):
 def profile(request):
     user = request.user
     return render(request, 'usuarios/profile.html', {'user': user})
+
+def principal(request):
+    return render(request, 'principalView.html')
