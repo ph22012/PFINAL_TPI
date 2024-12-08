@@ -32,6 +32,13 @@ class RewardPoints(models.Model):
 class Role(models.Model):
     id = models.AutoField(primary_key=True, auto_created=True)
     name = models.CharField(max_length=256)
+    
+    class Meta:
+        db_table = "rol"
+        managed = False
+    
+    def __str__(self):
+        return self.name
 
 class CustomUser(AbstractUser):
     #Validaciones para saber cual usuario es
