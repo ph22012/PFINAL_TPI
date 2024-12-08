@@ -17,7 +17,6 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'static/js', 'serviceworker.js') 
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -156,20 +155,29 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # MEDIA_URL = '/imgs'  # URL para acceder a los archivos subidos
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
 
-PWA_APP_NAME = 'repartidores'
-PWA_APP_DESCRIPTION = "Aplicación de repartidores"
+PWA_APP_NAME = 'App Repartidores'
+PWA_APP_DESCRIPTION = "Aplicacion para los repartidores"
 PWA_APP_THEME_COLOR = '#000000'
 PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
 PWA_APP_ICONS = [
-    {
-        'src': 'static/images/icon.png',
-        'sizes': '160x160'
-    }
+	{
+		
+	}
 ]
 PWA_APP_ICONS_APPLE = [
-    {
-        'src': '/static/images/icon.png',
-        'sizes': '160x160'
-    }
+	{
+		
+	}
 ]
-PWA_APP_LANG = 'es-ES'
+PWA_APP_SPLASH_SCREEN = [
+	{
+		
+	}
+]
+PWA_APP_DIR = 'ltr'
+PWA_APP_LANG = 'en-US'

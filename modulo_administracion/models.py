@@ -34,7 +34,7 @@ class Role(models.Model):
     name = models.CharField(max_length=256)
     
     class Meta:
-        db_table = "rol"
+        db_table = "role"
         managed = False
     
     def __str__(self):
