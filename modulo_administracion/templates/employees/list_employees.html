@@ -15,16 +15,16 @@
             <tbody>
                 {% for employee in employees %}
                 <tr>
-                    <td>{{ employee.id }}</td>
-                    <td>{{ employee.firstname }} {{ employee.lastname }}</td>
-                    <td>{{ employee.username }}</td>
-                    <td>{{ employee.id_role.name }}</td>
-                    <td>{{ employee.isActive|yesno:"Activo,Inactivo" }}</td>
+                    <td>{{ employee.id_employee }}</td>
+                    <td>{{ employee.firstName }} {{ employee.lastName }}</td>
+                    <td>{{ employee.user.username }}</td>
+                    <td>{{ employee.id_rol.name }}</td>
+                    <td>{{ employee.is_active|yesno:"Activo,Inactivo" }}</td>
                     <td class="text-center">
-                        <a href="{% url 'edit_employee' employee.id %}" class="btn btn-warning btn-sm me-1">
+                        <a href="{% url 'edit_employee' employee.id_employee %}" class="btn btn-warning btn-sm me-1">
                             <i class="bi bi-pencil-square"></i>
                         </a>
-                        <form action="{% url 'delete_employee' employee.id %}" method="POST" class="d-inline">
+                        <form action="{% url 'delete_employee' employee.id_employee %}" method="POST" class="d-inline">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar a este empleado?')">
                                 <i class="bi bi-trash"></i>

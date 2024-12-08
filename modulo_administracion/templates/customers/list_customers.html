@@ -13,14 +13,14 @@
             <tbody>
                 {% for customer in customers %}
                 <tr>
-                    <td>{{ customer.id }}</td>
-                    <td>{{ customer.firstname }} {{ customer.lastname }}</td>
+                    <td>{{ customer.id_customer }}</td>
+                    <td>{{ customer.firstName }} {{ customer.lastName }}</td>
                     <td>{{ customer.user }}</td>
                     <td class="text-center">
-                        <a href="{% url 'edit_customer_partial' customer.id %}" class="btn btn-warning btn-sm me-1">
+                        <a href="{% url 'edit_customer_partial' customer.id_customer %}" class="btn btn-warning btn-sm me-1">
                             <i class="bi bi-pencil-square"></i>
                         </a>
-                        <form action="{% url 'delete_customer' customer.id %}" method="POST" class="d-inline">
+                        <form action="{% url 'delete_customer' customer.id_customer %}" method="POST" class="d-inline">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar a este cliente?')">
                                 <i class="bi bi-trash"></i>
