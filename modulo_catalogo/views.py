@@ -1,6 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import Product
+import json
 
 # Create your views here.
 def index_catalogo(request):
@@ -61,3 +62,38 @@ def agregar_producto(request):
         )
         return JsonResponse({"mensaje": "Producto agregado correctamente"})
     return render(request, 'catalogo_productos/agregar.html')
+
+def editar_producto(request):
+    if request.method == 'POST':
+        print(request.POST)
+        data = json.loads(request.body)
+        print(data)
+        idProducto = data[0]['idProducto']
+        cantidad = data[0]['cantidad']
+        
+        try :
+             producto = Product.objects.get(id_product=idProducto)
+             producto.count = cantidad
+             producto.save()
+        except Product.DoesNotExist:
+             return HttpResponse("Producto no encontrado")
+        return HttpResponse("Editado")
+
+def buscar_producto(request):
+    
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        try:
+            producto = Product.objects.get(id_product= int(data))
+            return JsonResponse({
+                "producto":{
+                "idProd": producto.id_product,
+                "name": producto.name,
+                "count": producto.count,
+                "price": producto.price,
+                "description": producto.description,
+                    
+                }
+                })
+        except Product.DoesNotExist:
+                return HttpResponse("Producto no encontrado")
