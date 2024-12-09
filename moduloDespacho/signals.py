@@ -65,9 +65,14 @@ def updateOrderStatus(sender, instance,**kwargs):
                         "order": {
                             "id_order": instance.id_order,
                             "id_cart": instance.id_cart.id,
-                            "id_address": instance.id_address.id,
+                            "id_address": {
+                                "address": instance.id_address.address,
+                                "distrito": instance.id_address.Distrito.name,
+                                "municipio": instance.id_address.Distrito.id_municipio.name,
+                                "departamento": instance.id_address.Distrito.id_municipio.id_departamento.name
+                            },
                             "id_cupon": cupon,
-                            "id_employee": instance.id_employee.id,
+                            "id_employee": instance.id_employee.firstName,
                             "id_status":{
                                 "id_status": instance.id_status.id_status,
                                 "status": instance.id_status.status,

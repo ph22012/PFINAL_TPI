@@ -50,13 +50,14 @@ class OrderConsumer(AsyncWebsocketConsumer):
         tipo = data['type']
         if tipo == "procesarOrden":
             id_orden = data['idOrden']
-            await self.procesarOrden(id_orden)
+            new_status = data['status']
+            await self.procesarOrden(id_orden, new_status)
             
             
     @database_sync_to_async
-    def procesarOrden(self, id_orden):
+    def procesarOrden(self, id_orden, new_status):
         try:
-            next_status = Order_status.objects.get(id_status=2)
+            next_status = Order_status.objects.get(id_status=int(new_status))
             order = Order.objects.get(id_order=id_orden)
             order.id_status = next_status
             order.save()

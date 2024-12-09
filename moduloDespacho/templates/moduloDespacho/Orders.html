@@ -38,8 +38,14 @@
             {% for order in pendingOrders %}
             <tr id="orden-pendiente-{{order.id_order}}">
               <td>{{ order.id_order }}</td>
-              <td>{{ order.id_cart }}</td>
-              <td>{{ order.id_address }}</td>
+              <td>{{ order.id_cart.id }}</td>
+              <td>
+
+                {{ order.id_address.address}},
+                {{ order.id_address.Distrito }},
+                {{ order.id_address.Distrito.id_municipio }},
+                {{ order.id_address.Distrito.id_municipio.id_departamento }}
+              </td>
               <td>{{ order.id_cupon }}</td>
               <td>{{ order.id_employee }}</td>
               <td>{{ order.id_status }}</td>
@@ -81,14 +87,20 @@
             {% for order in onProcessOrders %}
             <tr id="orden-enProceso-{{order.id_order}}">
               <td>{{ order.id_order }}</td>
-              <td>{{ order.id_cart }}</td>
-              <td>{{ order.id_address }}</td>
+              <td>{{ order.id_cart.id }}</td>
+              <td>
+
+                {{ order.id_address.address}},
+                {{ order.id_address.Distrito }},
+                {{ order.id_address.Distrito.id_municipio }},
+                {{ order.id_address.Distrito.id_municipio.id_departamento }}
+              </td>
               <td>{{ order.id_cupon }}</td>
-              <td>{{ order.id_employee }}</td>
+              <td>{{ order.id_employee.firstName}}</td>
               <td>{{ order.id_status }}</td>
               <td>{{ order.order_date }}</td>
               <td>
-                <button type="button" class="btn btn-success btn-sm" id="">
+                <button type="button" class="btn btn-success btn-sm" id="btn-lista">
                   Marcar como "Lista"
                 </button>
               </td>

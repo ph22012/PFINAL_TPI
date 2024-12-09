@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var actualizarElCatalogo = document.getElementById('actualizarElCatalogo');
     var cerrarEditarModal = document.getElementById('cerrarEditarModal');
     var tablaProductos = document.getElementById('tablaProductos');
-    var idProductoInput = document.getElementById('id_producto');
+    var idProductoInput = document.getElementById('id_producto_buscar');
 
     // Modal de Eliminar Productos
     var eliminarModal = document.getElementById('eliminarModal');
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Abrir Modal de Agregar Productos
     openAgregarModal.onclick = function() {
         console.log("Abriendo Modal de Agregar Productos");
-        agregarModal.style.display = "block";
+        agregarModal.style.display = "block"; 
     }
 
     // Cerrar Modal de Agregar Productos
@@ -57,23 +57,40 @@ document.addEventListener('DOMContentLoaded', function() {
     // Cerrar Modal de Editar Productos
     closeEditarModal.onclick = function() {
         editarModal.style.display = "none";
+        limpiarTablaEditar();
     }
 
     // Cerrar Modal de Editar Productos con "Salir"
     cerrarEditarModal.onclick = function() {
         editarModal.style.display = "none";
+        limpiarTablaEditar();
     }
 
     // Función para buscar el producto por ID
     buscarProducto.onclick = function() {
         var idProducto = idProductoInput.value.trim();
         if (idProducto) {
-            // Aquí va la lógica para buscar el producto, por ejemplo, una petición AJAX al servidor
-            // Simulación de producto encontrado:
-            var tr = document.createElement('tr');
-            tr.innerHTML = `<td>${idProducto}</td><td>Producto ${idProducto}</td><td><input type="number" value="1" min="1" class="cantidad"></td>`;
-            tablaProductos.querySelector('tbody').appendChild(tr);
-            idProductoInput.value = '';  // Limpiar el campo de búsqueda
+            fetch('../buscar_producto/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken(), // Incluir token CSRF para proteger la solicitud
+                },
+                body: JSON.stringify(idProducto),
+            })
+            .then(response => response.json())
+            .then(data => { 
+                console.log(data);
+                if (data.producto) {
+                    console.log("id:"+data.producto.idProd);
+                    var producto = data.producto;
+                    var tr = document.createElement('tr');
+                    tr.innerHTML = `<td id="id_producto">${producto.idProd}</td><td id="nombre">${producto.name}</td><td><input type="number" value="${producto.count}" min="0" id = "cantidad" class="cantidad"></td>`;
+                    tablaProductos.querySelector('tbody').appendChild(tr);
+                    idProductoInput.value = '';  // Limpiar el campo de búsqueda
+                 }
+            })
+            
         } else {
             alert("Por favor ingresa un ID de producto.");
         }
@@ -91,9 +108,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (productos.length > 0) {
             // Lógica para agregar productos al catálogo (puede ser una solicitud AJAX)
+            fetch('../editar_producto/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCSRFToken(), // Incluir token CSRF para proteger la solicitud
+                },
+                body: JSON.stringify(productos),
+            })
+
             console.log("Productos a agregar al catálogo:", productos);
             alert('Productos agregados al catálogo');
-            agregarModal.style.display = "none";  // Cerrar el modal
+            editarModal.style.display = "none";  // Cerrar el modal
+            limpiarTablaEditar();
         } else {
             alert("No hay productos seleccionados para agregar.");
         }
@@ -138,6 +165,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (event.target === editarModal) {
             editarModal.style.display = "none";
+            limpiarTablaEditar();
         }
+    }
+
+    function getCSRFToken() {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('csrftoken='))
+            ?.split('=')[1];
+        return cookieValue || '';
+    }
+
+    function limpiarTablaEditar() {
+        var tabla = document.getElementById('tablaProductos');
+        var tbody = tabla.querySelector('tbody');
+        tbody.innerHTML = '';
     }
 });
