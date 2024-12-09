@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-nel_dg^eoa!ezu67hy7e--mn*+=)g+-t-foyl+1gq-8dm-hrkn
 DEBUG = True
 
 # ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'tudominio.com', '*', '.herokuapp.com']
+ALLOWED_HOSTS = ['pedidos-ues-5e2253dc3877.herokuapp.com' ,'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -88,9 +88,18 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
             'hosts': [os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')],
-                }
+                },
+    },
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': [os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379')],
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
     }
-    
 }
 
 
