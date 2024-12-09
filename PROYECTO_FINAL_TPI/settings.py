@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['pedidos-ues-5e2253dc3877.herokuapp.com' ,'localhost', '127.0.0
 
 INSTALLED_APPS = [
     'daphne',
+    'django_redis',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
