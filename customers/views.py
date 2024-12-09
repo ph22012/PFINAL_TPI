@@ -67,3 +67,6 @@ def carrito(request):
 def products_cart(request):
     
     return render(request, 'carrito.html')
+
+def logout(request):
+    return redirect('login')
