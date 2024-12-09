@@ -1,0 +1,1 @@
+web: gunicorn PROYECTO_FINAL_TPI.wsgi
