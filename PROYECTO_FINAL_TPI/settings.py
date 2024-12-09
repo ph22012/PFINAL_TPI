@@ -30,7 +30,7 @@ DEBUG = False
 ALLOWED_HOSTS = ['pedidos-ues-5e2253dc3877.herokuapp.com' ,'localhost', '127.0.0.1','https://pfinal-tpi.onrender.com']
 
 
-# Application definition
+# Application definitio
 
 INSTALLED_APPS = [
     'daphne',
