@@ -1,0 +1,134 @@
+{% extends './usuarios/base.html' %}
+
+{% block title %}Carrito - MiComida{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Tu Carrito</h1>
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <div id="cartItemsPage">
+                    <!-- Los elementos del carrito se generarán dinámicamente aquí -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4 mt-4 mt-lg-0">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Resumen del pedido</h5>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">$0.00</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Impuestos (10%):</span>
+                    <span id="taxes">$0.00</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <strong>Total:</strong>
+                    <strong id="total">$0.00</strong>
+                </div>
+                <button class="btn btn-success w-100" onclick="proceedToCheckout()">Proceder al pago</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Cargar el carrito desde localStorage, si existe
+let carts = JSON.parse(localStorage.getItem('cart')) || [];
+
+// Actualizar el carrito en la página de carrito
+function updateCartPage() {
+    const cartItemsElement = document.getElementById('cartItemsPage');
+    cartItemsElement.innerHTML = '';
+
+    if (carts.length === 0) {
+        cartItemsElement.innerHTML = '<p class="text-center">Tu carrito está vacío</p>';
+        return;
+    }
+
+    carts.forEach(item => {
+        const itemElement = document.createElement('div');
+        itemElement.className = 'cart-item d-flex align-items-center justify-content-between border-bottom py-3';
+        itemElement.innerHTML = `
+            <div class="d-flex align-items-center">
+                <i class="bi bi-circle menu-icon me-3"></i>
+                <div>
+                    <h6 class="mb-0">${item.name}</h6>
+                    <small class="text-muted">$${item.price.toFixed(2)} cada uno</small>
+                </div>
+            </div>
+            <div class="d-flex align-items-center">
+                <button class="btn btn-sm btn-outline-secondary me-2" onclick="updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
+                <span>${item.quantity}</span>
+                <button class="btn btn-sm btn-outline-secondary ms-2" onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
+                <button class="btn btn-sm btn-outline-danger ms-3" onclick="removeFromCart(${item.id})">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        `;
+        cartItemsElement.appendChild(itemElement);
+    });
+
+    updateOrderSummary();  // Actualiza el resumen del pedido
+}
+
+// Actualizar la cantidad de un producto en el carrito
+function updateQuantity(itemId, newQuantity) {
+    if (newQuantity > 0) {
+        const cartItem = carts.find(item => item.id === itemId);
+        if (cartItem) {
+            cartItem.quantity = newQuantity;
+            localStorage.setItem('cart', JSON.stringify(carts));
+        }
+    } else {
+        removeFromCart(itemId);
+    }
+    saveCart();
+    updateCart();
+    updateCartPage();  // Asegúrate de que esta llamada esté aquí
+}
+
+// Eliminar un artículo del carrito
+function removeFromCart(itemId) {
+    const index = carts.findIndex(item => item.id === itemId);
+    if (index !== -1) {
+        carts.splice(index, 1);
+    }
+    saveCart();
+    updateCart();
+    updateCartPage();  // Asegúrate de que esta llamada esté aquí
+}
+
+// Guardar el carrito actualizado en localStorage
+function saveCart() {
+    localStorage.setItem('cart', JSON.stringify(carts));
+}
+
+// Actualizar el resumen del pedido (subtotal, impuestos y total)
+function updateOrderSummary() {
+    let subtotal = carts.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    let taxes = subtotal * 0.1;
+    let total = subtotal + taxes;
+
+    document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+    document.getElementById('taxes').textContent = `$${taxes.toFixed(2)}`;
+    document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+}
+
+// Proceder al pago (funcionalidad futura)
+function proceedToCheckout() {
+    alert('Procediendo al pago... (Esta funcionalidad aún no está implementada)');
+}
+
+// Inicializar la página del carrito
+updateCartPage();  // Asegúrate de que esta llamada esté aquí
+updateCart();
+
+</script>
+{% endblock %}
