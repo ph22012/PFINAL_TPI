@@ -5,11 +5,44 @@ from django import forms
 from django.contrib import messages
 from .models import Configuration, Cupon, RewardPoints, Role, Employee, Customer, CustomUser
 from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required 
 from django.http import JsonResponse
 from django.core.files.storage import FileSystemStorage
 from django.utils.timezone import now
+from django.contrib.auth import authenticate, login as auth_login , logout
 import os
+
+def login_employee(request):
+    if request.method == 'POST':
+        print(request.POST)
+        username = request.POST['username']
+        print(username)
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            auth_login(request, user)
+            empleado = Employee.objects.get(user=request.user)
+            print(empleado.id_rol)
+            if empleado.id_rol == 1:
+                return redirect( 'GeneralView' )
+            elif empleado.id_rol == 2:
+                return redirect( '/usuarioDelMenu/' )
+            elif empleado.id_rol == 3:
+                return redirect( '/pedidos/dashboard' )
+            elif empleado.id_rol == 4:
+                return redirect( '/ordenes/order_list' )
+            else:
+                return redirect( '/repartidores/' )
+        else:
+            print('Username or password is incorrect')
+            return render(request, 'autenticacion/login.html')
+    else:
+        return render(request, 'autenticacion/login.html')
+
+def custom_logout_employee(request):
+    logout(request)
+    return redirect('login_employee')
+
 
 #404 not found
 def custom_page_not_found(request, exception):
