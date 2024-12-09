@@ -51,3 +51,6 @@ def profile(request):
 
 def principal(request):
     return render(request, 'principalView.html')
+
+def logout(request):
+    return redirect('login')
