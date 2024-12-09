@@ -32,12 +32,12 @@
       <tbody>
         {% for producto in productos_catalogo %}
         <tr>
-          <td>{{ producto.id }}</td>
-          <td>{{ producto.categoria }}</td>
-          <td>{{ producto.nombre }}</td>
-          <td>{{ producto.precio }}</td>
-          <td>{{ producto.cantidad }}</td>
-          <td>{{ producto.descripcion }}</td>
+          <td>{{ producto.id_product }}</td>
+          <td>{{ producto.id_category.name }}</td>
+          <td>{{ producto.name }}</td>
+          <td>{{ producto.price }}</td>
+          <td>{{ producto.count }}</td>
+          <td>{{ producto.description}}</td>
         </tr>
         {% endfor %}
       </tbody>
@@ -45,7 +45,7 @@
     
     <h2>Agregar productos al menú</h2>
     
-    <form method="POST" action="{% url 'indexCatalogo' %}">
+    <form method="POST" action="{% url 'crear-menu' %}">
       {% csrf_token %}
       <label for="ingresarID">Ingresar ID:</label>
       <input type="text" id="ingresarID" name="ingresarID" required>
@@ -60,23 +60,20 @@
           <th>Nombre</th>
           <th>Precio</th>
           <th>Cantidad</th>
+          <th>Dia que pertenece</th>
         </tr>
       </thead>
       <tbody>
         {% for producto in productos_menu %}
         <tr>
-          <td>{{ producto.nombre }}</td>
-          <td>{{ producto.precio }}</td>
-          <td>{{ producto.cantidad }}</td>
+          <td>{{ producto.name }}</td>
+          <td>{{ producto.price }}</td>
+          <td>{{ producto.count }}</td>
+          <td>{{ producto.dailyMenuDate }}</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
-    
-    <form method="POST" action="{% url 'indexCatalogo' %}">
-      {% csrf_token %}
-      <button class="btn" type="submit">Crear Menú</button>
-    </form>
   </div>
 </body>
 </html>
