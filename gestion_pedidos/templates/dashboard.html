@@ -12,7 +12,7 @@
         <div class=" row text-center my-5"><h1>Dashboard</h1></div>
         <div class="row">
             <div class="col-10">
-                <table class="table table-bordered " id="pedidos">
+                <table class="table table-bordered " id="pedidos" data-edit-url="{% url 'edit_order' 0 %}" data-detail-url="{% url 'order_detail' 0 %}">
                     <thead class="table-dark">
                         <th>N° pedido</th>
                         <th>Estado</th>
@@ -29,8 +29,16 @@
                             <td>{{ order.order_date }}</td>
                             <td>{{order.id_address}}</td>
                             <td>{{order.last_update}}</td>
-                            <td><button type="button" href="{% url 'order_detail' order_id=order.id_order %}" class="btn btn-primary btn-sm" id="ver">Ver pedido</button></td>
-                            <td><button type="button" class="btn btn-warning btn-sm" id="editar">Editar pedido</button></td>
+                            <td>
+                                <a href="{% url 'order_detail' order_id=order.id_order %}">
+                                    <button type="submit" class="btn btn-primary w-100">Ver pedido</button>
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{% url 'edit_order' id_order=order.id_order %}">
+                                    <button type="submit" class="btn btn-warning btn-sm">Editar pedido</button>
+                                </a>
+                            </td>
                         {%endfor%}
                     </tbody>
                 </table>

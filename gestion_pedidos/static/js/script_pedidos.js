@@ -11,8 +11,16 @@ function newOrder(order){
     <td>${order.order_date}</td>    
     <td>${order.id_address}</td>
     <td>${order.last_update}</td>
-    <td><button type="button" class="btn btn-primary btn-sm" id="ver">Ver pedido</button></td>
-    <td><button type="button" class="btn btn-warning btn-sm" id="editar">Editar pedido</button></td>
+    <td>
+        <a href="{% url 'order_detail' order_id=order.id_order %}">
+            <button type="submit" class="btn btn-primary w-100">Ver pedido</button>
+        </a>
+    </td>
+    <td>
+        <a href="{% url 'edit_order' id_order=order.id_order %}">
+            <button type="submit" class="btn btn-primary w-100">Editar pedido</button>
+        </a>
+    </td>
     `;
     tableBody.appendChild(newRow);
 }
@@ -26,8 +34,16 @@ function updateOrder(order){
     <td>${order.order_date}</td>    
     <td>${order.id_address}</td>
     <td>${order.last_update}</td>
-    <td><button type="button" class="btn btn-primary btn-sm" id="ver">Ver pedido</button></td>
-    <td><button type="button" class="btn btn-warning btn-sm" id="editar">Editar pedido</button></td>
+    <td>
+        <a href="{% url 'edit_order' id_order=order.id_order %}">
+            <button type="submit" class="btn btn-primary w-100">Ver pedido</button>
+        </a>
+    </td>
+    <td>
+        <a href="{% url 'order_detail' order_id=order.id_order %}">
+            <button type="submit" class="btn btn-primary w-100">Editar pedido</button>
+        </a>
+    </td>
     `;
     tableBody.replaceChild(row, row);
 

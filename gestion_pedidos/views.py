@@ -7,6 +7,7 @@ from moduloDespacho.models import Order_status, Order
 from modulo_catalogo.models import Product
 from modulo_administracion.models import Customer, Employee, Role, Cupon
 import json
+from django.db.models import Min, Case, When, Value
 
 
 
@@ -97,17 +98,30 @@ def order_create(request):
 
         # Crear pedido
         order_status = get_object_or_404(Order_status, id_status=1)
+
         # Filtrar empleados activos con el rol de repartidor
         repartidor_role = get_object_or_404(Role, name='Repartidor')  # Asegúrate de que este rol existe
-        available_employee = Employee.objects.filter(is_active=True, id_rol=repartidor_role).first()
+        repartidores_activos = Employee.objects.filter(is_active=True, id_rol=repartidor_role)
 
-        if not available_employee:
+        if not repartidores_activos.exists():
             messages.error(request, 'No hay empleados disponibles con el rol de repartidor.')
             return redirect('order_create')  # Redirige a la página de creación con un mensaje de error
 
+        # Priorizar repartidores con pedidos entregados
+        available_employee = repartidores_activos.annotate(
+            pedidos_entregados=Case(
+                When(order__id_status__status='Entregado', then=Value(1)),
+                default=Value(0)
+            )
+        ).order_by('-pedidos_entregados', 'order__last_update').first()
+
+        if not available_employee:
+            messages.error(request, 'No hay repartidores disponibles para asignar.')
+            return redirect('order_create')
+
         order = Order.objects.create(
             id_cart=shopping_cart,
-            id_address=customer_address,  # Ahora es una instancia de CustomerAddress
+            id_address=customer_address, 
             id_cupon=coupon,            
             id_employee=available_employee,
             id_status=order_status,
@@ -185,7 +199,7 @@ def get_registered_address(request):
 
     # Devolver la dirección en formato JSON
     return JsonResponse({
-        'id_departamento_': customer_address.Distrito.municipio.departamento.id_departamento,
+        'id_departamento_': customer_address.Distrito.id_municipio.departamento.id_departamento,
         'id_municipio': customer_address.Distrito.municipio.id_municipio,
         'id_distrito': customer_address.Distrito.id_distrito,
         'address_detail': customer_address.address
@@ -206,7 +220,7 @@ def order_edit(request, id_order):
 
         # Obtener el distrito y actualizar la dirección
         distrito = get_object_or_404(Distrito, id_distrito=id_distrito)
-        customer_address, _ = CustomerAddress.objects.get_or_create(
+        customer_address, _ = CustomerAddress.objects.update_or_create(
             customer=order.id_cart.customer,
             Distrito=distrito,
             defaults={'address': address_detail}

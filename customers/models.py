@@ -1,8 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from modulo_administracion.models import Role
+from modulo_administracion.models import Role, Customer, RewardPoints
+from modulo_catalogo.models import Product
+from gestion_pedidos.models import ShoppingCart, Departamento, Distrito, Detail, Municipio
 
 # Create your models here.
+
+
+
+
 #SE CREAN AQUI PARA LA PRUEBA, PERO SE DEBE CREAR EN EL MODULO DE ADMINISTRACION
 
 # class CustomUser(AbstractUser):
