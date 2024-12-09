@@ -23,14 +23,14 @@ def login_employee(request):
             auth_login(request, user)
             empleado = Employee.objects.get(user=request.user)
             print(empleado.id_rol)
-            if empleado.id_rol == 1:
+            if empleado.id_rol.id == 1:
                 return redirect( 'GeneralView' )
-            elif empleado.id_rol == 2:
-                return redirect( '/usuarioDelMenu/' )
-            elif empleado.id_rol == 3:
+            elif empleado.id_rol.id == 2:
+                return redirect( '/usuarioDelMenu/index' )
+            elif empleado.id_rol.id == 3:
                 return redirect( '/pedidos/dashboard' )
-            elif empleado.id_rol == 4:
-                return redirect( '/ordenes/order_list' )
+            elif empleado.id_rol.id == 4:
+                return redirect( '/despacho/ordenes' )
             else:
                 return redirect( '/repartidores/' )
         else:
