@@ -1,6 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render 
+from django.http import HttpResponse
 from .models import Order
 from datetime import date
+import json
+
 # Create your views here.
 #logica de la vista de despachos    
 def fechaHoy ():
@@ -14,3 +17,9 @@ def order_list(request):
     return render(request, 'moduloDespacho/Orders.html',
     {'pendingOrders': pendingOrders, 'onProcessOrders': onProcessOrders})
 
+def getOrdenes(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        print( "Datos: "+data)
+    return HttpResponse("Datos obtenidos")
+        
