@@ -68,11 +68,5 @@ def products_cart(request):
     
     return render(request, 'carrito.html')
 
-<<<<<<< HEAD
-def custom_logout(request):
-    logout(request)
-    return redirect('login')
-=======
 def logout(request):
     return redirect('login')
->>>>>>> 4165b2048be9b1870e0e1e3ca6611d8f419a2017
