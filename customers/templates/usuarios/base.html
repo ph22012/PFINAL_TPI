@@ -1,0 +1,150 @@
+{% load static %}
+{% load django_bootstrap5 %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} {% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <style>
+        .menu-item {
+            transition: transform 0.3s ease;
+        }
+        .menu-item:hover {
+            transform: scale(1.05);
+        }
+        .cart-item {
+            font-size: 0.9rem;
+        }
+        .menu-icon {
+            font-size: 2rem;
+            color: #0d6efd;
+        }
+    </style>
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'principal' %}">MiComida</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Menú</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Ofertas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'carrito' %}">Mis Pedidos</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown me-3">
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle me-2"></i>
+                            <span>Cliente</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser1">
+                            <li><a class="dropdown-item" href="#">Perfil</a></li>
+                            <li><a class="dropdown-item" href="#">Configuración</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Cerrar sesión</a></li>
+                        </ul>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-success dropdown-toggle" type="button" id="dropdownCart" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-cart"></i> Carrito <span id="cartCount" class="badge bg-success">0</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownCart" style="min-width: 300px;">
+                            <li><h6 class="dropdown-header">Tu Carrito</h6></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <div id="cartItems">
+                                <!-- Los elementos del carrito se generarán dinámicamente aquí -->
+                            </div>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <div class="d-flex justify-content-between px-3">
+                                    <span>Total:</span>
+                                    <strong id="cartTotal">$0.00</strong>
+                                </div>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-center" href="#">Ver carrito</a></li>
+                            <li><a class="dropdown-item text-center btn btn-success" href="#">Realizar Pedido</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    
+    <script>
+        // Cargar el carrito desde localStorage, si existe
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        function addToCart(itemId) {
+            const itemElement = document.querySelector(`button[onclick="addToCart(${itemId})"]`).parentElement;
+            const name = itemElement.querySelector(".card-title").textContent;
+            const price = parseFloat(itemElement.querySelector(".card-text").textContent.replace("$", ""));
+            
+            const existingItem = cart.find(item => item.id === itemId);
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({ id: itemId, name, price, quantity: 1 });
+            }
+
+            // Guardar el carrito actualizado en localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            updateCart();
+        }
+
+        function updateCart() {
+            const cartItemsElement = document.getElementById('cartItems');
+            const cartCountElement = document.getElementById('cartCount');
+            const cartTotalElement = document.getElementById('cartTotal');
+
+            cartItemsElement.innerHTML = '';
+            let total = 0;
+
+            cart.forEach(item => {
+                const itemElement = document.createElement('li');
+                itemElement.className = 'dropdown-item d-flex justify-content-between align-items-center cart-item';
+                itemElement.innerHTML = `
+                    <span>${item.name} x ${item.quantity}</span>
+                    <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                `;
+                cartItemsElement.appendChild(itemElement);
+                total += item.price * item.quantity;
+            });
+
+            if (cart.length === 0) {
+                cartItemsElement.innerHTML = '<li class="dropdown-item text-center">Tu carrito está vacío</li>';
+            }
+
+            cartCountElement.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartTotalElement.textContent = `$${total.toFixed(2)}`;
+        }
+
+        // Inicializar el carrito en la interfaz al cargar la página
+        updateCart();
+    </script>
+    
+    {% block scripts %}
+    {% endblock %}
+    
+</body>
+</html>

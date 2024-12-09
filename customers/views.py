@@ -1,8 +1,12 @@
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login as auth_login
 from django.shortcuts import redirect
-from modulo_administracion.models import CustomUser, Customer, Employee
+from modulo_administracion.models import CustomUser, Customer, Employee, RewardPoints, Role
+from modulo_catalogo.models import Product
 from django.contrib.auth.decorators import login_required
+from gestion_pedidos.models import ShoppingCart, Departamento, Distrito, Detail, Municipio
+
 # Create your views here.
 
 def registro(request):
@@ -50,4 +54,16 @@ def profile(request):
     return render(request, 'usuarios/profile.html', {'user': user})
 
 def principal(request):
-    return render(request, 'principalView.html')
+    productos = Product.objects.all()
+    return render(request, 'principalView.html', {'productos': productos})
+
+def productos(request):
+    productos = Product.objects.all()
+    return JsonResponse(productos, safe=False)
+
+def carrito(request):
+    return render(request, 'carrito.html')
+
+def products_cart(request):
+    
+    return render(request, 'carrito.html')
