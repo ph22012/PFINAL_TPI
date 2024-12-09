@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login , logout
 from django.shortcuts import redirect
 from modulo_administracion.models import CustomUser, Customer, Employee
 from django.contrib.auth.decorators import login_required
@@ -52,5 +52,6 @@ def profile(request):
 def principal(request):
     return render(request, 'principalView.html')
 
-def logout(request):
+def custom_logout(request):
+    logout(request)
     return redirect('login')
