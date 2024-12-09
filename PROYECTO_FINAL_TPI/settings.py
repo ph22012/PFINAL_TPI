@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-nel_dg^eoa!ezu67hy7e--mn*+=)g+-t-foyl+1gq-8dm-hrkn
 DEBUG = False
 
 # ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['pedidos-ues-5e2253dc3877.herokuapp.com' ,'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['pedidos-ues-5e2253dc3877.herokuapp.com' ,'localhost', '127.0.0.1','https://pfinal-tpi.onrender.com']
 
 
 # Application definition
