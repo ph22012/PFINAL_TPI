@@ -51,10 +51,9 @@
                             <span>Cliente</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser1">
-                            <li><a class="dropdown-item" href="#">Perfil</a></li>
-                            <li><a class="dropdown-item" href="#">Configuración</a></li>
+                            <li><a class="dropdown-item" href="{% url 'profile' %}">Perfil</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Cerrar sesión</a></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
                         </ul>
                     </div>
                     <div class="dropdown">
