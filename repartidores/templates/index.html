@@ -12,7 +12,7 @@
 </head>
 <body>
 <div class="container mt-4">
-    <h1 class="mb-3">Bienvenido, {{ repartidor.firstname }}</h1>
+    <h1 class="mb-3">Bienvenido, {{ repartidor.firstName }}</h1>
 
     <!-- Botón para activar/desactivar -->
     {% if repartidor.is_active %}
@@ -23,7 +23,7 @@
 
     <!-- Tabla de pedidos asignados -->
     <h2 class="mb-3">Pedidos Asignados</h2>
-    <table class="table table-striped">
+    <table class="table table-striped" id="pedidos-asignados">
         <thead>
             <tr>
                 <th>#</th>
@@ -38,17 +38,17 @@
         </thead>
         <tbody>
             {% for item in pedidos_con_totales %}
-                <tr>
-                    <td>{{ item.pedido.id }}</td>
-                    <td>{{ item.pedido.shoppingcart.customer.firstname }} {{ item.pedido.shoppingcart.customer.lastname }}</td>
-                    <td>{{ item.pedido.address.address }}</td>
-                    <td>{{ item.pedido.address.Distrito.municipio.departamento.name }}</td>
-                    <td>{{ item.pedido.address.Distrito.municipio.name }}</td>
-                    <td>{{ item.pedido.address.Distrito.name }}</td>
+                <tr id="orden-asignada-{{ item.pedido.id_order }}">
+                    <td>{{ item.pedido.id_order }}</td>
+                    <td>{{ item.pedido.id_cart.customer.firstName }} {{ item.pedido.id_cart.customer.lastName }}</td>
+                    <td>{{ item.pedido.id_address.address }}</td>
+                    <td>{{ item.pedido.id_address.Distrito.id_municipio.id_departamento.name }}</td>
+                    <td>{{ item.pedido.id_address.Distrito.id_municipio.name }}</td>
+                    <td>{{ item.pedido.id_address.Distrito.name }}</td>
                     <td>${{ item.total }}</td>
                     <td>
-                        <a href="{% url 'repartidores:entregar' item.pedido.id %}" class="btn btn-success btn-sm">Marcar como Entregado</a>
-                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#detallePedido{{ item.pedido.id }}">Ver Detalles</button>
+                        <a href="{% url 'repartidores:entregar' item.pedido.id_order %}" class="btn btn-success btn-sm">Marcar como Entregado</a>
+                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#detallePedido{{ item.pedido.id_order }}">Ver Detalles</button>
                     </td>
                 </tr>
             {% endfor %}
@@ -58,16 +58,16 @@
 
 <!-- Ventanas emergentes para detalles -->
 {% for item in pedidos_con_totales %}
-<div class="modal fade" id="detallePedido{{ item.pedido.id }}" tabindex="-1" aria-labelledby="detallePedidoLabel{{ item.pedido.id }}" aria-hidden="true">
+<div class="modal fade" id="detallePedido{{ item.pedido.id_order }}" tabindex="-1" aria-labelledby="detallePedidoLabel{{ item.pedido.id_order }}" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="detallePedidoLabel{{ item.pedido.id }}">Detalles del Pedido #{{ item.pedido.id }}</h5>
+                <h5 class="modal-title" id="detallePedidoLabel{{ item.pedido.id_order }}">Detalles del Pedido #{{ item.pedido.id_order }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <h6>Cliente</h6>
-                <p>{{ item.pedido.shoppingcart.customer.firstname }} {{ item.pedido.shoppingcart.customer.lastname }}</p>
+                <p>{{ item.pedido.id_cart.customer.firstName }} {{ item.pedido.id_cart.customer.lastName }}</p>
                 <h6>Productos</h6>
                 <table class="table">
                     <thead>
@@ -78,7 +78,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for detalle in item.pedido.shoppingcart.detail_set.all %}
+                        {% for detalle in item.pedido.id_cart.detail_set.all %}
                             <tr>
                                 <td>{{ detalle.product.name }}</td>
                                 <td>{{ detalle.amount }}</td>
