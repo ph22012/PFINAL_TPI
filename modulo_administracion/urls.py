@@ -3,6 +3,10 @@ from . import views
 from django.conf.urls import handler404
 
 urlpatterns = [
+    #autenticacion
+    path('login/', views.login_employee, name='login_employee'),
+    path('logout/', views.custom_logout_employee, name='logout_employee'),
+    #no se
     path('', views.GeneralView, name='GeneralView'),
     path('configuracion/', views.configuration_home, name='configuration_home'),
     path('gestionar-configuraciones/', views.gestionar_configuraciones, name='gestionar_configuraciones'),
