@@ -92,34 +92,38 @@
     
     <script>
         // Cargar el carrito desde localStorage, si existe
-        const cart = JSON.parse(localStorage.getItem('cart')) || [];
-
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    
+        // Función para añadir un producto al carrito
         function addToCart(itemId) {
             const itemElement = document.querySelector(`button[onclick="addToCart(${itemId})"]`).parentElement;
             const name = itemElement.querySelector(".card-title").textContent;
             const price = parseFloat(itemElement.querySelector(".card-text").textContent.replace("$", ""));
-            
+    
             const existingItem = cart.find(item => item.id === itemId);
             if (existingItem) {
                 existingItem.quantity++;
             } else {
                 cart.push({ id: itemId, name, price, quantity: 1 });
             }
-
+    
             // Guardar el carrito actualizado en localStorage
             localStorage.setItem('cart', JSON.stringify(cart));
-
+    
+            // Actualizar el carrito en la interfaz
             updateCart();
         }
-
+    
+        // Función para actualizar el carrito en el DOM
         function updateCart() {
             const cartItemsElement = document.getElementById('cartItems');
             const cartCountElement = document.getElementById('cartCount');
             const cartTotalElement = document.getElementById('cartTotal');
-
-            cartItemsElement.innerHTML = '';
+    
+            cartItemsElement.innerHTML = ''; // Limpiar los elementos previos
             let total = 0;
-
+    
+            // Generar los nuevos elementos del carrito
             cart.forEach(item => {
                 const itemElement = document.createElement('li');
                 itemElement.className = 'dropdown-item d-flex justify-content-between align-items-center cart-item';
@@ -130,18 +134,21 @@
                 cartItemsElement.appendChild(itemElement);
                 total += item.price * item.quantity;
             });
-
+    
+            // Si el carrito está vacío
             if (cart.length === 0) {
                 cartItemsElement.innerHTML = '<li class="dropdown-item text-center">Tu carrito está vacío</li>';
             }
-
+    
+            // Actualizar el contador y el total
             cartCountElement.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
             cartTotalElement.textContent = `$${total.toFixed(2)}`;
         }
-
+    
         // Inicializar el carrito en la interfaz al cargar la página
         updateCart();
     </script>
+    
     
     {% block scripts %}
     {% endblock %}
